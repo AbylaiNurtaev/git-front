@@ -268,7 +268,7 @@ export default function ClubDashboard() {
                 <QRCodeSVG
                   value={club.token || club.qrCode || `${getQrBaseUrl()}/spin?club=${club.clubId}`}
                   size={300}
-                  level="H"
+                  level="L"
                 />
                 <p className="qr-info">
                   Игроки могут отсканировать этот QR-код для доступа к рулетке

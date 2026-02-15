@@ -392,15 +392,11 @@ export default function ClubQR() {
           </button>
           <div className="club-qr-fullscreen-qr">
           <div className="club-qr-fullscreen-qr-inner">
-            {club.qrCode && club.qrCode.startsWith('data:image') ? (
-              <img src={club.qrCode} alt="QR код" className="club-qr-fullscreen-qr-image" />
-            ) : (
-              <QRCodeSVG
-                value={`${getQrBaseUrl()}/spin?club=${club.token || club.clubId}`}
-                size={140}
-                level="H"
-              />
-            )}
+            <QRCodeSVG
+              value={`${getQrBaseUrl()}/spin?club=${club.token || club.clubId}`}
+              size={140}
+              level="L"
+            />
           </div>
         </div>
         </>

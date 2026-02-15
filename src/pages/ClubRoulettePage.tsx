@@ -197,7 +197,7 @@ export default function ClubRoulettePage() {
                 <QRCodeSVG
                   value={club.token ? `${getQrBaseUrl()}/spin?club=${club.token}` : `${getQrBaseUrl()}/spin`}
                   size={140}
-                  level="H"
+                  level="L"
                   className="roulette-qr-code"
                 />
               ) : (
