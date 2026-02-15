@@ -1,5 +1,8 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
+/** Базовый URL сайта для QR-кодов. На Vercel задать VITE_APP_PUBLIC_URL=https://git-front-sandy.vercel.app */
+export const PUBLIC_SITE_URL = (import.meta.env.VITE_APP_PUBLIC_URL as string) || '';
+
 export const API_ENDPOINTS = {
   // Player endpoints
   PLAYER_REGISTER: '/players/register',

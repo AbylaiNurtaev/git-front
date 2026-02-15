@@ -1,21 +1,24 @@
 /* Сканер — камера на весь экран + рамка с уголками (как Kaspi) */
 
 .player-scan {
-  flex: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: calc(72px + env(safe-area-inset-bottom, 0));
   display: flex;
   flex-direction: column;
-  min-height: 0;
   padding: 0;
-  margin: -20px -18px 0 -18px;
-  min-height: 50vh;
+  margin: 0;
+  z-index: 10;
+  background: #0a0a0f;
 }
 
 .player-scan-camera-wrap {
   position: relative;
   flex: 1;
-  min-height: 280px;
   width: 100%;
-  border-radius: 0;
+  min-height: 0;
   overflow: hidden;
   background: #0a0a0f;
 }
@@ -23,7 +26,7 @@
 .player-scan-camera {
   width: 100%;
   height: 100%;
-  min-height: 280px;
+  min-height: 100%;
   position: absolute;
   inset: 0;
 }

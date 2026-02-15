@@ -7,6 +7,22 @@ import './PlayerScan.css';
 
 const VIEWFINDER_SIZE = 260;
 
+/** Извлекает club id из отсканированного текста (URL или просто id) */
+function extractClubIdFromScanned(text: string): string {
+  const t = text.trim();
+  // Если есть подстрока ?club= или &club= — достаём значение
+  const match = t.match(/[?&]club=([^&\s#]+)/);
+  if (match?.[1]) return decodeURIComponent(match[1]);
+  try {
+    const url = new URL(t.startsWith('http') ? t : `https://_/${t.replace(/^\/+/, '')}`);
+    const club = url.searchParams.get('club');
+    if (club) return club;
+  } catch {
+    /* не URL — считаем, что это сам токен/ид */
+  }
+  return t;
+}
+
 export default function PlayerScan() {
   const navigate = useNavigate();
   const { currentUser, getClubByQR } = useStore();
@@ -14,18 +30,25 @@ export default function PlayerScan() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const scannerInstanceRef = useRef<any>(null);
+  const handlingRef = useRef(false);
 
-  const handleScanned = useCallback(async (qrToken: string) => {
+  const handleScanned = useCallback(async (decodedText: string) => {
+    if (handlingRef.current) return;
+    const clubIdOrToken = extractClubIdFromScanned(decodedText);
+    if (!clubIdOrToken) return;
+    handlingRef.current = true;
     setError(null);
     try {
-      const club = await getClubByQR(qrToken.trim());
+      const club = await getClubByQR(clubIdOrToken);
       if (club) {
         navigate(`/spin?club=${club.token || club.clubId}`, { replace: true });
       } else {
         setError('Клуб не найден');
+        handlingRef.current = false;
       }
     } catch {
       setError('Ошибка. Попробуйте снова.');
+      handlingRef.current = false;
     }
   }, [getClubByQR, navigate]);
 

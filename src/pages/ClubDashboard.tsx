@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import { QRCodeSVG } from 'qrcode.react';
+import { PUBLIC_SITE_URL } from '@/config/api';
 import type { Club, Player, PrizeClaimsPagination } from '@/types';
 import './ClubDashboard.css';
 
@@ -265,7 +266,7 @@ export default function ClubDashboard() {
               <h2>QR-код Infinity</h2>
               <div className="qr-container">
                 <QRCodeSVG
-                  value={club.token || club.qrCode || `${window.location.origin}/spin?club=${club.clubId}`}
+                  value={club.token || club.qrCode || `${PUBLIC_SITE_URL || window.location.origin}/spin?club=${club.clubId}`}
                   size={300}
                   level="H"
                 />
