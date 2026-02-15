@@ -13,6 +13,10 @@ import '../SpinPage.css';
 const PRIZE_WIDTH = 284;
 const IDLE_SPEED_PX = 15.5;
 const MAX_WINS_CHAT = 10;
+/** Буфер копий рулетки справа, чтобы не было пустого места */
+const ROULETTE_MIN_COPIES = 50;
+const ROULETTE_REPLENISH_THRESHOLD = 25;
+const ROULETTE_REPLENISH_COUNT = 25;
 
 function maskPhone(phone: string): string {
   const digits = phone.replace(/\D/g, '');
@@ -29,10 +33,23 @@ function randomMaskedPhone(): string {
   return `+7 ${digits}** *** *${last}`;
 }
 
+/** Payload события spin с бэкенда (с recentWins — последние 10 выигрышей по клубу) */
+interface SpinPayload {
+  _id?: string;
+  prize?: { name?: string; slotIndex?: number; image?: string; [k: string]: unknown };
+  spin?: { prize?: unknown };
+  playerPhone?: string;
+  createdAt?: string;
+  recentWins?: Array<{ maskedPhone: string; prizeName: string; text: string }>;
+}
+
 export default function ClubQR() {
   const { currentUser } = useStore();
   const club = currentUser as Club | null;
   const [roulettePrizes, setRoulettePrizes] = useState<Prize[]>([]);
+  const [rouletteCopies, setRouletteCopies] = useState(ROULETTE_MIN_COPIES);
+  const rouletteCopiesRef = useRef(ROULETTE_MIN_COPIES);
+  rouletteCopiesRef.current = rouletteCopies;
   const [prizesLoadError, setPrizesLoadError] = useState<string | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
@@ -40,8 +57,6 @@ export default function ClubQR() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [winsChat, setWinsChat] = useState<Array<{ id: string; text: string }>>([]);
   const winsChatIdRef = useRef(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const fakeWinsRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const roulettePrizesRef = useRef<Prize[]>([]);
   roulettePrizesRef.current = roulettePrizes;
   const socketRef = useRef<Socket | null>(null);
@@ -77,6 +92,11 @@ export default function ClubQR() {
     if (club) loadPrizes();
   }, [club?.id, club?.clubId, club?.token]);
 
+  useEffect(() => {
+    setRouletteCopies(ROULETTE_MIN_COPIES);
+    rouletteCopiesRef.current = ROULETTE_MIN_COPIES;
+  }, [roulettePrizes.length]);
+
   // Socket.IO: подключаемся к комнате клуба и слушаем событие spin (вместо опроса)
   useEffect(() => {
     if (!club) return;
@@ -91,14 +111,20 @@ export default function ClubQR() {
     });
     socketRef.current = socket;
 
-    socket.on('spin', (payload: { spin?: { prize?: unknown }; prize?: unknown; playerPhone?: string }) => {
+    socket.on('spin', (payload: SpinPayload) => {
       const prizeData = payload?.spin?.prize ?? payload?.prize;
       if (!prizeData) return;
 
       const prize = transformPrize(prizeData);
-      const phone = payload.playerPhone;
       const prizeName = prize.name || 'Приз';
-      addWinToChat(phone ? maskPhone(phone) : randomMaskedPhone(), prizeName);
+      if (Array.isArray(payload.recentWins) && payload.recentWins.length > 0) {
+        setWinsChat(
+          payload.recentWins.map((w, i) => ({ id: `win-${i}`, text: w.text ?? `${w.maskedPhone} Выиграл ${w.prizeName}` }))
+        );
+      } else {
+        const phone = payload.playerPhone;
+        addWinToChat(phone ? maskPhone(phone) : randomMaskedPhone(), prizeName);
+      }
       startSpin(prize);
     });
 
@@ -113,7 +139,7 @@ export default function ClubQR() {
     };
   }, [club?.id, club?.clubId, club?.token]);
 
-  // Бесконечное медленное движение ленты в простое
+  // Бесконечное медленное движение ленты в простое; при нехватке копий справа — пополняем
   useEffect(() => {
     if (roulettePrizes.length === 0 || isSpinning) return;
     const oneSetWidth = roulettePrizes.length * PRIZE_WIDTH;
@@ -126,6 +152,13 @@ export default function ClubQR() {
       idlePositionRef.current -= IDLE_SPEED_PX * (dt / 16);
       if (idlePositionRef.current < -oneSetWidth) {
         idlePositionRef.current += oneSetWidth;
+      }
+      const containerWidth = rouletteRef.current?.offsetWidth ?? 0;
+      const rightEdge = idlePositionRef.current + containerWidth;
+      const copies = rouletteCopiesRef.current;
+      if (rightEdge >= (copies - ROULETTE_REPLENISH_THRESHOLD) * oneSetWidth) {
+        rouletteCopiesRef.current = copies + ROULETTE_REPLENISH_COUNT;
+        setRouletteCopies(rouletteCopiesRef.current);
       }
       setScrollPosition(idlePositionRef.current);
       idleRafRef.current = requestAnimationFrame(tick);
@@ -144,34 +177,7 @@ export default function ClubQR() {
     setWinsChat(prev => [{ id, text }, ...prev.slice(0, MAX_WINS_CHAT - 1)]);
   };
 
-  // Стартовые фейковые сообщения в чате
-  useEffect(() => {
-    if (roulettePrizes.length === 0) return;
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-    [0, 1200, 2500].forEach((delay) => {
-      timeouts.push(setTimeout(() => {
-        const prizes = roulettePrizesRef.current;
-        if (prizes.length === 0) return;
-        const prize = prizes[Math.floor(Math.random() * prizes.length)];
-        addWinToChat(randomMaskedPhone(), prize.name);
-      }, delay));
-    });
-    return () => timeouts.forEach(t => clearTimeout(t));
-  }, [roulettePrizes.length]);
-
-  // Имитация новых выигрышей в чате (фейковые сообщения)
-  useEffect(() => {
-    if (roulettePrizes.length === 0) return;
-    fakeWinsRef.current = setInterval(() => {
-      const prizes = roulettePrizesRef.current;
-      if (prizes.length === 0) return;
-      const prize = prizes[Math.floor(Math.random() * prizes.length)];
-      addWinToChat(randomMaskedPhone(), prize.name);
-    }, 8000 + Math.random() * 5000);
-    return () => {
-      if (fakeWinsRef.current) clearInterval(fakeWinsRef.current);
-    };
-  }, [roulettePrizes.length]);
+  // Чат побед — только из payload.recentWins с бэкенда (без фейковых сообщений)
 
   const handleTestSpin = () => {
     if (roulettePrizes.length > 0 && !isSpinning) {
@@ -257,14 +263,6 @@ export default function ClubQR() {
     return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
   }, []);
 
-  // Очистка интервалов при размонтировании
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (fakeWinsRef.current) clearInterval(fakeWinsRef.current);
-    };
-  }, []);
-
   if (!club) {
     return null;
   }
@@ -294,7 +292,7 @@ export default function ClubQR() {
                       transition: 'none',
                     }}
                   >
-                    {[...roulettePrizes, ...roulettePrizes, ...roulettePrizes].map((prize, index) => {
+                    {Array.from({ length: rouletteCopies }, () => roulettePrizes).flat().map((prize, index) => {
                       const isSelected = !isSpinning && selectedPrize?.id === prize.id;
                       return (
                         <div
