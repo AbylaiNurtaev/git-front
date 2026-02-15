@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { useStore } from '@/store/useStore';
 import { QRCodeSVG } from 'qrcode.react';
 import { apiService } from '@/services/api';
-import { PUBLIC_SITE_URL, SOCKET_URL } from '@/config/api';
+import { getQrBaseUrl, SOCKET_URL } from '@/config/api';
 import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
 import './ClubPages.css';
@@ -373,7 +373,7 @@ export default function ClubQR() {
               <img src={club.qrCode} alt="QR код" className="club-qr-fullscreen-qr-image" />
             ) : (
               <QRCodeSVG
-                value={`${PUBLIC_SITE_URL || window.location.origin}/spin?club=${club.token || club.clubId}`}
+                value={`${getQrBaseUrl()}/spin?club=${club.token || club.clubId}`}
                 size={140}
                 level="H"
               />

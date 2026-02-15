@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useStore } from '@/store/useStore';
 import { QRCodeSVG } from 'qrcode.react';
 import { apiService } from '@/services/api';
-import { PUBLIC_SITE_URL } from '@/config/api';
+import { getQrBaseUrl } from '@/config/api';
 import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
 import './ClubRoulettePage.css';
@@ -195,7 +195,7 @@ export default function ClubRoulettePage() {
               <p className="roulette-qr-label">Отсканируйте</p>
               {club ? (
                 <QRCodeSVG
-                  value={club.token ? `${PUBLIC_SITE_URL || window.location.origin}/spin?club=${club.token}` : `${PUBLIC_SITE_URL || window.location.origin}/spin`}
+                  value={club.token ? `${getQrBaseUrl()}/spin?club=${club.token}` : `${getQrBaseUrl()}/spin`}
                   size={140}
                   level="H"
                   className="roulette-qr-code"
