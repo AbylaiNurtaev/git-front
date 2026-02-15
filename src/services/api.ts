@@ -84,8 +84,11 @@ class ApiService {
     return response.data;
   }
 
-  async getRoulettePrizes() {
-    const response = await this.api.get('/players/roulette-prizes');
+  async getRoulettePrizes(clubId?: string) {
+    const url = clubId
+      ? `/players/roulette-prizes?club=${encodeURIComponent(clubId)}`
+      : '/players/roulette-prizes';
+    const response = await this.api.get(url);
     return response.data;
   }
 

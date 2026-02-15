@@ -52,11 +52,12 @@ export default function ClubQR() {
   const isSpinningRef = useRef(false);
   isSpinningRef.current = isSpinning;
 
-  // Загружаем призы рулетки
+  // Загружаем призы рулетки (по клубу, если есть)
   const loadPrizes = async () => {
+    const clubId = club ? (club.id || club.clubId || club.token) : undefined;
     setPrizesLoadError(null);
     try {
-      const prizes = await apiService.getRoulettePrizes();
+      const prizes = await apiService.getRoulettePrizes(clubId);
       const transformedPrizes = prizes.map(transformPrize);
       setRoulettePrizes(transformedPrizes);
     } catch (error: unknown) {
@@ -73,8 +74,8 @@ export default function ClubQR() {
   };
 
   useEffect(() => {
-    loadPrizes();
-  }, []);
+    if (club) loadPrizes();
+  }, [club?.id, club?.clubId, club?.token]);
 
   // Socket.IO: подключаемся к комнате клуба и слушаем событие spin (вместо опроса)
   useEffect(() => {
@@ -90,9 +91,8 @@ export default function ClubQR() {
     });
     socketRef.current = socket;
 
-    socket.on('spin', (payload: { spin?: { prize?: unknown }; playerPhone?: string }) => {
-      const spin = payload?.spin;
-      const prizeData = spin?.prize;
+    socket.on('spin', (payload: { spin?: { prize?: unknown }; prize?: unknown; playerPhone?: string }) => {
+      const prizeData = payload?.spin?.prize ?? payload?.prize;
       if (!prizeData) return;
 
       const prize = transformPrize(prizeData);
