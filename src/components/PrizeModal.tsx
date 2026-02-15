@@ -80,7 +80,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
       if (!image && !imagePreview) {
         errors.push('Загрузите изображение приза — без фото создание невозможно.');
       }
-      const occupied = existingSlotIndices.filter((i) => i !== (prize?.slotIndex ?? -1));
+      const occupied = existingSlotIndices;
       if (occupied.includes(slotIndex)) {
         errors.push(`Индекс слота ${slotIndex} уже занят другим призом. Выберите другой (0–24).`);
       }

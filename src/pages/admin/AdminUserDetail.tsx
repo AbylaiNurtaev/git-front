@@ -24,7 +24,7 @@ function formatDate(s: string) {
 export default function AdminUserDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { fetchUsers, updateUser, deleteUser } = useStore();
+  const { updateUser, deleteUser } = useStore();
   const [user, setUser] = useState<AdminUserDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
