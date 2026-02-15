@@ -74,7 +74,8 @@ export default function ClubQR() {
 
     const socket = io(SOCKET_URL, {
       query: { clubId },
-      transports: ['websocket', 'polling'],
+      // Сначала polling — если на Railway/прокси WebSocket не настроен, соединение всё равно установится
+      transports: ['polling', 'websocket'],
     });
     socketRef.current = socket;
 
