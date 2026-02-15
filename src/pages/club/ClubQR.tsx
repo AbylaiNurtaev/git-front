@@ -33,6 +33,7 @@ export default function ClubQR() {
   const { currentUser } = useStore();
   const club = currentUser as Club | null;
   const [roulettePrizes, setRoulettePrizes] = useState<Prize[]>([]);
+  const [prizesLoadError, setPrizesLoadError] = useState<string | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -52,16 +53,26 @@ export default function ClubQR() {
   isSpinningRef.current = isSpinning;
 
   // Загружаем призы рулетки
+  const loadPrizes = async () => {
+    setPrizesLoadError(null);
+    try {
+      const prizes = await apiService.getRoulettePrizes();
+      const transformedPrizes = prizes.map(transformPrize);
+      setRoulettePrizes(transformedPrizes);
+    } catch (error: unknown) {
+      console.error('Ошибка загрузки призов рулетки:', error);
+      const isNetworkOrCors =
+        (error as { message?: string; code?: string })?.message === 'Network Error' ||
+        (error as { code?: string })?.code === 'ERR_NETWORK';
+      setPrizesLoadError(
+        isNetworkOrCors
+          ? 'Сеть недоступна или CORS: добавьте на бэкенде origin https://git-front-sandy.vercel.app (или ваш домен фронта).'
+          : 'Не удалось загрузить призы. Проверьте бэкенд и VITE_API_BASE_URL в .env.'
+      );
+    }
+  };
+
   useEffect(() => {
-    const loadPrizes = async () => {
-      try {
-        const prizes = await apiService.getRoulettePrizes();
-        const transformedPrizes = prizes.map(transformPrize);
-        setRoulettePrizes(transformedPrizes);
-      } catch (error) {
-        console.error('Ошибка загрузки призов рулетки:', error);
-      }
-    };
     loadPrizes();
   }, []);
 
@@ -341,9 +352,20 @@ export default function ClubQR() {
             )}
           </div>
         </>
+      ) : prizesLoadError ? (
+        <div className="spin-container club-qr-spin-container">
+          <div className="spin-page-loading club-qr-loading club-qr-loading-error">
+            <p>{prizesLoadError}</p>
+            <button type="button" onClick={loadPrizes} className="club-qr-retry-btn">
+              Повторить
+            </button>
+          </div>
+        </div>
       ) : (
         <div className="spin-container club-qr-spin-container">
-          <div className="spin-page-loading club-qr-loading" />
+          <div className="spin-page-loading club-qr-loading">
+            <p>Загрузка призов...</p>
+          </div>
         </div>
       )}
 

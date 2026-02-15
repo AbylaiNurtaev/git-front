@@ -14,12 +14,13 @@ export const SOCKET_URL = (() => {
 /** Базовый URL сайта для QR-кодов. На Vercel задать VITE_APP_PUBLIC_URL=https://git-front-sandy.vercel.app */
 export const PUBLIC_SITE_URL = (import.meta.env.VITE_APP_PUBLIC_URL as string) || '';
 
-/** URL для QR: в браузере всегда текущий origin (чтобы на Vercel QR вёл на прод, а не на localhost из сборки) */
+/** URL для QR: приоритет у VITE_APP_PUBLIC_URL (на Vercel задать в настройках!), иначе текущий origin */
 export function getQrBaseUrl(): string {
+  if (PUBLIC_SITE_URL) return PUBLIC_SITE_URL;
   if (typeof window !== 'undefined' && window.location?.origin) {
     return window.location.origin;
   }
-  return PUBLIC_SITE_URL || '';
+  return '';
 }
 
 export const API_ENDPOINTS = {
