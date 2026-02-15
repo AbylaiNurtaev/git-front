@@ -1,0 +1,136 @@
+/* Сканер — камера на весь экран + рамка с уголками (как Kaspi) */
+
+.player-scan {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  margin: -20px -18px 0 -18px;
+  min-height: 50vh;
+}
+
+.player-scan-camera-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 280px;
+  width: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  background: #0a0a0f;
+}
+
+.player-scan-camera {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  position: absolute;
+  inset: 0;
+}
+
+/* Скрываем встроенную рамку html5-qrcode, оставляем только видео */
+.player-scan-camera video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.player-scan-camera > div:first-of-type {
+  border: none !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.player-scan-camera #qr-shaded-region {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Оверлей с рамкой-уголками по центру */
+.player-scan-viewfinder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.player-scan-corners {
+  width: 260px;
+  height: 260px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Уголки — четыре L-образных элемента */
+.player-scan-corner {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-color: rgba(255, 255, 255, 0.9);
+  border-style: solid;
+  border-width: 0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.player-scan-corner-tl {
+  top: 0;
+  left: 0;
+  border-top-width: 4px;
+  border-left-width: 4px;
+  border-radius: 8px 0 0 0;
+}
+
+.player-scan-corner-tr {
+  top: 0;
+  right: 0;
+  border-top-width: 4px;
+  border-right-width: 4px;
+  border-radius: 0 8px 0 0;
+}
+
+.player-scan-corner-bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 4px;
+  border-left-width: 4px;
+  border-radius: 0 0 0 8px;
+}
+
+.player-scan-corner-br {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+  border-radius: 0 0 8px 0;
+}
+
+.player-scan-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 15, 0.7);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.player-scan-error-wrap {
+  padding: 16px 18px;
+  flex-shrink: 0;
+}
+
+.player-scan-error {
+  margin: 0;
+  padding: 12px 16px;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 12px;
+  color: #fca5a5;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}

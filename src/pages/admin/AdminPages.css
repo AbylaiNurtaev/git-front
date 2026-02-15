@@ -1,0 +1,1125 @@
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+  width: 100%;
+}
+
+.tab-header h2 {
+  color: #8B5CF6;
+  font-size: 28px;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.tab-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-search-row {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.admin-search-row .admin-search {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-search {
+  padding: 10px 16px;
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+  color: #e0e0e0;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.admin-search::placeholder {
+  color: rgba(184, 184, 212, 0.5);
+}
+
+.admin-search:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+.add-button {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.add-button:hover {
+  box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
+  color: #8B5CF6;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(139, 92, 246, 0.1);
+}
+
+.stat-card h3 {
+  color: #b8b8d4;
+  font-size: 16px;
+  margin-bottom: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  font-size: 42px;
+  font-weight: 700;
+  color: #8B5CF6;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px;
+  color: rgba(184, 184, 212, 0.5);
+  font-size: 18px;
+}
+
+.empty-state .hint {
+  color: #b8b8d4;
+  font-size: 13px;
+  opacity: 0.7;
+  margin-top: 5px;
+}
+
+/* Clubs List */
+.clubs-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.club-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.club-card-link:hover .club-card {
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.club-card {
+  background: rgba(26, 26, 46, 0.8);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: all 0.3s;
+  min-height: 200px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+.club-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.club-info {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.club-info .club-name {
+  color: #8B5CF6;
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.club-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.club-info .club-details p {
+  color: #b8b8d4;
+  font-size: 14px;
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.club-info strong {
+  color: #8B5CF6;
+  font-weight: 600;
+}
+
+.club-info .club-id {
+  display: flex;
+  overflow: hidden;
+  min-width: 0;
+  gap: 4px;
+}
+
+.club-info .club-id strong {
+  flex-shrink: 0;
+}
+
+.club-info .club-id span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.club-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-button,
+.delete-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.edit-button {
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+  min-width: 140px;
+}
+
+.edit-button:hover {
+  box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+.delete-button {
+  background: rgba(220, 53, 69, 0.2);
+  color: #ff6b7a;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.delete-button:hover {
+  background: rgba(220, 53, 69, 0.3);
+  border-color: rgba(220, 53, 69, 0.5);
+}
+
+/* Prizes List */
+.prizes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.prize-card {
+  background: rgba(26, 26, 46, 0.8);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: all 0.3s;
+}
+
+.prize-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.prize-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(10, 10, 15, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prize-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.prize-info h3 {
+  color: #8B5CF6;
+  margin-bottom: 10px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-weight: 700;
+}
+
+.prize-info p {
+  color: #b8b8d4;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.prize-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+/* Users Table */
+.users-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(26, 26, 46, 0.6);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.users-table thead {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
+  color: #8B5CF6;
+}
+
+.users-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+}
+
+.users-table td {
+  padding: 15px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  color: #b8b8d4;
+}
+
+.users-table tbody tr:hover {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.users-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.users-table .empty-row {
+  text-align: center;
+  color: rgba(184, 184, 212, 0.6);
+  padding: 24px;
+}
+
+.users-table .clickable-row {
+  cursor: pointer;
+}
+
+/* Roulette */
+.roulette-info {
+  margin-top: 15px;
+  padding: 20px;
+  background: rgba(10, 10, 15, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.roulette-info .info-text {
+  color: #b8b8d4;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+.roulette-info .info-text strong {
+  color: #8B5CF6;
+}
+
+.roulette-ready-block {
+  margin-top: 32px;
+  padding: 28px 24px;
+  background: linear-gradient(145deg, rgba(20, 15, 35, 0.95) 0%, rgba(15, 10, 25, 0.98) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(139, 92, 246, 0.1);
+  text-align: center;
+}
+
+.ready-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 50%, #5B21B6 100%);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  box-shadow: 0 6px 24px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.ready-button:hover {
+  box-shadow: 0 10px 36px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, #9D6BF7 0%, #7C3AED 50%, #6D28D9 100%);
+}
+
+.ready-button:active {
+  transform: translateY(-1px);
+}
+
+.ready-button-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ready-button-text {
+  letter-spacing: 1.5px;
+}
+
+.roulette-ready-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cancel-ready-button {
+  padding: 14px 28px;
+  background: transparent;
+  color: #b8b8d4;
+  border: 1px solid rgba(184, 184, 212, 0.4);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cancel-ready-button:hover {
+  color: #e0e0e0;
+  border-color: rgba(184, 184, 212, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.roulette-ready-hint {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #b8b8d4;
+}
+
+.roulette-check-result {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(10, 10, 15, 0.5);
+}
+
+.roulette-check-result.has-errors {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.roulette-check-errors {
+  color: #fca5a5;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.roulette-check-errors p {
+  margin: 6px 0;
+}
+
+.roulette-check-warnings {
+  color: #fcd34d;
+  font-size: 14px;
+  margin: 0;
+}
+
+.roulette-check-warnings p {
+  margin: 6px 0;
+}
+
+.roulette-check-ok {
+  color: #86efac;
+  font-size: 14px;
+  margin: 0;
+}
+
+.roulette-config {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.slots-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.slot-card {
+  background: rgba(26, 26, 46, 0.8);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: all 0.3s;
+}
+
+.slot-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.slot-prize-image {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 10px 0;
+  background: rgba(10, 10, 15, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-prize-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slot-info h4 {
+  color: #8B5CF6;
+  margin-bottom: 10px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-index-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: #b8b8d4;
+  background: rgba(139, 92, 246, 0.2);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.slot-info p {
+  color: #b8b8d4;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.slot-info strong {
+  color: #8B5CF6;
+}
+
+.slot-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.total-probability {
+  padding: 20px;
+  background: rgba(10, 10, 15, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  text-align: center;
+}
+
+.total-probability p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #b8b8d4;
+}
+
+.total-probability p strong {
+  color: #8B5CF6;
+}
+
+.total-probability .warning {
+  color: #ff6b7a;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Выбор призов для рулетки */
+.roulette-prize-selection {
+  margin-bottom: 32px;
+}
+
+.roulette-prize-selection h3 {
+  color: #8B5CF6;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.prize-roulette-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prize-roulette-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background: rgba(26, 26, 46, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.prize-roulette-row.in-roulette {
+  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.prize-roulette-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+.prize-roulette-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: rgba(10, 10, 15, 0.8);
+}
+
+.prize-roulette-info strong {
+  color: #e0e0e0;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.prize-roulette-meta {
+  font-size: 13px;
+  color: #b8b8d4;
+}
+
+.prize-slot-index {
+  font-size: 11px;
+  color: #b8b8d4;
+  opacity: 0.9;
+}
+
+.roulette-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.roulette-toggle input {
+  width: 20px;
+  height: 20px;
+  accent-color: #8B5CF6;
+  cursor: pointer;
+}
+
+.roulette-toggle-label {
+  color: #b8b8d4;
+  font-size: 14px;
+}
+
+.edit-button.small {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.roulette-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  padding: 20px;
+  background: rgba(10, 10, 15, 0.4);
+  border-radius: 12px;
+  border: 1px dashed rgba(139, 92, 246, 0.3);
+}
+
+.hint-text {
+  color: #b8b8d4;
+  font-size: 13px;
+  text-align: center;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.analytics-section {
+  grid-column: 1 / -1;
+  padding: 20px;
+  background: rgba(10, 10, 15, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.analytics-section h3 {
+  color: #8B5CF6;
+  margin-bottom: 15px;
+}
+
+.club-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.club-stats-list p {
+  color: #b8b8d4;
+  font-size: 14px;
+}
+
+.stat-card h4 {
+  color: #b8b8d4;
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Аналитика по городам */
+.analytics-by-city {
+  margin-top: 24px;
+}
+
+.analytics-by-city-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.analytics-by-city-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #b8b8d4;
+  font-size: 13px;
+}
+
+.analytics-by-city-filters input[type="date"] {
+  padding: 10px 14px;
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+  color: #e0e0e0;
+  font-size: 14px;
+  min-width: 160px;
+}
+
+.summary-by-city {
+  margin-bottom: 24px;
+}
+
+.by-city-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.by-city-card {
+  background: rgba(26, 26, 46, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.by-city-name {
+  color: #8B5CF6;
+  font-size: 20px;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+
+.by-city-totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  color: #b8b8d4;
+  font-size: 14px;
+}
+
+.by-city-totals strong {
+  color: #8B5CF6;
+}
+
+.by-city-clubs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.by-city-club-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(10, 10, 15, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.by-city-club-row:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+.by-city-club-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.by-city-club-name {
+  color: #e0e0e0;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.by-city-club-address,
+.by-city-club-manager {
+  color: #b8b8d4;
+  font-size: 13px;
+}
+
+.by-city-club-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #b8b8d4;
+  font-size: 13px;
+}
+
+/* Club Detail */
+.club-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.back-button {
+  padding: 10px 20px;
+  background: rgba(26, 26, 46, 0.8);
+  color: #8B5CF6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.back-button:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.club-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.club-detail-info {
+  background: rgba(26, 26, 46, 0.8);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.club-detail-info h2 {
+  color: #8B5CF6;
+  margin-bottom: 20px;
+  font-size: 32px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-item strong {
+  color: #8B5CF6;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.info-item span {
+  color: #b8b8d4;
+  font-size: 16px;
+}
+
+.club-detail-stats {
+  background: rgba(26, 26, 46, 0.8);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.club-detail-stats h3 {
+  color: #8B5CF6;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.club-detail-players,
+.club-detail-analytics {
+  background: rgba(26, 26, 46, 0.8);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.club-detail-analytics h3 {
+  color: #8B5CF6;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.club-detail-players h3 {
+  color: #8B5CF6;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* Tablet: 2 columns */
+@media (max-width: 1024px) {
+  .clubs-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .tab-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tab-header h2 {
+    font-size: 22px;
+  }
+
+  .add-button {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clubs-list,
+  .prizes-list,
+  .slots-list {
+    grid-template-columns: 1fr;
+  }
+
+  .club-card {
+    padding: 18px;
+    min-height: 0;
+  }
+
+  .club-info .club-name {
+    font-size: 19px;
+  }
+
+  .club-actions,
+  .prize-actions,
+  .slot-actions {
+    flex-direction: column;
+  }
+
+  .edit-button,
+  .delete-button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .users-table {
+    font-size: 12px;
+  }
+
+  .users-table th,
+  .users-table td {
+    padding: 10px 8px;
+  }
+}
+
+/* Admin User Detail */
+.user-detail-hint,
+.user-detail-empty {
+  color: rgba(184, 184, 212, 0.7);
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+.user-detail-empty {
+  margin-bottom: 0;
+}
+
+.visit-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.visit-history-club {
+  background: rgba(26, 26, 46, 0.5);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.visit-history-club-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.visit-history-club-name {
+  color: #8B5CF6;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.visit-history-club-count {
+  color: #b8b8d4;
+  font-size: 14px;
+}
+
+.visit-history-dates {
+  margin: 0;
+  padding-left: 20px;
+  color: #b8b8d4;
+  font-size: 14px;
+  line-height: 1.8;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.balance-plus {
+  color: #86efac;
+}
+
+.balance-minus {
+  color: #fca5a5;
+}

@@ -1,0 +1,421 @@
+/* Страница без скролла */
+.club-roulette-page {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #0a0a0f;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.roulette-layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  gap: 16px;
+}
+
+/* Верх: рулетка (4 карточки) */
+.roulette-top {
+  flex: 0 0 auto;
+  min-height: 0;
+}
+
+.roulette-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 100%;
+}
+
+/* Постоянное лёгкое движение в простое */
+.roulette-cards.roulette-idle .roulette-card {
+  animation: idleFloat 4s ease-in-out infinite;
+}
+
+.roulette-cards.roulette-idle .roulette-card:nth-child(1) { animation-delay: 0s; }
+.roulette-cards.roulette-idle .roulette-card:nth-child(2) { animation-delay: 0.5s; }
+.roulette-cards.roulette-idle .roulette-card:nth-child(3) { animation-delay: 1s; }
+.roulette-cards.roulette-idle .roulette-card:nth-child(4) { animation-delay: 1.5s; }
+
+@keyframes idleFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+}
+
+/* При спине — без idle, только подсветка */
+.roulette-cards.roulette-spinning .roulette-card {
+  animation: none;
+}
+
+.roulette-card {
+  aspect-ratio: 0.75;
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(10, 10, 15, 0.95) 100%);
+  border: 2px solid rgba(139, 92, 246, 0.35);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.roulette-card.highlighted {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.5);
+  transform: scale(1.08);
+  z-index: 2;
+  animation: spinPulse 0.25s ease-in-out infinite;
+}
+
+@keyframes spinPulse {
+  0%, 100% { box-shadow: 0 0 24px rgba(139, 92, 246, 0.5); transform: scale(1.08); }
+  50% { box-shadow: 0 0 32px rgba(139, 92, 246, 0.7); transform: scale(1.12); }
+}
+
+.roulette-card.selected {
+  border-color: #8B5CF6;
+  border-width: 3px;
+  box-shadow: 0 0 28px rgba(139, 92, 246, 0.6);
+  transform: scale(1.1);
+  z-index: 3;
+}
+
+.roulette-card-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.roulette-card-img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.roulette-card-placeholder {
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #8B5CF6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.roulette-card-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #8B5CF6;
+  text-align: center;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.roulette-card-value {
+  font-size: 11px;
+  color: rgba(184, 184, 212, 0.8);
+}
+
+.roulette-empty-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: rgba(184, 184, 212, 0.6);
+  padding: 24px;
+  font-size: 16px;
+}
+
+/* Низ: история слева, QR справа */
+.roulette-bottom {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.roulette-history-wrap {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(26, 26, 46, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  padding: 16px;
+  overflow: hidden;
+}
+
+.roulette-history-heading {
+  font-size: 18px;
+  font-weight: 700;
+  color: #8B5CF6;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.roulette-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.roulette-history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.roulette-history-list::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 3px;
+}
+
+.roulette-history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.12);
+  font-size: 14px;
+  color: #b8b8d4;
+}
+
+.roulette-history-item:last-child {
+  border-bottom: none;
+}
+
+.roulette-history-phone {
+  color: #8B5CF6;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.roulette-history-prize {
+  color: rgba(184, 184, 212, 0.9);
+}
+
+.roulette-history-empty {
+  padding: 16px;
+  color: rgba(184, 184, 212, 0.5);
+  font-size: 14px;
+}
+
+/* QR справа */
+.roulette-qr-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roulette-qr-card {
+  background: rgba(26, 26, 46, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.roulette-qr-label {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #8B5CF6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.roulette-qr-code {
+  display: block;
+}
+
+.roulette-qr-placeholder {
+  width: 140px;
+  height: 140px;
+  background: rgba(139, 92, 246, 0.15);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #8B5CF6;
+}
+
+/* Оверлей выигрыша */
+.roulette-result-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: overlayFade 0.4s ease;
+}
+
+@keyframes overlayFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.roulette-result-content {
+  text-align: center;
+  padding: 48px 56px;
+  background: rgba(26, 26, 46, 0.98);
+  border-radius: 24px;
+  border: 2px solid #8B5CF6;
+  box-shadow: 0 8px 40px rgba(139, 92, 246, 0.3);
+  max-width: 420px;
+  animation: resultPop 0.5s ease;
+}
+
+@keyframes resultPop {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.roulette-result-title {
+  font-size: 36px;
+  color: #8B5CF6;
+  margin: 0 0 24px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.roulette-result-prize {
+  padding: 24px;
+  background: rgba(10, 10, 15, 0.6);
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.roulette-result-name {
+  font-size: 26px;
+  color: #8B5CF6;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.roulette-result-desc {
+  font-size: 15px;
+  color: #b8b8d4;
+}
+
+/* Кнопка тест (dev) */
+.roulette-test-btn {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  padding: 10px 20px;
+  background: rgba(139, 92, 246, 0.25);
+  color: #8B5CF6;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.roulette-test-btn:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.4);
+  border-color: #8B5CF6;
+}
+
+.roulette-test-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Адаптив */
+@media (max-width: 900px) {
+  .roulette-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .roulette-cards.roulette-idle .roulette-card:nth-child(3),
+  .roulette-cards.roulette-idle .roulette-card:nth-child(4) {
+    animation-delay: 0.25s;
+  }
+
+  .roulette-bottom {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+
+  .roulette-qr-wrap {
+    justify-content: flex-start;
+  }
+
+  .roulette-qr-card {
+    flex-direction: row;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 500px) {
+  .roulette-layout {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .roulette-card-placeholder,
+  .roulette-card-img {
+    height: 56px;
+  }
+
+  .roulette-card-name {
+    font-size: 11px;
+  }
+
+  .roulette-history-heading {
+    font-size: 16px;
+  }
+
+  .roulette-result-content {
+    padding: 32px 24px;
+    margin: 16px;
+  }
+
+  .roulette-result-title {
+    font-size: 28px;
+  }
+
+  .roulette-result-name {
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,164 @@
+.club-dashboard {
+  height: 100vh;
+  padding: 20px;
+  background: #0a0a0f;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-container {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  background: rgba(26, 26, 46, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(139, 92, 246, 0.2);
+  overflow: hidden;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
+  color: #8B5CF6;
+  padding: 30px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.club-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #b8b8d4;
+}
+
+.logout-button {
+  padding: 10px 20px;
+  background: rgba(10, 10, 15, 0.6);
+  color: #ff5722;
+  border: 1px solid rgba(255, 87, 34, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.logout-button:hover {
+  background: rgba(255, 87, 34, 0.2);
+  border-color: #ff5722;
+  box-shadow: 0 0 20px rgba(255, 87, 34, 0.3);
+}
+
+.dashboard-tabs {
+  display: flex;
+  background: rgba(10, 10, 15, 0.6);
+  border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dashboard-tabs a {
+  padding: 15px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(184, 184, 212, 0.6);
+  transition: all 0.3s;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  display: block;
+}
+
+.dashboard-tabs a:hover {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8B5CF6;
+}
+
+.dashboard-tabs a.active {
+  color: #8B5CF6;
+  border-bottom-color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.2);
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+.dashboard-content {
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.dashboard-content-no-scroll {
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-content-no-scroll > * {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .club-dashboard {
+    padding: 10px;
+  }
+
+  .dashboard-container {
+    border-radius: 16px;
+  }
+
+  .dashboard-header {
+    padding: 20px;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .dashboard-header h1 {
+    font-size: 24px;
+  }
+
+  .dashboard-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dashboard-tabs a {
+    padding: 12px 15px;
+    font-size: 12px;
+    min-width: 70px;
+  }
+
+  .dashboard-content {
+    padding: 20px;
+  }
+}

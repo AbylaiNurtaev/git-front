@@ -1,0 +1,212 @@
+.player-app {
+  min-height: 100vh;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+  background: linear-gradient(180deg, #0f0e14 0%, #0a0a0f 30%, #08080c 100%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.player-app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.player-app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 18px;
+  padding-bottom: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Нижний навбар */
+.player-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  background: rgba(26, 26, 46, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 8px 0;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0));
+  z-index: 100;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.player-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 4px;
+  background: none;
+  border: none;
+  color: rgba(184, 184, 212, 0.7);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.player-nav-item:hover {
+  color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.player-nav-item.active {
+  color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.15);
+}
+
+.player-nav-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.player-nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+.player-nav-logout {
+  color: rgba(255, 87, 34, 0.9);
+}
+
+.player-nav-logout:hover,
+.player-nav-logout:focus {
+  color: #ff5722;
+  background: rgba(255, 87, 34, 0.1);
+}
+
+/* Попап подтверждения выхода */
+.player-logout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+  animation: player-logout-fade-in 0.2s ease-out;
+}
+
+@keyframes player-logout-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.player-logout-popup {
+  background: rgba(26, 26, 46, 0.98);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 320px;
+  width: 100%;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  animation: player-logout-scale-in 0.2s ease-out;
+}
+
+@keyframes player-logout-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.player-logout-title {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #e0e0e0;
+}
+
+.player-logout-text {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(184, 184, 212, 0.9);
+}
+
+.player-logout-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.player-logout-cancel {
+  padding: 12px 20px;
+  background: rgba(184, 184, 212, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  color: #b8b8d4;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.player-logout-cancel:hover {
+  background: rgba(184, 184, 212, 0.25);
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.player-logout-confirm {
+  padding: 12px 20px;
+  background: rgba(255, 87, 34, 0.2);
+  border: 1px solid rgba(255, 87, 34, 0.5);
+  border-radius: 12px;
+  color: #ff5722;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.player-logout-confirm:hover {
+  background: rgba(255, 87, 34, 0.35);
+  border-color: #ff5722;
+}
+
+@media (min-width: 480px) {
+  .player-bottom-nav {
+    max-width: 480px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 20px 20px 0 0;
+  }
+
+  .player-app-content {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
