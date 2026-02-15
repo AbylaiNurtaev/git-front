@@ -1,6 +1,6 @@
 const PROD_FRONT = 'https://git-front-sandy.vercel.app';
-const PROD_API_BASE = 'https://shop-back-production-a38c.up.railway.app/api';
-const PROD_SOCKET = 'https://shop-back-production-a38c.up.railway.app';
+const PROD_API_BASE = 'https://club-back-production.up.railway.app/api';
+const PROD_SOCKET = 'https://club-back-production.up.railway.app';
 
 function isProdFront(): boolean {
   return typeof window !== 'undefined' && window.location?.origin === PROD_FRONT;
