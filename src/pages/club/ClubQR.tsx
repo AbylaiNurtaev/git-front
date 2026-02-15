@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+import { io, Socket } from 'socket.io-client';
 import { useStore } from '@/store/useStore';
 import { QRCodeSVG } from 'qrcode.react';
 import { apiService } from '@/services/api';
-import { PUBLIC_SITE_URL } from '@/config/api';
+import { PUBLIC_SITE_URL, SOCKET_URL } from '@/config/api';
 import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
 import './ClubPages.css';
@@ -34,7 +35,6 @@ export default function ClubQR() {
   const [roulettePrizes, setRoulettePrizes] = useState<Prize[]>([]);
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
-  const [lastSpinId, setLastSpinId] = useState<string | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [winsChat, setWinsChat] = useState<Array<{ id: string; text: string }>>([]);
@@ -43,11 +43,13 @@ export default function ClubQR() {
   const fakeWinsRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const roulettePrizesRef = useRef<Prize[]>([]);
   roulettePrizesRef.current = roulettePrizes;
-  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const socketRef = useRef<Socket | null>(null);
   const rouletteRef = useRef<HTMLDivElement>(null);
   const fullscreenRef = useRef<HTMLDivElement>(null);
   const idlePositionRef = useRef(0);
   const idleRafRef = useRef<number | null>(null);
+  const isSpinningRef = useRef(false);
+  isSpinningRef.current = isSpinning;
 
   // Загружаем призы рулетки
   useEffect(() => {
@@ -63,60 +65,41 @@ export default function ClubQR() {
     loadPrizes();
   }, []);
 
-  // Polling для проверки новых спинов
+  // Socket.IO: подключаемся к комнате клуба и слушаем событие spin (вместо опроса)
   useEffect(() => {
     if (!club) return;
 
-    const checkForNewSpin = async () => {
-      try {
-        const latestSpin = await apiService.getClubLatestSpin();
-        if (latestSpin && latestSpin._id !== lastSpinId) {
-          setLastSpinId(latestSpin._id);
-          // Запускаем рулетку с выигранным призом
-          if (latestSpin.prize) {
-            const prize = roulettePrizes.find(
-              p => p.id === latestSpin.prize._id || 
-              (latestSpin.prize.slotIndex !== undefined && p.slotIndex === latestSpin.prize.slotIndex)
-            );
-            const prizeName = latestSpin.prize?.name || prize?.name || 'Приз';
-            const phone = (latestSpin as { playerPhone?: string; player?: { phone?: string } }).playerPhone
-              || (latestSpin as { player?: { phone?: string } }).player?.phone;
-            if (prize) {
-              addWinToChat(phone ? maskPhone(phone) : randomMaskedPhone(), prizeName);
-              startSpin(prize);
-            } else {
-              // Если приз не найден в списке, создаем временный объект
-              const tempPrize: Prize = {
-                id: latestSpin.prize._id || '',
-                name: latestSpin.prize.name || 'Приз',
-                type: latestSpin.prize.type || 'points',
-                value: latestSpin.prize.value,
-                image: latestSpin.prize.image,
-                probability: 0,
-                slotIndex: latestSpin.prize.slotIndex || 0,
-                description: latestSpin.prize.description || '',
-                status: 'pending',
-                wonAt: new Date().toISOString(),
-              };
-              addWinToChat(phone ? maskPhone(phone) : randomMaskedPhone(), prizeName);
-              startSpin(tempPrize);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Ошибка проверки спинов:', error);
-      }
-    };
+    const clubId = club.id || club.clubId || club.token;
+    if (!clubId) return;
 
-    // Проверяем каждые 2 секунды
-    pollingRef.current = setInterval(checkForNewSpin, 2000);
+    const socket = io(SOCKET_URL, {
+      query: { clubId },
+      transports: ['websocket', 'polling'],
+    });
+    socketRef.current = socket;
+
+    socket.on('spin', (payload: { spin?: { prize?: unknown }; playerPhone?: string }) => {
+      const spin = payload?.spin;
+      const prizeData = spin?.prize;
+      if (!prizeData) return;
+
+      const prize = transformPrize(prizeData);
+      const phone = payload.playerPhone;
+      const prizeName = prize.name || 'Приз';
+      addWinToChat(phone ? maskPhone(phone) : randomMaskedPhone(), prizeName);
+      startSpin(prize);
+    });
+
+    socket.on('connect_error', (err) => {
+      console.warn('Socket.IO connect_error:', err.message);
+    });
 
     return () => {
-      if (pollingRef.current) {
-        clearInterval(pollingRef.current);
-      }
+      socket.removeAllListeners();
+      socket.disconnect();
+      socketRef.current = null;
     };
-  }, [club, lastSpinId, roulettePrizes]);
+  }, [club?.id, club?.clubId, club?.token]);
 
   // Бесконечное медленное движение ленты в простое
   useEffect(() => {
@@ -186,14 +169,16 @@ export default function ClubQR() {
   };
 
   const startSpin = (prize: Prize) => {
-    if (isSpinning || !rouletteRef.current) return;
-    
+    if (isSpinningRef.current || !rouletteRef.current) return;
+    const prizes = roulettePrizesRef.current;
+    if (prizes.length === 0) return;
+
     setIsSpinning(true);
     setSelectedPrize(null);
-    
-    // Находим индекс приза
-    const targetIndex = roulettePrizes.findIndex(p => 
-      p.id === prize.id || 
+
+    // Находим индекс приза по актуальному списку
+    const targetIndex = prizes.findIndex(p =>
+      p.id === prize.id ||
       (prize.slotIndex !== undefined && p.slotIndex === prize.slotIndex)
     );
     const finalIndex = targetIndex >= 0 ? targetIndex : 0;
@@ -205,7 +190,7 @@ export default function ClubQR() {
 
     // Стартуем с текущей позиции (где остановился idle) — без прыжка
     const startPosition = idlePositionRef.current;
-    const oneSetWidth = roulettePrizes.length * prizeWidth;
+    const oneSetWidth = prizes.length * prizeWidth;
     // Целевая позиция: выигранный приз по центру, слева от старта (лента крутится вправо)
     const T = -finalIndex * prizeWidth + centerOffset;
     const k = Math.floor((startPosition - T) / oneSetWidth) - 1;
@@ -264,7 +249,6 @@ export default function ClubQR() {
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (pollingRef.current) clearInterval(pollingRef.current);
       if (fakeWinsRef.current) clearInterval(fakeWinsRef.current);
     };
   }, []);

@@ -148,14 +148,17 @@ class ApiService {
   }
 
   async getClubLatestSpin() {
-    // Получаем отчеты за сегодня, чтобы найти последний спин
-    const today = new Date().toISOString().split('T')[0];
-    const response = await this.api.get(`/clubs/reports?startDate=${today}&endDate=${today}`);
+    // Отчёт за последние 2 дня, чтобы не пропустить спин из‑за часового пояса
+    const end = new Date();
+    const start = new Date(end);
+    start.setDate(start.getDate() - 2);
+    const startDate = start.toISOString().split('T')[0];
+    const endDate = end.toISOString().split('T')[0];
+    const response = await this.api.get(`/clubs/reports?startDate=${startDate}&endDate=${endDate}`);
     const reports = response.data;
-    if (reports.spins && reports.spins.length > 0) {
-      // Возвращаем последний спин (самый свежий)
-      const sortedSpins = reports.spins.sort((a: any, b: any) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    if (reports?.spins && reports.spins.length > 0) {
+      const sortedSpins = [...reports.spins].sort((a: any, b: any) =>
+        new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
       );
       return sortedSpins[0];
     }
