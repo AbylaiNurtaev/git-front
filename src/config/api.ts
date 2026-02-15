@@ -11,16 +11,11 @@ export const SOCKET_URL = (() => {
   }
 })();
 
-/** Базовый URL сайта для QR-кодов. На Vercel задать VITE_APP_PUBLIC_URL=https://git-front-sandy.vercel.app */
-export const PUBLIC_SITE_URL = (import.meta.env.VITE_APP_PUBLIC_URL as string) || '';
+/** Базовый URL сайта для QR-кодов — зашит прод */
+const QR_BASE_URL = 'https://git-front-sandy.vercel.app';
 
-/** URL для QR: приоритет у VITE_APP_PUBLIC_URL (на Vercel задать в настройках!), иначе текущий origin */
 export function getQrBaseUrl(): string {
-  if (PUBLIC_SITE_URL) return PUBLIC_SITE_URL;
-  if (typeof window !== 'undefined' && window.location?.origin) {
-    return window.location.origin;
-  }
-  return '';
+  return QR_BASE_URL;
 }
 
 export const API_ENDPOINTS = {
