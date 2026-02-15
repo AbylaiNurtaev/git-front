@@ -1,7 +1,22 @@
+const PROD_FRONT = 'https://git-front-sandy.vercel.app';
+const PROD_API_BASE = 'https://shop-back-production-a38c.up.railway.app/api';
+const PROD_SOCKET = 'https://shop-back-production-a38c.up.railway.app';
+
+function isProdFront(): boolean {
+  return typeof window !== 'undefined' && window.location?.origin === PROD_FRONT;
+}
+
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
-/** Хост:порт для Socket.IO (тот же, что REST API, без пути /api) */
-export const SOCKET_URL = (() => {
+/** Базовый URL API: на проде (git-front-sandy.vercel.app) — всегда прод бэкенд */
+export function getApiBaseUrl(): string {
+  if (isProdFront()) return PROD_API_BASE;
+  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+}
+
+/** URL для Socket.IO: на проде — прод бэкенд, иначе из VITE_API_BASE_URL */
+export function getSocketUrl(): string {
+  if (isProdFront()) return PROD_SOCKET;
   try {
     const base = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
     const url = new URL(base);
@@ -9,10 +24,10 @@ export const SOCKET_URL = (() => {
   } catch {
     return 'http://localhost:3000';
   }
-})();
+}
 
 /** Базовый URL сайта для QR-кодов — зашит прод */
-const QR_BASE_URL = 'https://git-front-sandy.vercel.app';
+const QR_BASE_URL = PROD_FRONT;
 
 export function getQrBaseUrl(): string {
   return QR_BASE_URL;

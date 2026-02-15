@@ -1,20 +1,21 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import { API_BASE_URL } from '@/config/api';
+import { getApiBaseUrl } from '@/config/api';
 
 class ApiService {
   private api: AxiosInstance;
 
   constructor() {
     this.api = axios.create({
-      baseURL: API_BASE_URL,
+      baseURL: getApiBaseUrl(),
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-    // Interceptor для добавления токена
+    // Interceptor: прод — всегда прод API; + токен
     this.api.interceptors.request.use(
       (config) => {
+        config.baseURL = getApiBaseUrl();
         const token = localStorage.getItem('token');
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;

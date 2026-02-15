@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { useStore } from '@/store/useStore';
 import { QRCodeSVG } from 'qrcode.react';
 import { apiService } from '@/services/api';
-import { getQrBaseUrl, SOCKET_URL } from '@/config/api';
+import { getQrBaseUrl, getSocketUrl } from '@/config/api';
 import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
 import './ClubPages.css';
@@ -83,7 +83,7 @@ export default function ClubQR() {
     const clubId = club.id || club.clubId || club.token;
     if (!clubId) return;
 
-    const socket = io(SOCKET_URL, {
+    const socket = io(getSocketUrl(), {
       query: { clubId },
       // Сначала polling — если на Railway/прокси WebSocket не настроен, соединение всё равно установится
       transports: ['polling', 'websocket'],
