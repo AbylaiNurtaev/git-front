@@ -42,17 +42,6 @@
   flex-shrink: 0;
 }
 
-.player-scan-qr-reader {
-  width: 100%;
-  height: 100%;
-}
-
-.player-scan-qr-reader video {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-}
-
 .player-scan-manual {
   padding: 20px 16px;
   flex-shrink: 0;
