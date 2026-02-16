@@ -25,6 +25,8 @@ export interface Club extends User {
   clubName: string;
   qrCode: string;
   token: string;
+  /** Код клуба (6 цифр) для ввода без QR */
+  pinCode?: string;
   players: string[];
   /** Количество игроков в клубе (с бэкенда) */
   playerCount?: number;

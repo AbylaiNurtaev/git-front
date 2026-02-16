@@ -11,14 +11,15 @@ import { createPortal } from 'react-dom';
 
 const PRIZE_WIDTH = 284;
 const SPIN_DURATION_MS = 4000;
-const ROULETTE_COPIES = 8;
+/** Буфер копий рулетки, чтобы справа не было пустого места */
+const ROULETTE_COPIES = 50;
 const NORMALIZE_THRESHOLD_COPIES = 3;
 
 export default function SpinPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const clubParam = searchParams.get('club');
-  const { currentUser, spinRoulette, getClubByQR, error } = useStore();
+  const { currentUser, spinRoulette, getClub, getClubByQR, error } = useStore();
   const [resolvedClub, setResolvedClub] = useState<Club | null>(null);
   const [clubResolveLoading, setClubResolveLoading] = useState(!!clubParam);
   const [isScanning, setIsScanning] = useState(!clubParam);
@@ -41,6 +42,10 @@ export default function SpinPage() {
   const thankYouTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isClientScanFlow = Boolean(clubParam && currentUser?.role === 'player');
+  const isGuestFlow = Boolean(clubParam && !currentUser);
+  const [guestPhone, setGuestPhone] = useState('');
+  const [guestSpinLoading, setGuestSpinLoading] = useState(false);
+  const [guestSpinError, setGuestSpinError] = useState<string | null>(null);
 
   useEffect(() => {
     if (result) {
@@ -70,7 +75,7 @@ export default function SpinPage() {
     }
   }, [result]);
 
-  // При переходе по ссылке из QR (?club=token или clubId) — разрешаем клуб
+  // Разрешаем клуб по коду (6 цифр), qrToken или clubId из URL (?club=...)
   useEffect(() => {
     if (!clubParam) {
       setResolvedClub(null);
@@ -79,7 +84,7 @@ export default function SpinPage() {
     }
     let cancelled = false;
     setClubResolveLoading(true);
-    getClubByQR(clubParam)
+    getClub(clubParam)
       .then((club) => {
         if (!cancelled) {
           setResolvedClub(club);
@@ -93,7 +98,7 @@ export default function SpinPage() {
         if (!cancelled) setClubResolveLoading(false);
       });
     return () => { cancelled = true; };
-  }, [clubParam]);
+  }, [clubParam, getClub]);
 
   // Клиент по QR: один раз вызываем спин и показываем попап "Спасибо за участие"
   useEffect(() => {
@@ -130,7 +135,7 @@ export default function SpinPage() {
     };
   }, [thankYouOpen, navigate]);
 
-  // Загрузка призов рулетки для игрока (когда клуб уже разрешён) — только если не client scan flow
+  // Загрузка призов рулетки (когда клуб разрешён) — для игрока и для гостя (код + телефон)
   useEffect(() => {
     if (!resolvedClub || isClientScanFlow) {
       if (isClientScanFlow) setSpinPrizes([]);
@@ -171,16 +176,19 @@ export default function SpinPage() {
     }
   }, [spinPrizes.length]);
 
-  const handleQRScan = async (qrToken: string) => {
+  const handleCodeOrQR = async (codeOrToken: string) => {
+    const trimmed = codeOrToken.trim();
+    if (!trimmed) return;
     try {
-      const club = await getClubByQR(qrToken);
+      const club = await getClub(trimmed);
       if (club) {
-        navigate(`/spin?club=${club.token || club.clubId}`, { replace: true });
+        const param = club.pinCode ?? club.token ?? club.clubId ?? trimmed;
+        navigate(`/spin?club=${encodeURIComponent(param)}`, { replace: true });
       } else {
-        alert('Infinity не найден');
+        alert('Клуб не найден. Проверьте код или отсканируйте QR.');
       }
     } catch (err) {
-      alert('Ошибка сканирования QR-кода');
+      alert('Клуб не найден. Проверьте код или отсканируйте QR.');
     }
   };
 
@@ -265,14 +273,164 @@ export default function SpinPage() {
     }
   };
 
-  // Не авторизован — сразу на вход; после входа вернёмся на /spin?club=...
-  if (currentUser === null) {
-    const returnUrl = clubParam ? `/spin?club=${encodeURIComponent(clubParam)}` : '/spin';
-    navigate(`/auth?redirect=${encodeURIComponent(returnUrl)}`, { replace: true });
-    return null;
+  const handleGuestSpin = async () => {
+    const phone = guestPhone.trim();
+    if (!clubParam || !phone) {
+      setGuestSpinError('Введите номер телефона');
+      return;
+    }
+    setGuestSpinError(null);
+    setGuestSpinLoading(true);
+    try {
+      const data = await apiService.spinByPhone(clubParam, phone);
+      const prizeData = data?.spin?.prize ?? data?.prize;
+      if (prizeData) {
+        const prize = transformPrize(prizeData);
+        startRouletteSpin(prize, () => setResult(prize));
+      } else {
+        setGuestSpinError(data?.message || 'Не удалось крутить рулетку');
+      }
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setGuestSpinError(msg || 'Недостаточно баллов или клуб не найден');
+    } finally {
+      setGuestSpinLoading(false);
+    }
+  };
+
+  // Гость (не авторизован): либо ввод кода / QR, либо форма "телефон + Крутить"
+  if (isGuestFlow) {
+    if (clubResolveLoading) {
+      return (
+        <div className="spin-page">
+          <div className="spin-container">
+            <div className="spin-page-loading"><p>Загрузка...</p></div>
+          </div>
+        </div>
+      );
+    }
+    if (!resolvedClub) {
+      return (
+        <div className="spin-page">
+          <div className="spin-container">
+            <div className="qr-scanner-container">
+              <p className="scan-subtitle">Клуб не найден. Введите код клуба (6 цифр) или отсканируйте QR.</p>
+              <QRScanner onScan={handleCodeOrQR} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className={`spin-page${result ? ' spin-result-open' : ''}`}>
+        <div className="spin-container">
+          <div className="spin-top-bar">
+            <div className="spin-phone-info">
+              <span className="spin-phone-label">Клуб:</span>
+              <span className="spin-phone-value">{resolvedClub.clubName}</span>
+            </div>
+          </div>
+          <div className="club-info">
+            <p>Infinity: {resolvedClub.clubName}</p>
+            <button type="button" onClick={() => navigate('/spin', { replace: true })} className="rescan-button">
+              Ввести другой код
+            </button>
+          </div>
+          {spinPrizesLoading ? (
+            <div className="spin-page-loading"><p>Загрузка призов...</p></div>
+          ) : spinPrizes.length > 0 ? (
+            <>
+              <div className="spin-roulette-section">
+                <div className="cs-roulette-container">
+                  <div className="cs-roulette-pointer" />
+                  <div ref={rouletteRef} className="cs-roulette-track">
+                    <div
+                      className="cs-roulette-items"
+                      style={{
+                        transform: `translateX(${scrollPosition}px)`,
+                        transition: isSpinning ? 'none' : 'transform 0.3s ease-out',
+                      }}
+                    >
+                      {Array.from({ length: ROULETTE_COPIES }, () => spinPrizes).flat().map((prize, index) => (
+                        <div
+                          key={`${prize.id}-${index}`}
+                          className={`cs-prize-item ${!isSpinning && selectedPrize?.id === prize.id ? 'selected' : ''}`}
+                        >
+                          <div className="cs-prize-inner">
+                            {prize.image ? (
+                              <img src={prize.image} alt={prize.name} className="cs-prize-image" />
+                            ) : (
+                              <div className="cs-prize-placeholder">{prize.name.charAt(0)}</div>
+                            )}
+                            <div className="cs-prize-name">{prize.name}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="spin-info">
+                <p className="spin-info-text">Введите номер телефона и нажмите «Крутить»</p>
+              </div>
+              <div className="guest-phone-form">
+                <input
+                  type="tel"
+                  value={guestPhone}
+                  onChange={(e) => setGuestPhone(e.target.value)}
+                  placeholder="+7 999 123 45 67"
+                  className="guest-phone-input"
+                  disabled={guestSpinLoading || isSpinning}
+                />
+                {guestSpinError && <p className="guest-spin-error">{guestSpinError}</p>}
+                <button
+                  type="button"
+                  onClick={handleGuestSpin}
+                  disabled={guestSpinLoading || isSpinning}
+                  className="spin-button"
+                >
+                  {guestSpinLoading || isSpinning ? 'Прокрутка...' : 'Крутить рулетку'}
+                </button>
+              </div>
+              {result && createPortal(
+                <div className="result-overlay">
+                  <div className="result-content">
+                    <button onClick={() => setResult(null)} className="result-close-button" aria-label="Закрыть">×</button>
+                    <h2 className="result-title">Выигрыш!</h2>
+                    <div className="result-prize">
+                      {result.image && <img src={result.image} alt={result.name} className="result-prize-image" />}
+                      <div className="result-prize-name">{result.name}</div>
+                      {result.description && <div className="result-prize-desc">{result.description}</div>}
+                    </div>
+                  </div>
+                </div>,
+                document.body
+              )}
+            </>
+          ) : (
+            <div className="spin-page-loading"><p>Нет призов в рулетке</p></div>
+          )}
+        </div>
+      </div>
+    );
   }
 
-  if (currentUser && currentUser.role !== 'player') {
+  // Не авторизован и нет кода в URL — показать ввод кода / QR (без редиректа на auth)
+  if (currentUser === null) {
+    return (
+      <div className="spin-page">
+        <div className="spin-container">
+          <div className="qr-scanner-container">
+            <h1 className="scan-title">Введите код клуба или отсканируйте QR</h1>
+            <p className="scan-subtitle">Код клуба — 6 цифр на экране в клубе</p>
+            <QRScanner onScan={handleCodeOrQR} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentUser.role !== 'player') {
     return (
       <div className="spin-page">
         <div className="error-container">
@@ -339,9 +497,9 @@ export default function SpinPage() {
       <div className="spin-container">
         {isScanning ? (
           <div className="qr-scanner-container">
-            <h1 className="scan-title">Отсканируйте QR-код Infinity</h1>
-            <p className="scan-subtitle">Наведите камеру на QR-код на мониторе в клубе</p>
-            <QRScanner onScan={handleQRScan} />
+            <h1 className="scan-title">Введите код клуба или отсканируйте QR</h1>
+            <p className="scan-subtitle">Код клуба — 6 цифр на экране в клубе</p>
+            <QRScanner onScan={handleCodeOrQR} />
           </div>
         ) : clubResolveLoading ? (
           <div className="spin-page-loading">
@@ -349,8 +507,8 @@ export default function SpinPage() {
           </div>
         ) : !resolvedClub ? (
           <div className="qr-scanner-container">
-            <p className="scan-subtitle">Клуб не найден. Отсканируйте QR-код Infinity.</p>
-            <QRScanner onScan={handleQRScan} />
+            <p className="scan-subtitle">Клуб не найден. Введите код (6 цифр) или отсканируйте QR.</p>
+            <QRScanner onScan={handleCodeOrQR} />
           </div>
         ) : (
           <>
@@ -384,7 +542,7 @@ export default function SpinPage() {
                 onClick={() => setIsScanning(true)}
                 className="rescan-button"
               >
-                Сканировать другой QR
+                Ввести другой код / сканировать QR
               </button>
             </div>
 
@@ -491,7 +649,7 @@ export default function SpinPage() {
   );
 }
 
-function QRScanner({ onScan }: { onScan: (qrToken: string) => void }) {
+function QRScanner({ onScan }: { onScan: (codeOrToken: string) => void }) {
   const [manualInput, setManualInput] = useState('');
 
   const handleManualSubmit = (e: React.FormEvent) => {
@@ -504,19 +662,21 @@ function QRScanner({ onScan }: { onScan: (qrToken: string) => void }) {
   return (
     <div className="qr-scanner">
       <div className="scanner-placeholder">
-        <p>📷 Камера для сканирования QR</p>
-        <p className="hint">Для демо используйте ручной ввод</p>
+        <p>📷 Отсканируйте QR-код на экране в клубе</p>
+        <p className="hint">Или введите код клуба — 6 цифр</p>
       </div>
       <form onSubmit={handleManualSubmit} className="manual-input-form">
         <input
           type="text"
+          inputMode="numeric"
+          maxLength={20}
           value={manualInput}
           onChange={(e) => setManualInput(e.target.value)}
-          placeholder="Введите QR токен Infinity"
+          placeholder="Введите код клуба (6 цифр)"
           className="manual-input"
         />
         <button type="submit" className="submit-scan-button">
-          Подтвердить
+          Продолжить
         </button>
       </form>
     </div>

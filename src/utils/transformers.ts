@@ -34,6 +34,7 @@ export function transformClub(club: any): Club {
     clubName: club.name,
     qrCode: club.qrCode || '',
     token: club.qrToken || '',
+    pinCode: club.pinCode,
     players: playersArray,
     playerCount: club.playerCount ?? (playersArray.length > 0 ? playersArray.length : undefined),
     statistics: {

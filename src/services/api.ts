@@ -74,8 +74,25 @@ class ApiService {
     return response.data;
   }
 
+  /** Получить клуб по коду (6 цифр), qrToken или clubId — публичный, без авторизации */
+  async getClub(club: string) {
+    const response = await this.api.get('/players/club', {
+      params: { club: club.trim() },
+    });
+    return response.data;
+  }
+
   async spinRoulette(clubId: string) {
     const response = await this.api.post('/players/spin', { clubId });
+    return response.data;
+  }
+
+  /** Крутить рулетку по телефону без токена — публичный */
+  async spinByPhone(clubId: string, phone: string) {
+    const response = await this.api.post('/players/spin-by-phone', {
+      clubId: clubId.trim(),
+      phone: phone.trim(),
+    });
     return response.data;
   }
 
@@ -90,6 +107,12 @@ class ApiService {
       : '/players/roulette-prizes';
     const response = await this.api.get(url);
     return response.data;
+  }
+
+  /** Публичный эндпоинт: последние 10 выигрышей по всем клубам (без авторизации) */
+  async getRecentWins(): Promise<Array<{ maskedPhone: string; prizeName: string; text: string }>> {
+    const response = await this.api.get('/players/recent-wins');
+    return response.data ?? [];
   }
 
   async attachClub(clubId: string) {

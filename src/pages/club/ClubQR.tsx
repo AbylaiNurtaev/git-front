@@ -44,8 +44,13 @@ interface SpinPayload {
 }
 
 export default function ClubQR() {
-  const { currentUser } = useStore();
+  const { currentUser, fetchClubData } = useStore();
   const club = currentUser as Club | null;
+
+  // Подтягиваем данные клуба с бэка (GET /api/clubs/me), чтобы в объекте был pinCode
+  useEffect(() => {
+    if (club) fetchClubData();
+  }, [club?.id, fetchClubData]);
   const [roulettePrizes, setRoulettePrizes] = useState<Prize[]>([]);
   const [rouletteCopies, setRouletteCopies] = useState(ROULETTE_MIN_COPIES);
   const rouletteCopiesRef = useRef(ROULETTE_MIN_COPIES);
@@ -66,6 +71,13 @@ export default function ClubQR() {
   const idleRafRef = useRef<number | null>(null);
   const isSpinningRef = useRef(false);
   isSpinningRef.current = isSpinning;
+
+  // Авто-закрытие оверлея с призом через 7 секунд
+  useEffect(() => {
+    if (!selectedPrize || isSpinning) return;
+    const timer = window.setTimeout(() => setSelectedPrize(null), 7000);
+    return () => window.clearTimeout(timer);
+  }, [selectedPrize, isSpinning]);
 
   // Загружаем призы рулетки (по клубу, если есть)
   const loadPrizes = async () => {
@@ -90,6 +102,26 @@ export default function ClubQR() {
 
   useEffect(() => {
     if (club) loadPrizes();
+  }, [club?.id, club?.clubId, club?.token]);
+
+  // Загрузка ленты последних выигрышей (GET /api/players/recent-wins, публичный)
+  useEffect(() => {
+    if (!club) return;
+    let cancelled = false;
+    apiService
+      .getRecentWins()
+      .then((list) => {
+        if (!cancelled && Array.isArray(list) && list.length > 0) {
+          setWinsChat(
+            list.slice(0, MAX_WINS_CHAT).map((w, i) => ({
+              id: `recent-${i}`,
+              text: w.text ?? `${w.maskedPhone} выиграл ${w.prizeName}`,
+            }))
+          );
+        }
+      })
+      .catch(() => { /* тихо игнорируем, лента остаётся пустой или от сокета */ });
+    return () => { cancelled = true; };
   }, [club?.id, club?.clubId, club?.token]);
 
   useEffect(() => {
@@ -209,30 +241,30 @@ export default function ClubQR() {
     // Стартуем с текущей позиции (где остановился idle) — без прыжка
     const startPosition = idlePositionRef.current;
     const oneSetWidth = prizes.length * prizeWidth;
-    // Целевая позиция: выигранный приз по центру, слева от старта (лента крутится вправо)
+    // Целевая позиция: выигранный приз по центру (лента крутится вправо)
     const T = -finalIndex * prizeWidth + centerOffset;
     const k = Math.floor((startPosition - T) / oneSetWidth) - 1;
     const targetPosition = T + k * oneSetWidth;
 
-    // Анимация с замедлением (ease-out)
-    const duration = 4000; // 4 секунды
+    // Динамичная рулетка: лишние обороты, дольше по времени, быстрый старт и плавное замедление
+    const extraRotations = 3; // сколько полных оборотов добавить для зрелищности
+    const endPosition = targetPosition - extraRotations * oneSetWidth;
+    const duration = 7500; // 7.5 сек — дольше наблюдать
     const startTime = Date.now();
-    
+
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing функция для плавного замедления
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      
-      const currentPosition = startPosition + (targetPosition - startPosition) * easeOut;
+      // Ease-out quint: в начале быстро, к концу потихоньку замедляется
+      const easeOut = 1 - Math.pow(1 - progress, 5);
+      const currentPosition = startPosition + (endPosition - startPosition) * easeOut;
       setScrollPosition(currentPosition);
-      
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        setScrollPosition(targetPosition);
-        idlePositionRef.current = targetPosition;
+        setScrollPosition(endPosition);
+        idlePositionRef.current = endPosition;
         setSelectedPrize(prize);
         setIsSpinning(false);
       }
@@ -269,15 +301,17 @@ export default function ClubQR() {
 
   return (
     <div ref={fullscreenRef} className="spin-page club-qr-page club-qr-page-wrap">
-      <button
-        type="button"
-        className="club-qr-fullscreen-btn"
-        onClick={toggleFullscreen}
-        title={isFullscreen ? 'Выйти из полного экрана' : 'Полный экран'}
-        aria-label={isFullscreen ? 'Выйти из полного экрана' : 'Полный экран'}
-      >
-        {isFullscreen ? 'Выйти' : 'Полный экран'}
-      </button>
+      {!isFullscreen && (
+        <button
+          type="button"
+          className="club-qr-fullscreen-btn"
+          onClick={toggleFullscreen}
+          title="Полный экран (выйти — Esc)"
+          aria-label="Полный экран"
+        >
+          Полный экран
+        </button>
+      )}
       {roulettePrizes.length > 0 ? (
         <>
           <div className="spin-container club-qr-spin-container">
@@ -378,6 +412,14 @@ export default function ClubQR() {
         </div>
       </div>
 
+      {/* Код клуба — только 6 цифр, снизу жирным */}
+      <div className="club-qr-code-block">
+        <span className="club-qr-code-label">Код клуба:</span>
+        <span className="club-qr-code-value">
+          {club.pinCode && /^\d{6}$/.test(String(club.pinCode)) ? club.pinCode : '------'}
+        </span>
+      </div>
+
       {isFullscreen && (
         <>
           <button
@@ -385,13 +427,14 @@ export default function ClubQR() {
             className="club-qr-test-spin-btn"
             onClick={handleTestSpin}
             disabled={isSpinning || roulettePrizes.length === 0}
+            title="Крутит рулетку с замедлением и показывает выигрыш"
           >
-            Тестовый спин
+            {isSpinning ? 'Крутится…' : 'Тестовый спин (динамичная рулетка)'}
           </button>
           <div className="club-qr-fullscreen-qr">
           <div className="club-qr-fullscreen-qr-inner">
             <QRCodeSVG
-              value={`${getQrBaseUrl()}/spin?club=${club.token || club.clubId}`}
+              value={`${getQrBaseUrl()}/spin?club=${encodeURIComponent(club.token || club.clubId || '')}`}
               size={140}
               level="L"
             />

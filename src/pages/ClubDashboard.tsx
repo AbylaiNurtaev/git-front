@@ -266,7 +266,7 @@ export default function ClubDashboard() {
               <h2>QR-код Infinity</h2>
               <div className="qr-container">
                 <QRCodeSVG
-                  value={club.token || club.qrCode || `${getQrBaseUrl()}/spin?club=${club.clubId}`}
+                  value={club.token || club.qrCode || `${getQrBaseUrl()}/spin?club=${encodeURIComponent(club.clubId || '')}`}
                   size={300}
                   level="L"
                 />

@@ -1,4 +1,4 @@
-const PROD_FRONT = 'https://git-front-sandy.vercel.app';
+const PROD_FRONT = 'https://club-back-production.up.railway.app';
 const PROD_API_BASE = 'https://club-back-production.up.railway.app/api';
 const PROD_SOCKET = 'https://club-back-production.up.railway.app';
 
@@ -6,19 +6,19 @@ function isProdFront(): boolean {
   return typeof window !== 'undefined' && window.location?.origin === PROD_FRONT;
 }
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://club-back-production.up.railway.app/api';
 
 /** Базовый URL API: на проде (git-front-sandy.vercel.app) — всегда прод бэкенд */
 export function getApiBaseUrl(): string {
   if (isProdFront()) return PROD_API_BASE;
-  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+  return import.meta.env.VITE_API_BASE_URL || 'https://club-back-production.up.railway.app/api';
 }
 
 /** URL для Socket.IO: на проде — прод бэкенд, иначе из VITE_API_BASE_URL */
 export function getSocketUrl(): string {
   if (isProdFront()) return PROD_SOCKET;
   try {
-    const base = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+    const base = import.meta.env.VITE_API_BASE_URL || 'https://club-back-production.up.railway.app/api';
     const url = new URL(base);
     return `${url.protocol}//${url.host}`;
   } catch {
@@ -26,11 +26,15 @@ export function getSocketUrl(): string {
   }
 }
 
-/** Базовый URL сайта для QR-кодов — зашит прод */
-const QR_BASE_URL = PROD_FRONT;
-
+/** Базовый URL для QR-кодов: из env или текущий origin (чтобы на Android открывался HTTPS, а не localhost) */
 export function getQrBaseUrl(): string {
-  return QR_BASE_URL;
+  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_QR_BASE_URL) {
+    return import.meta.env.VITE_QR_BASE_URL;
+  }
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return window.location.origin;
+  }
+  return PROD_FRONT;
 }
 
 export const API_ENDPOINTS = {
@@ -44,6 +48,7 @@ export const API_ENDPOINTS = {
   PLAYER_SPIN: '/players/spin',
   PLAYER_PRIZES: '/players/prizes',
   PLAYER_ATTACH_CLUB: '/players/attach-club',
+  PLAYER_RECENT_WINS: '/players/recent-wins',
 
   // Club endpoints
   CLUB_LOGIN: '/clubs/login',

@@ -41,6 +41,7 @@ interface Store {
   // Player actions
   spinRoulette: (clubId: string) => Promise<Prize | null>;
   getClubByQR: (qrToken: string) => Promise<Club | null>;
+  getClub: (club: string) => Promise<Club | null>;
   attachClub: (clubId: string) => Promise<boolean>;
   
   // Club actions
@@ -321,6 +322,16 @@ export const useStore = create<Store>()(
           return transformClub(response);
         } catch (error: any) {
           set({ error: error.response?.data?.message || 'Infinity не найден' });
+          return null;
+        }
+      },
+
+      getClub: async (club: string): Promise<Club | null> => {
+        try {
+          const response = await apiService.getClub(club);
+          return transformClub(response);
+        } catch (error: any) {
+          set({ error: error.response?.data?.message || 'Клуб не найден' });
           return null;
         }
       },
