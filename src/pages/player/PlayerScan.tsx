@@ -1,11 +1,10 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useZxing } from 'react-zxing';
 import { useStore } from '@/store/useStore';
 import type { Player } from '@/types';
 import './PlayerPages.css';
 import './PlayerScan.css';
-
-const VIEWFINDER_SIZE = 260;
 
 /** Извлекает club id из отсканированного текста (URL или просто код) */
 function extractClubIdFromScanned(text: string): string {
@@ -28,9 +27,7 @@ export default function PlayerScan() {
   const player = currentUser as Player | null;
   const [error, setError] = useState<string | null>(null);
   const [manualCode, setManualCode] = useState('');
-  const [cameraLoading, setCameraLoading] = useState(true);
   const handlingRef = useRef(false);
-  const scannerRef = useRef<any>(null);
 
   const handleClubId = useCallback(
     async (clubIdOrToken: string) => {
@@ -63,55 +60,19 @@ export default function PlayerScan() {
     [handleClubId]
   );
 
-  useEffect(() => {
-    if (!player || player.role !== 'player') return;
-    let cancelled = false;
-    setCameraLoading(true);
-    setError(null);
-    import('html5-qrcode').then(({ Html5Qrcode }) => {
-      if (cancelled) return;
-      const html5Qr = new Html5Qrcode('player-qr-reader');
-      scannerRef.current = html5Qr;
-      html5Qr
-        .start(
-          { facingMode: 'environment' },
-          {
-            fps: 10,
-            qrbox: { width: VIEWFINDER_SIZE, height: VIEWFINDER_SIZE },
-            aspectRatio: 1,
-          },
-          (decodedText: string) => {
-            if (!cancelled) handleScanned(decodedText);
-          },
-          () => {}
-        )
-        .then(() => {
-          if (!cancelled) setCameraLoading(false);
-        })
-        .catch(() => {
-          if (!cancelled) {
-            setError('Не удалось открыть камеру');
-            setCameraLoading(false);
-          }
-        });
-    }).catch(() => {
-      if (!cancelled) {
-        setError('Сканер недоступен');
-        setCameraLoading(false);
-      }
-    });
-    return () => {
-      cancelled = true;
-      const instance = scannerRef.current;
-      if (instance && typeof instance.stop === 'function') {
-        instance.stop().catch(() => {}).finally(() => {
-          scannerRef.current = null;
-        });
-      } else {
-        scannerRef.current = null;
-      }
-    };
-  }, [player?.role, handleScanned]);
+  const { ref: videoRef } = useZxing({
+    onDecodeResult(result) {
+      const text = result.getText();
+      if (text) handleScanned(text);
+    },
+    onError() {
+      setError('Не удалось открыть камеру');
+    },
+    constraints: {
+      video: { facingMode: 'environment' },
+    },
+    timeBetweenDecodingAttempts: 300,
+  });
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,24 +88,17 @@ export default function PlayerScan() {
       <h1 className="player-scan-title">Добавить клуб</h1>
       <p className="player-scan-subtitle">Наведите камеру на QR-код или введите код клуба (6 цифр)</p>
 
-      {/* Камера — html5-qrcode */}
+      {/* Камера — react-zxing (ZXing) */}
       <div className="player-scan-camera-wrap">
-        <div id="player-qr-reader" className="player-scan-camera" />
-        {!error && (
-          <div className="player-scan-viewfinder" aria-hidden="true">
-            <div className="player-scan-corners">
-              <span className="player-scan-corner player-scan-corner-tl" />
-              <span className="player-scan-corner player-scan-corner-tr" />
-              <span className="player-scan-corner player-scan-corner-bl" />
-              <span className="player-scan-corner player-scan-corner-br" />
-            </div>
+        <video ref={videoRef as React.RefObject<HTMLVideoElement>} className="player-scan-video" muted playsInline />
+        <div className="player-scan-viewfinder" aria-hidden="true">
+          <div className="player-scan-corners">
+            <span className="player-scan-corner player-scan-corner-tl" />
+            <span className="player-scan-corner player-scan-corner-tr" />
+            <span className="player-scan-corner player-scan-corner-bl" />
+            <span className="player-scan-corner player-scan-corner-br" />
           </div>
-        )}
-        {cameraLoading && !error && (
-          <div className="player-scan-loading">
-            <span>Открываем камеру…</span>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Ручной ввод кода */}
