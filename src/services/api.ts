@@ -208,7 +208,7 @@ class ApiService {
     return response.data;
   }
 
-  async getClub(id: string) {
+  async getAdminClub(id: string) {
     const response = await this.api.get(`/admin/clubs/${id}`);
     return response.data;
   }

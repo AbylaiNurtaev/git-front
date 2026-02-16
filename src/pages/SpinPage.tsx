@@ -19,7 +19,7 @@ export default function SpinPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const clubParam = searchParams.get('club');
-  const { currentUser, spinRoulette, getClub, getClubByQR, error } = useStore();
+  const { currentUser, spinRoulette, getClub, error } = useStore();
   const [resolvedClub, setResolvedClub] = useState<Club | null>(null);
   const [clubResolveLoading, setClubResolveLoading] = useState(!!clubParam);
   const [isScanning, setIsScanning] = useState(!clubParam);
