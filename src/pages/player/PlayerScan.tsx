@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useZxing } from 'react-zxing';
+import { QrReader } from 'react-qr-reader';
 import { useStore } from '@/store/useStore';
 import type { Player } from '@/types';
 import './PlayerPages.css';
@@ -52,27 +52,18 @@ export default function PlayerScan() {
     [getClub, navigate]
   );
 
+  /** Сразу переход на страницу спина с клубом из QR — без ожидания API */
   const handleScanned = useCallback(
     (decodedText: string) => {
-      const clubId = extractClubIdFromScanned(decodedText);
-      if (clubId) handleClubId(clubId);
+      if (handlingRef.current) return;
+      const clubParam = extractClubIdFromScanned(decodedText);
+      if (!clubParam) return;
+      handlingRef.current = true;
+      setError(null);
+      navigate(`/spin?club=${encodeURIComponent(clubParam)}`, { replace: true });
     },
-    [handleClubId]
+    [navigate]
   );
-
-  const { ref: videoRef } = useZxing({
-    onDecodeResult(result) {
-      const text = result.getText();
-      if (text) handleScanned(text);
-    },
-    onError() {
-      setError('Не удалось открыть камеру');
-    },
-    constraints: {
-      video: { facingMode: 'environment' },
-    },
-    timeBetweenDecodingAttempts: 300,
-  });
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,9 +79,21 @@ export default function PlayerScan() {
       <h1 className="player-scan-title">Добавить клуб</h1>
       <p className="player-scan-subtitle">Наведите камеру на QR-код или введите код клуба (6 цифр)</p>
 
-      {/* Камера — react-zxing (ZXing) */}
+      {/* Камера — react-qr-reader */}
       <div className="player-scan-camera-wrap">
-        <video ref={videoRef as React.RefObject<HTMLVideoElement>} className="player-scan-video" muted playsInline />
+        <QrReader
+          constraints={{ facingMode: 'environment' }}
+          scanDelay={350}
+          onResult={(result) => {
+            if (result && typeof result.getText === 'function') {
+              const text = result.getText();
+              if (text) handleScanned(text);
+            }
+          }}
+          className="player-scan-qr-reader"
+          videoContainerStyle={{ borderRadius: 12 }}
+          videoStyle={{ objectFit: 'cover' }}
+        />
         <div className="player-scan-viewfinder" aria-hidden="true">
           <div className="player-scan-corners">
             <span className="player-scan-corner player-scan-corner-tl" />

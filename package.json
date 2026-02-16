@@ -18,9 +18,9 @@
     "react-dom": "^18.2.0",
     "react-input-mask": "^2.0.4",
     "react-router-dom": "^6.20.0",
-    "react-zxing": "^2.1.0",
     "socket.io-client": "^4.8.3",
-    "zustand": "^4.4.7"
+    "zustand": "^4.4.7",
+    "react-qr-reader": "^3.0.0-beta-1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
