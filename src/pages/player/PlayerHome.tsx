@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import type { Player } from '@/types';
 import { Sparkles } from 'lucide-react';
+import logoUrl from '@/assets/logo.png';
 import './PlayerPages.css';
 
 export default function PlayerHome() {
@@ -25,6 +26,7 @@ export default function PlayerHome() {
   return (
     <div className="player-home">
       <header className="player-page-header">
+        <img src={logoUrl} alt="Infinity" className="header-logo" />
         <h1>Главная</h1>
         <span className="player-phone-badge">{player.phone}</span>
       </header>

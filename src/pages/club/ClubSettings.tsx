@@ -89,7 +89,7 @@ export default function ClubSettings() {
             </div>
           </label>
           <label className="theme-field">
-            <span>Акцент (подсветка)</span>
+            <span>Цвет текста</span>
             <div className="theme-input-wrap">
               <input
                 type="color"

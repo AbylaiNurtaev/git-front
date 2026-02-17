@@ -8,6 +8,10 @@
   margin-bottom: 28px;
 }
 
+.player-page-header .header-logo {
+  height: 36px;
+}
+
 .player-page-header h1 {
   margin: 0;
   font-size: 26px;

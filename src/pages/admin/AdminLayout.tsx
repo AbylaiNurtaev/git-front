@@ -1,5 +1,6 @@
 import { Outlet, NavLink } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
+import logoUrl from '@/assets/logo.png';
 import './AdminLayout.css';
 
 export default function AdminLayout() {
@@ -13,7 +14,10 @@ export default function AdminLayout() {
     <div className="admin-dashboard">
       <div className="dashboard-container">
         <header className="dashboard-header">
-          <h1>Панель администратора</h1>
+          <div className="header-left">
+            <img src={logoUrl} alt="Infinity" className="header-logo" />
+            <h1>Панель администратора</h1>
+          </div>
           <div className="header-actions">
             <span className="admin-name">{currentUser.name || 'Администратор'}</span>
             <button onClick={logout} className="logout-button">

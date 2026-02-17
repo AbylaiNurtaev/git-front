@@ -10,6 +10,8 @@ const VARS = [
   'primary-dark-rgb',
   'accent',
   'accent-rgb',
+  'text',
+  'text-rgb',
   'bg',
 ] as const;
 
@@ -25,13 +27,12 @@ function applyTheme(theme: { primary: string; primaryDark: string; accent?: stri
   root.style.setProperty(VAR_PREFIX + 'primary-rgb', hexToRgb(theme.primary));
   root.style.setProperty(VAR_PREFIX + 'primary-dark-rgb', hexToRgb(theme.primaryDark));
   root.style.setProperty(VAR_PREFIX + 'bg', hexToBg(theme.primary));
-  if (theme.accent) {
-    root.style.setProperty(VAR_PREFIX + 'accent', theme.accent);
-    root.style.setProperty(VAR_PREFIX + 'accent-rgb', hexToRgb(theme.accent));
-  } else {
-    root.style.setProperty(VAR_PREFIX + 'accent', theme.primary);
-    root.style.setProperty(VAR_PREFIX + 'accent-rgb', hexToRgb(theme.primary));
-  }
+  const accentColor = theme.accent || theme.primary;
+  root.style.setProperty(VAR_PREFIX + 'accent', accentColor);
+  root.style.setProperty(VAR_PREFIX + 'accent-rgb', hexToRgb(accentColor));
+  /* Цвет текста у клубов = акцент (подсветка) */
+  root.style.setProperty(VAR_PREFIX + 'text', accentColor);
+  root.style.setProperty(VAR_PREFIX + 'text-rgb', hexToRgb(accentColor));
 }
 
 /**

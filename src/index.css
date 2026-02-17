@@ -1,12 +1,30 @@
 /* Палитра по умолчанию (можно переопределять темой клуба через useClubTheme) */
 :root {
-  --theme-primary: #8B5CF6;
-  --theme-primary-dark: #7C3AED;
+  --theme-primary: #8b5cf6;
+  --theme-primary-dark: #7c3aed;
   --theme-primary-rgb: 139, 92, 246;
   --theme-primary-dark-rgb: 124, 58, 237;
-  --theme-accent: #A78BFA;
+  --theme-accent: #a78bfa;
   --theme-accent-rgb: 167, 139, 250;
+  --theme-text: #a78bfa;
+  --theme-text-rgb: 167, 139, 250;
   --theme-bg: #0a0a0f;
+}
+
+/* Логотип в шапке — общий класс для всех header */
+.header-logo {
+  height: 40px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Группа «логотип + заголовок» слева в dashboard-header */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 * {
@@ -16,16 +34,38 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--theme-bg);
-  background-image: 
-    radial-gradient(ellipse 120% 100% at 50% -20%, rgba(var(--theme-primary-rgb), 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 80% 80% at 90% 80%, rgba(var(--theme-primary-dark-rgb), 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 60% at 10% 50%, rgba(var(--theme-accent-rgb), 0.12) 0%, transparent 50%);
+  background-image:
+    radial-gradient(
+      ellipse 120% 100% at 50% -20%,
+      rgba(var(--theme-primary-rgb), 0.18) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 80% 80% at 90% 80%,
+      rgba(var(--theme-primary-dark-rgb), 0.12) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 10% 50%,
+      rgba(var(--theme-accent-rgb), 0.12) 0%,
+      transparent 50%
+    );
   min-height: 100vh;
   color: #e0e0e0;
   overflow-x: hidden;
@@ -36,7 +76,8 @@ body {
 }
 
 code {
-  font-family: 'Fira Code', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family:
+    "Fira Code", source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -59,12 +100,20 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-dark) 100%
+  );
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--theme-accent) 0%, var(--theme-primary) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--theme-accent) 0%,
+    var(--theme-primary) 100%
+  );
 }
 
 /* Мобильная адаптация */

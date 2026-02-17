@@ -4,6 +4,7 @@ import ClubModal from '@/components/ClubModal';
 import PrizeModal from '@/components/PrizeModal';
 import UserModal from '@/components/UserModal';
 import type { Club, Player, Prize, RouletteSlot } from '@/types';
+import logoUrl from '@/assets/logo.png';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -55,7 +56,10 @@ export default function AdminDashboard() {
     <div className="admin-dashboard">
       <div className="dashboard-container">
         <header className="dashboard-header">
-          <h1>Панель администратора</h1>
+          <div className="header-left">
+            <img src={logoUrl} alt="Infinity" className="header-logo" />
+            <h1>Панель администратора</h1>
+          </div>
           <div className="header-actions">
             <span className="admin-name">{currentUser.name || 'Администратор'}</span>
             <button onClick={logout} className="logout-button">

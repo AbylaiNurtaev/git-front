@@ -5,6 +5,7 @@ import { apiService } from '@/services/api';
 import { transformPrize } from '@/utils/transformers';
 import { useClubTheme } from '@/hooks/useClubTheme';
 import type { Club, Player, Prize } from '@/types';
+import logoUrl from '@/assets/logo.png';
 import './SpinPage.css';
 import './club/ClubPages.css';
 import './ClubRoulettePage.css';
@@ -535,7 +536,10 @@ export default function SpinPage() {
             </div>
 
             <div className="spin-header">
-              <h1>Рулетка призов</h1>
+              <div className="header-left">
+                <img src={logoUrl} alt="Infinity" className="header-logo" />
+                <h1>Рулетка призов</h1>
+              </div>
               <div className="balance-info">
                 <span>Баланс: {player.balance} баллов</span>
                 <span className="spin-cost">Стоимость: 20 баллов</span>

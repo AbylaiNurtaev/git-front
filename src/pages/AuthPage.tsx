@@ -3,6 +3,7 @@ import { useStore } from '@/store/useStore';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import Skeleton from '@/components/Skeleton';
+import logoUrl from '@/assets/logo.png';
 import './AuthPage.css';
 
 export default function AuthPage() {
@@ -72,8 +73,11 @@ export default function AuthPage() {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1 className="auth-title">Infinity</h1>
-          <p className="auth-subtitle">Игровая платформа</p>
+          <img src={logoUrl} alt="Infinity" className="header-logo" />
+          <div>
+            <h1 className="auth-title">Infinity</h1>
+            <p className="auth-subtitle">Игровая платформа</p>
+          </div>
         </div>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">

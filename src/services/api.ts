@@ -109,8 +109,8 @@ class ApiService {
     return response.data;
   }
 
-  /** Публичный эндпоинт: последние 10 выигрышей по всем клубам (без авторизации) */
-  async getRecentWins(): Promise<Array<{ maskedPhone?: string; playerName?: string; prizeName: string; text?: string }>> {
+  /** Публичный эндпоинт: последние 10 выигрышей (для ленты на /club/qr). Приоритет отображения: name / playerName → maskedPhone → "Гость" */
+  async getRecentWins(): Promise<Array<{ name?: string; playerName?: string; maskedPhone?: string; prizeName: string; text?: string }>> {
     const response = await this.api.get('/players/recent-wins');
     return response.data ?? [];
   }
@@ -196,6 +196,12 @@ class ApiService {
       return sortedSpins[0];
     }
     return null;
+  }
+
+  /** Кол-во спинов клуба за текущий день */
+  async getClubSpinsToday() {
+    const response = await this.api.get('/clubs/spins-today');
+    return response.data;
   }
 
   // Admin API

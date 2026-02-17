@@ -29,7 +29,7 @@
 
 .dashboard-header {
   background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.3) 0%, rgba(var(--theme-primary-rgb), 0.25) 100%);
-  color: var(--theme-primary);
+  color: var(--theme-text);
   padding: 30px 40px;
   display: flex;
   justify-content: space-between;
@@ -54,13 +54,13 @@
 .club-name {
   font-size: 18px;
   font-weight: 600;
-  color: rgba(var(--theme-primary-rgb), 0.9);
+  color: rgba(var(--theme-text-rgb), 0.9);
 }
 
 .logout-button {
   padding: 10px 20px;
   background: rgba(var(--theme-primary-rgb), 0.15);
-  color: var(--theme-primary);
+  color: var(--theme-text);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: 10px;
   cursor: pointer;
@@ -90,7 +90,7 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(var(--theme-primary-rgb), 0.6);
+  color: rgba(var(--theme-text-rgb), 0.6);
   transition: all 0.3s;
   border-bottom: 3px solid transparent;
   white-space: nowrap;
@@ -102,11 +102,11 @@
 
 .dashboard-tabs a:hover {
   background: rgba(var(--theme-primary-rgb), 0.1);
-  color: var(--theme-primary);
+  color: var(--theme-text);
 }
 
 .dashboard-tabs a.active {
-  color: var(--theme-primary);
+  color: var(--theme-text);
   border-bottom-color: var(--theme-primary);
   background: rgba(var(--theme-primary-rgb), 0.2);
   text-shadow: 0 0 10px rgba(var(--theme-primary-rgb), 0.5);

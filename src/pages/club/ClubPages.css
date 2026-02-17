@@ -5,7 +5,7 @@
 }
 
 .club-page h2 {
-  color: var(--theme-primary);
+  color: var(--theme-text);
   font-size: 28px;
   margin-bottom: 20px;
   letter-spacing: 2px;
@@ -30,7 +30,7 @@
     rgba(var(--theme-primary-rgb), 0.2) 0%,
     rgba(var(--theme-primary-dark-rgb), 0.2) 100%
   );
-  color: var(--theme-primary);
+  color: var(--theme-text);
   padding: 30px;
   border-radius: 20px;
   text-align: center;
@@ -41,7 +41,7 @@
 }
 
 .stat-card h3 {
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
   font-size: 16px;
   margin-bottom: 15px;
   font-weight: 600;
@@ -52,7 +52,7 @@
 .stat-value {
   font-size: 42px;
   font-weight: 700;
-  color: var(--theme-primary);
+  color: var(--theme-text);
 }
 
 /* Скелетон обзора клуба */
@@ -86,7 +86,7 @@
 }
 
 .overview-issued-section h3 {
-  color: var(--theme-primary);
+  color: var(--theme-text);
   font-size: 20px;
   margin-bottom: 16px;
   text-transform: uppercase;
@@ -111,16 +111,71 @@
   background: rgba(var(--theme-primary-rgb), 0.08);
   border-radius: 10px;
   font-size: 14px;
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
+}
+
+.issued-claims-list-with-name {
+  grid-template-columns: 1fr;
+}
+
+.issued-claims-list-with-name li {
+  grid-template-columns: 1fr 1fr minmax(120px, auto) auto;
+  gap: 12px;
+}
+
+.issued-claims-list-with-name .issued-claims-header {
+  background: rgba(var(--theme-primary-rgb), 0.15);
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.issued-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.issued-search-input {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+  padding: 10px 14px;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
+  border-radius: 10px;
+  color: rgba(var(--theme-text-rgb), 0.95);
+  font-size: 14px;
+}
+
+.issued-search-input::placeholder {
+  color: rgba(184, 184, 212, 0.5);
+}
+
+.issued-search-input:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+}
+
+.issued-search-hint {
+  font-size: 13px;
+  color: rgba(184, 184, 212, 0.8);
 }
 
 .issued-prize-name {
-  color: rgba(var(--theme-primary-rgb), 0.95);
+  color: rgba(var(--theme-text-rgb), 0.95);
   font-weight: 600;
 }
 
 .issued-prize-player {
-  color: var(--theme-primary);
+  color: var(--theme-text);
+}
+
+.issued-prize-phone {
+  color: rgba(var(--theme-text-rgb), 0.9);
+  font-size: 14px;
+  margin-right: 12px;
 }
 
 .issued-prize-date {
@@ -132,6 +187,50 @@
   margin-top: 12px;
   font-size: 14px;
   color: rgba(184, 184, 212, 0.7);
+}
+
+.issued-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.issued-pagination-pages {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.issued-pagination-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.35);
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-text);
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.issued-pagination-btn:hover:not(:disabled) {
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  border-color: var(--theme-primary);
+}
+
+.issued-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.issued-pagination-btn.active {
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+  color: #fff;
 }
 
 /* Players */
@@ -156,7 +255,7 @@
   background: rgba(var(--theme-primary-rgb), 0.1);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 10px;
-  color: rgba(var(--theme-primary-rgb), 0.95);
+  color: rgba(var(--theme-text-rgb), 0.95);
   font-size: 15px;
   transition:
     border-color 0.3s,
@@ -204,7 +303,7 @@
   padding: 14px 16px;
   text-align: left;
   font-weight: 600;
-  color: var(--theme-primary);
+  color: var(--theme-text);
   text-transform: uppercase;
   letter-spacing: 1px;
   white-space: nowrap;
@@ -219,23 +318,139 @@
   background: rgba(var(--theme-primary-rgb), 0.08);
 }
 
+.players-row-clickable {
+  cursor: pointer;
+}
+
+.players-cell-fio {
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
 .players-table tbody tr:last-child {
   border-bottom: none;
 }
 
 .players-table td {
   padding: 14px 16px;
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
 }
 
 .players-cell-phone {
   font-weight: 600;
-  color: var(--theme-primary);
+  color: var(--theme-text);
 }
 
 .empty-state-small {
   padding: 24px;
   font-size: 15px;
+}
+
+/* Модалка карточки игрока */
+.player-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.player-modal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.player-modal-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.player-modal-row dt {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(var(--theme-text-rgb), 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.player-modal-row dd {
+  margin: 0;
+  font-size: 15px;
+  color: var(--theme-text);
+  font-weight: 500;
+}
+
+.player-modal-claims {
+  padding-top: 16px;
+  border-top: 1px solid rgba(var(--theme-primary-rgb), 0.2);
+}
+
+.player-modal-claims h4 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--theme-text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.player-modal-claims-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-modal-claims-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.player-modal-claim-name {
+  font-weight: 600;
+  color: var(--theme-text);
+  flex: 1;
+  min-width: 0;
+}
+
+.player-modal-claim-date {
+  color: rgba(184, 184, 212, 0.85);
+  font-size: 13px;
+}
+
+.player-modal-claim-status {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.player-modal-claim-status-pending {
+  background: rgba(251, 191, 36, 0.25);
+  color: #fbbf24;
+}
+
+.player-modal-claim-status-confirmed,
+.player-modal-claim-status-issued,
+.player-modal-claim-status-completed {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.player-modal-claims-hint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: rgba(184, 184, 212, 0.7);
 }
 
 .players-list {
@@ -259,14 +474,14 @@
 }
 
 .player-info h3 {
-  color: var(--theme-primary);
+  color: var(--theme-text);
   margin-bottom: 10px;
   font-size: 20px;
   font-weight: 700;
 }
 
 .player-info p {
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
   font-size: 14px;
   margin: 5px 0;
 }
@@ -302,20 +517,20 @@
 }
 
 .prize-info h3 {
-  color: var(--theme-primary);
+  color: var(--theme-text);
   margin-bottom: 10px;
   font-size: 20px;
   font-weight: 700;
 }
 
 .prize-info p {
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
   font-size: 14px;
   margin: 5px 0;
 }
 
 .player-info-text {
-  color: var(--theme-primary) !important;
+  color: var(--theme-text) !important;
   font-weight: 600;
 }
 
@@ -493,7 +708,7 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
   font-size: 16px;
 }
 
@@ -510,7 +725,7 @@
 .club-qr-retry-btn {
   padding: 12px 24px;
   background: rgba(var(--theme-primary-rgb), 0.25);
-  color: var(--theme-primary);
+  color: var(--theme-text);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.5);
   border-radius: 10px;
   font-size: 14px;
@@ -534,7 +749,7 @@
   z-index: 1000;
   padding: 12px 24px;
   background: rgba(var(--theme-primary-rgb), 0.25);
-  color: var(--theme-primary);
+  color: var(--theme-text);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.5);
   border-radius: 10px;
   font-size: 14px;
@@ -636,7 +851,7 @@
   z-index: 100;
   padding: 12px 24px;
   background: rgba(var(--theme-primary-rgb), 0.3);
-  color: var(--theme-accent);
+  color: var(--theme-text);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.5);
   border-radius: 10px;
   font-size: 14px;
@@ -726,17 +941,17 @@
 .club-qr-code-value {
   font-size: 22px;
   font-weight: 700;
-  color: var(--theme-accent);
+  color: var(--theme-text);
   letter-spacing: 2px;
   text-shadow: 0 0 12px rgba(var(--theme-primary-rgb), 0.5);
 }
 
 .club-qr-page .balance-info .status-waiting {
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
 }
 
 .club-qr-page .balance-info .status-spinning {
-  color: var(--theme-primary);
+  color: var(--theme-text);
 }
 
 .club-qr-page .balance-info .status-winner {
@@ -772,7 +987,7 @@
 
 .roulette-header-fullscreen h1 {
   font-size: 56px;
-  color: var(--theme-primary);
+  color: var(--theme-text);
   margin: 0;
   font-weight: 800;
   letter-spacing: 3px;
@@ -792,11 +1007,11 @@
 }
 
 .status-waiting {
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
 }
 
 .status-spinning {
-  color: var(--theme-primary);
+  color: var(--theme-text);
   animation: pulse 1.5s infinite;
   border-color: rgba(var(--theme-primary-rgb), 0.5);
 }
@@ -838,7 +1053,7 @@
   left: 30px;
   padding: 8px 16px;
   background: rgba(var(--theme-primary-rgb), 0.2);
-  color: var(--theme-primary);
+  color: var(--theme-text);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: 8px;
   font-size: 12px;
@@ -895,7 +1110,7 @@
   width: 40px;
   height: 40px;
   background: rgba(var(--theme-primary-rgb), 0.2);
-  color: var(--theme-primary);
+  color: var(--theme-text);
   border: 2px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: 50%;
   font-size: 28px;
@@ -937,7 +1152,7 @@
 
 .result-title {
   font-size: 42px;
-  color: var(--theme-primary);
+  color: var(--theme-text);
   margin-bottom: 30px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   text-transform: uppercase;
@@ -953,7 +1168,7 @@
 
 .result-prize-name {
   font-size: 32px;
-  color: var(--theme-primary);
+  color: var(--theme-text);
   font-weight: 700;
   margin-bottom: 15px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -961,7 +1176,7 @@
 
 .result-prize-desc {
   font-size: 18px;
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
 }
 
 .result-prize-image {
@@ -992,7 +1207,7 @@
     rgba(var(--theme-primary-rgb), 0.3) 0%,
     rgba(var(--theme-primary-dark-rgb), 0.3) 100%
   );
-  color: var(--theme-primary);
+  color: var(--theme-text);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: 8px;
   font-size: 14px;
@@ -1027,7 +1242,7 @@
   border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: 8px;
   background: rgba(var(--theme-primary-rgb), 0.08);
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -1036,7 +1251,7 @@
 
 .pagination-num:hover:not(:disabled) {
   background: rgba(var(--theme-primary-rgb), 0.2);
-  color: var(--theme-primary);
+  color: var(--theme-text);
   border-color: var(--theme-primary);
 }
 
@@ -1052,14 +1267,14 @@
 }
 
 .pagination-ellipsis {
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
   padding: 0 4px;
   font-size: 14px;
   user-select: none;
 }
 
 .pagination-info {
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
   font-size: 14px;
 }
 
@@ -1283,14 +1498,14 @@
   justify-content: center;
   font-size: 80px;
   font-weight: 700;
-  color: rgba(var(--theme-primary-rgb), 0.4);
+  color: rgba(var(--theme-text-rgb), 0.4);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.15);
 }
 
 .cs-prize-name {
   font-size: 16px;
   font-weight: 600;
-  color: var(--theme-primary);
+  color: var(--theme-text);
   text-align: center;
   line-height: 1.4;
   text-transform: uppercase;
@@ -1311,11 +1526,11 @@
 }
 
 .status-waiting {
-  color: rgba(var(--theme-primary-rgb), 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
 }
 
 .status-spinning {
-  color: var(--theme-primary);
+  color: var(--theme-text);
   animation: pulse 1.5s infinite;
 }
 

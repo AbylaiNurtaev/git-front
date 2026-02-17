@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import type { Player } from '@/types';
+import logoUrl from '@/assets/logo.png';
 import './PlayerDashboard.css';
 
 export default function PlayerDashboard() {
@@ -24,7 +25,10 @@ export default function PlayerDashboard() {
     <div className="player-dashboard">
       <div className="dashboard-container">
         <header className="dashboard-header">
-          <h1>Личный кабинет игрока</h1>
+          <div className="header-left">
+            <img src={logoUrl} alt="Infinity" className="header-logo" />
+            <h1>Личный кабинет игрока</h1>
+          </div>
           <div className="header-actions">
             <span className="user-phone">{player.phone}</span>
             <button onClick={logout} className="logout-button">

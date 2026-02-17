@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useStore } from '@/store/useStore';
-import { QRCodeSVG } from 'qrcode.react';
 import { apiService } from '@/services/api';
-import { getQrBaseUrl, getSocketUrl } from '@/config/api';
+import { getSocketUrl } from '@/config/api';
 import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
 import './ClubPages.css';
@@ -33,6 +32,20 @@ function randomMaskedPhone(): string {
   return `+7 ${digits}** *** *${last}`;
 }
 
+/** Один выигрыш в ленте (имя приоритетнее номера телефона) */
+interface WinItem {
+  text?: string;
+  prizeName: string;
+  playerName?: string;
+  name?: string;
+  maskedPhone?: string;
+}
+
+/** Отображаемое имя для ленты: имя игрока, иначе замаскированный телефон, иначе "Гость" */
+function winDisplayName(w: WinItem): string {
+  return w.name ?? w.playerName ?? w.maskedPhone ?? 'Гость';
+}
+
 /** Payload события spin с бэкенда (с recentWins — последние 10 выигрышей по клубу) */
 interface SpinPayload {
   _id?: string;
@@ -40,8 +53,9 @@ interface SpinPayload {
   spin?: { prize?: unknown };
   playerPhone?: string;
   playerName?: string;
+  name?: string;
   createdAt?: string;
-  recentWins?: Array<{ maskedPhone?: string; playerName?: string; prizeName: string; text?: string }>;
+  recentWins?: WinItem[];
 }
 
 export default function ClubQR() {
@@ -114,10 +128,11 @@ export default function ClubQR() {
       .then((list) => {
         if (!cancelled && Array.isArray(list) && list.length > 0) {
           setWinsChat(
-            list.slice(0, MAX_WINS_CHAT).map((w, i) => ({
-              id: `recent-${i}`,
-              text: w.text ?? `${(w as any).playerName ?? w.maskedPhone ?? 'Гость'} выиграл ${w.prizeName}`,
-            }))
+            list.slice(0, MAX_WINS_CHAT).map((w, i) => {
+              const item = w as WinItem;
+              const text = item.text?.includes('выиграл') ? item.text! : `${winDisplayName(item)} выиграл ${item.prizeName}`;
+              return { id: `recent-${i}`, text };
+            })
           );
         }
       })
@@ -150,21 +165,22 @@ export default function ClubQR() {
 
       const prize = transformPrize(prizeData);
       const prizeName = prize.name || 'Приз';
+      const singleDisplayName = payload.name ?? payload.playerName ?? (payload.playerPhone ? maskPhone(payload.playerPhone) : randomMaskedPhone());
       const pendingWin =
         Array.isArray(payload.recentWins) && payload.recentWins.length > 0
           ? { type: 'recentWins' as const, recentWins: payload.recentWins }
           : {
               type: 'single' as const,
-              displayName: payload.playerName ?? (payload.playerPhone ? maskPhone(payload.playerPhone) : randomMaskedPhone()),
+              displayName: singleDisplayName,
               prizeName,
             };
       startSpin(prize, () => {
         if (pendingWin.type === 'recentWins') {
           setWinsChat(
-            pendingWin.recentWins.map((w, i) => ({
-              id: `win-${i}`,
-              text: w.text ?? `${w.playerName ?? w.maskedPhone ?? 'Гость'} выиграл ${w.prizeName}`,
-            }))
+            pendingWin.recentWins.map((w, i) => {
+              const text = w.text?.includes('выиграл') ? w.text : `${winDisplayName(w)} выиграл ${w.prizeName}`;
+              return { id: `win-${i}`, text };
+            })
           );
         } else {
           addWinToChat(pendingWin.displayName, pendingWin.prizeName);
@@ -223,12 +239,13 @@ export default function ClubQR() {
 
   // Чат побед — только из payload.recentWins с бэкенда (без фейковых сообщений)
 
-  const handleTestSpin = () => {
-    if (roulettePrizes.length > 0 && !isSpinning) {
-      const randomPrize = roulettePrizes[Math.floor(Math.random() * roulettePrizes.length)];
-      startSpin(randomPrize);
-    }
-  };
+  // Тестовый спин — закомментирован
+  // const handleTestSpin = () => {
+  //   if (roulettePrizes.length > 0 && !isSpinning) {
+  //     const randomPrize = roulettePrizes[Math.floor(Math.random() * roulettePrizes.length)];
+  //     startSpin(randomPrize);
+  //   }
+  // };
 
   const startSpin = (prize: Prize, onComplete?: () => void) => {
     if (isSpinningRef.current || !rouletteRef.current) return;
@@ -407,47 +424,32 @@ export default function ClubQR() {
         </div>
       )}
 
-      {/* Чат побед — снизу по центру, последние 10 */}
-      <div className="club-qr-wins-chat">
-        <div className="club-qr-wins-chat-list">
-          {winsChat.map((item) => (
-            <div key={item.id} className="club-qr-wins-chat-line">
-              {item.text}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Код клуба — только 6 цифр, снизу жирным */}
-      <div className="club-qr-code-block">
-        <span className="club-qr-code-label">Код клуба:</span>
-        <span className="club-qr-code-value">
-          {club.pinCode && /^\d{6}$/.test(String(club.pinCode)) ? club.pinCode : '------'}
-        </span>
-      </div>
-
-      {isFullscreen && (
-        <>
-          <button
-            type="button"
-            className="club-qr-test-spin-btn"
-            onClick={handleTestSpin}
-            disabled={isSpinning || roulettePrizes.length === 0}
-            title="Крутит рулетку с замедлением и показывает выигрыш"
-          >
-            {isSpinning ? 'Крутится…' : 'Тестовый спин (динамичная рулетка)'}
-          </button>
-          <div className="club-qr-fullscreen-qr">
-          <div className="club-qr-fullscreen-qr-inner">
-            <QRCodeSVG
-              value={`${getQrBaseUrl()}/spin?club=${encodeURIComponent(club.token || club.clubId || '')}`}
-              size={140}
-              level="L"
-            />
+      {/* Чат побед — снизу по центру, только если есть хотя бы один выигрыш */}
+      {winsChat.length > 0 && (
+        <div className="club-qr-wins-chat">
+          <div className="club-qr-wins-chat-list">
+            {winsChat.map((item) => (
+              <div key={item.id} className="club-qr-wins-chat-line">
+                {item.text}
+              </div>
+            ))}
           </div>
         </div>
-        </>
       )}
+
+      {/* Тестовый спин — закомментирован
+      {isFullscreen && (
+        <button
+          type="button"
+          className="club-qr-test-spin-btn"
+          onClick={handleTestSpin}
+          disabled={isSpinning || roulettePrizes.length === 0}
+          title="Крутит рулетку с замедлением и показывает выигрыш"
+        >
+          {isSpinning ? 'Крутится…' : 'Тестовый спин (динамичная рулетка)'}
+        </button>
+      )}
+      */}
     </div>
   );
 }

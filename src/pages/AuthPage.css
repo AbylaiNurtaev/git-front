@@ -10,13 +10,17 @@
 }
 
 .auth-page::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.08) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(var(--theme-primary-rgb), 0.08) 0%,
+    transparent 70%
+  );
   animation: rotate 20s linear infinite;
   pointer-events: none;
 }
@@ -40,14 +44,20 @@
   position: relative;
   z-index: 1;
   border: 1px solid rgba(var(--theme-primary-rgb), 0.2);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(var(--theme-primary-rgb), 0.1);
 }
 
 .auth-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 32px;
+}
+
+.auth-header .header-logo {
+  height: 48px;
 }
 
 .auth-title {
@@ -57,7 +67,11 @@
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-accent) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-accent) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -125,7 +139,11 @@
 
 .submit-button {
   padding: 16px;
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-dark) 100%
+  );
   color: white;
   border: none;
   border-radius: 12px;
@@ -146,13 +164,18 @@
 }
 
 .submit-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
   transition: left 0.5s;
 }
 

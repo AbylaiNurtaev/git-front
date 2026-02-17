@@ -2,6 +2,7 @@ import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import { useClubTheme } from '@/hooks/useClubTheme';
 import type { Club } from '@/types';
+import logoUrl from '@/assets/logo.png';
 import './ClubLayout.css';
 
 export default function ClubLayout() {
@@ -19,7 +20,10 @@ export default function ClubLayout() {
     <div className="club-dashboard">
       <div className="dashboard-container">
         <header className="dashboard-header">
-          <h1>Личный кабинет Infinity</h1>
+          <div className="header-left">
+            <img src={logoUrl} alt="Infinity" className="header-logo" />
+            <h1>Личный кабинет Infinity</h1>
+          </div>
           <div className="header-actions">
             <span className="club-name">{club.clubName}</span>
             <button onClick={logout} className="logout-button">

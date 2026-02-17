@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import type { Player } from '@/types';
+import logoUrl from '@/assets/logo.png';
 import './PlayerPages.css';
 
 export default function PlayerPrizes() {
@@ -20,6 +21,7 @@ export default function PlayerPrizes() {
   return (
     <div className="player-prizes">
       <header className="player-page-header">
+        <img src={logoUrl} alt="Infinity" className="header-logo" />
         <h1>История</h1>
       </header>
 

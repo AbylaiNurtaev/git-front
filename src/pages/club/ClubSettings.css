@@ -6,12 +6,12 @@
 .club-settings-title {
   font-size: 22px;
   font-weight: 700;
-  color: var(--theme-primary);
+  color: var(--theme-text);
   margin-bottom: 8px;
 }
 
 .club-settings-desc {
-  color: rgba(184, 184, 212, 0.85);
+  color: rgba(var(--theme-text-rgb), 0.85);
   font-size: 14px;
   margin-bottom: 28px;
   line-height: 1.5;
@@ -38,7 +38,7 @@
 .theme-field span {
   font-size: 14px;
   font-weight: 600;
-  color: rgba(224, 224, 224, 0.95);
+  color: rgba(var(--theme-text-rgb), 0.95);
 }
 
 .theme-input-wrap {
@@ -63,7 +63,7 @@
   background: rgba(26, 26, 46, 0.8);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 10px;
-  color: #e0e0e0;
+  color: var(--theme-text);
   font-size: 14px;
 }
 
