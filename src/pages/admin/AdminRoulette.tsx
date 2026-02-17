@@ -90,6 +90,16 @@ export default function AdminRoulette() {
     <div className="admin-page">
       <div className="tab-header">
         <h2>Настройка рулетки</h2>
+        <button
+          type="button"
+          className="add-button"
+          onClick={() => {
+            setSelectedPrize(null);
+            setPrizeModalOpen(true);
+          }}
+        >
+          + Создать приз
+        </button>
         <div className="roulette-info">
           <p className="info-text">
             Выберите, какие призы участвуют в рулетке. Только призы с включённым «В рулетке» выпадают при прокрутке.
@@ -105,7 +115,7 @@ export default function AdminRoulette() {
         <h3>Все призы — участие в рулетке</h3>
         {prizes.length === 0 ? (
           <div className="empty-state">
-            <p>Нет призов. Создайте призы в разделе «Призы».</p>
+            <p>Нет призов. Создайте первый приз кнопкой «+ Создать приз» выше.</p>
           </div>
         ) : (
           <div className="prize-roulette-list">

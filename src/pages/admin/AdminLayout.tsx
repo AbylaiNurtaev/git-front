@@ -126,18 +126,6 @@ export default function AdminLayout() {
             Пользователи
           </NavLink>
           <NavLink
-            to="/admin/prizes"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            Призы
-          </NavLink>
-          <NavLink
-            to="/admin/roulette"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            Рулетка
-          </NavLink>
-          <NavLink
             to="/admin/analytics"
             className={({ isActive }) => isActive ? 'active' : ''}
           >
