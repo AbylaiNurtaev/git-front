@@ -51,11 +51,13 @@ interface Store {
   confirmPrizeClaim: (claimId: string, notes?: string) => Promise<boolean>;
   updateClubTime: (claimId: string, action: string) => Promise<boolean>;
   fetchClubReports: (startDate?: string, endDate?: string) => Promise<any>;
+  /** Обновить профиль своего клуба (в т.ч. палитру) */
+  updateClubMe: (data: Partial<{ theme: import('@/types').ClubTheme }>) => Promise<boolean>;
   
   // Admin actions
   fetchClubs: () => Promise<Club[]>;
   createClub: (data: { name: string; phone: string; address: string; managerFio?: string; city?: string; latitude: number; longitude: number }) => Promise<Club | null>;
-  updateClub: (id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string; latitude?: number; longitude?: number }>) => Promise<boolean>;
+  updateClub: (id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string; latitude?: number; longitude?: number; theme?: import('@/types').ClubTheme }>) => Promise<boolean>;
   deleteClub: (id: string) => Promise<boolean>;
   fetchUsers: (role?: string) => Promise<User[]>;
   updateUser: (id: string, data: Partial<{ balance: number; isActive: boolean }>) => Promise<boolean>;
@@ -406,6 +408,17 @@ export const useStore = create<Store>()(
         }
       },
 
+      updateClubMe: async (data) => {
+        try {
+          await apiService.updateClubMe(data);
+          await get().fetchClubData();
+          return true;
+        } catch (error: any) {
+          set({ error: error.response?.data?.message || 'Ошибка сохранения настроек' });
+          return false;
+        }
+      },
+
       fetchClubs: async () => {
         try {
           const response = await apiService.getClubs();
@@ -430,7 +443,7 @@ export const useStore = create<Store>()(
         }
       },
 
-      updateClub: async (id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string; latitude?: number; longitude?: number }>) => {
+      updateClub: async (id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string; latitude?: number; longitude?: number; theme?: import('@/types').ClubTheme }>) => {
         try {
           await apiService.updateClub(id, data);
           await get().fetchClubs();

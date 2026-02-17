@@ -39,8 +39,9 @@ interface SpinPayload {
   prize?: { name?: string; slotIndex?: number; image?: string; [k: string]: unknown };
   spin?: { prize?: unknown };
   playerPhone?: string;
+  playerName?: string;
   createdAt?: string;
-  recentWins?: Array<{ maskedPhone: string; prizeName: string; text: string }>;
+  recentWins?: Array<{ maskedPhone?: string; playerName?: string; prizeName: string; text?: string }>;
 }
 
 export default function ClubQR() {
@@ -115,7 +116,7 @@ export default function ClubQR() {
           setWinsChat(
             list.slice(0, MAX_WINS_CHAT).map((w, i) => ({
               id: `recent-${i}`,
-              text: w.text ?? `${w.maskedPhone} выиграл ${w.prizeName}`,
+              text: w.text ?? `${(w as any).playerName ?? w.maskedPhone ?? 'Гость'} выиграл ${w.prizeName}`,
             }))
           );
         }
@@ -149,15 +150,26 @@ export default function ClubQR() {
 
       const prize = transformPrize(prizeData);
       const prizeName = prize.name || 'Приз';
-      if (Array.isArray(payload.recentWins) && payload.recentWins.length > 0) {
-        setWinsChat(
-          payload.recentWins.map((w, i) => ({ id: `win-${i}`, text: w.text ?? `${w.maskedPhone} Выиграл ${w.prizeName}` }))
-        );
-      } else {
-        const phone = payload.playerPhone;
-        addWinToChat(phone ? maskPhone(phone) : randomMaskedPhone(), prizeName);
-      }
-      startSpin(prize);
+      const pendingWin =
+        Array.isArray(payload.recentWins) && payload.recentWins.length > 0
+          ? { type: 'recentWins' as const, recentWins: payload.recentWins }
+          : {
+              type: 'single' as const,
+              displayName: payload.playerName ?? (payload.playerPhone ? maskPhone(payload.playerPhone) : randomMaskedPhone()),
+              prizeName,
+            };
+      startSpin(prize, () => {
+        if (pendingWin.type === 'recentWins') {
+          setWinsChat(
+            pendingWin.recentWins.map((w, i) => ({
+              id: `win-${i}`,
+              text: w.text ?? `${w.playerName ?? w.maskedPhone ?? 'Гость'} выиграл ${w.prizeName}`,
+            }))
+          );
+        } else {
+          addWinToChat(pendingWin.displayName, pendingWin.prizeName);
+        }
+      });
     });
 
     socket.on('connect_error', (err) => {
@@ -203,9 +215,9 @@ export default function ClubQR() {
     };
   }, [roulettePrizes.length, isSpinning]);
 
-  const addWinToChat = (maskedPhone: string, prizeName: string) => {
+  const addWinToChat = (displayName: string, prizeName: string) => {
     const id = `win-${++winsChatIdRef.current}`;
-    const text = `${maskedPhone} Выиграл ${prizeName}`;
+    const text = `${displayName} выиграл ${prizeName}`;
     setWinsChat(prev => [{ id, text }, ...prev.slice(0, MAX_WINS_CHAT - 1)]);
   };
 
@@ -218,7 +230,7 @@ export default function ClubQR() {
     }
   };
 
-  const startSpin = (prize: Prize) => {
+  const startSpin = (prize: Prize, onComplete?: () => void) => {
     if (isSpinningRef.current || !rouletteRef.current) return;
     const prizes = roulettePrizesRef.current;
     if (prizes.length === 0) return;
@@ -265,6 +277,7 @@ export default function ClubQR() {
         idlePositionRef.current = endPosition;
         setSelectedPrize(prize);
         setIsSpinning(false);
+        onComplete?.();
         return;
       }
       requestAnimationFrame(animate);

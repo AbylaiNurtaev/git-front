@@ -110,7 +110,7 @@ class ApiService {
   }
 
   /** Публичный эндпоинт: последние 10 выигрышей по всем клубам (без авторизации) */
-  async getRecentWins(): Promise<Array<{ maskedPhone: string; prizeName: string; text: string }>> {
+  async getRecentWins(): Promise<Array<{ maskedPhone?: string; playerName?: string; prizeName: string; text?: string }>> {
     const response = await this.api.get('/players/recent-wins');
     return response.data ?? [];
   }
@@ -128,6 +128,12 @@ class ApiService {
 
   async getClubMe() {
     const response = await this.api.get('/clubs/me');
+    return response.data;
+  }
+
+  /** Обновить профиль своего клуба (в т.ч. цветовую палитру) — для авторизованного клуба */
+  async updateClubMe(data: Partial<{ theme: { primary: string; primaryDark: string; accent?: string } }>) {
+    const response = await this.api.patch('/clubs/me', data);
     return response.data;
   }
 
@@ -213,7 +219,19 @@ class ApiService {
     return response.data;
   }
 
-  async updateClub(id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string; latitude?: number; longitude?: number }>) {
+  async updateClub(
+    id: string,
+    data: Partial<{
+      name: string;
+      isActive: boolean;
+      managerFio?: string;
+      city?: string;
+      address?: string;
+      latitude?: number;
+      longitude?: number;
+      theme?: { primary: string; primaryDark: string; accent?: string };
+    }>
+  ) {
     const response = await this.api.put(`/admin/clubs/${id}`, data);
     return response.data;
   }

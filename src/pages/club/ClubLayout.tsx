@@ -1,11 +1,13 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
+import { useClubTheme } from '@/hooks/useClubTheme';
 import type { Club } from '@/types';
 import './ClubLayout.css';
 
 export default function ClubLayout() {
   const { currentUser, logout } = useStore();
   const club = currentUser as Club | null;
+  useClubTheme(club);
   const location = useLocation();
   const isQrPage = location.pathname === '/club/qr';
 
@@ -45,6 +47,12 @@ export default function ClubLayout() {
             className={({ isActive }) => isActive ? 'active' : ''}
           >
             QR-код
+          </NavLink>
+          <NavLink
+            to="/club/settings"
+            className={({ isActive }) => isActive ? 'active' : ''}
+          >
+            Настройки
           </NavLink>
         </nav>
 

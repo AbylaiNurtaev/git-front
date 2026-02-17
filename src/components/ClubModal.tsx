@@ -3,7 +3,8 @@ import Modal from './Modal';
 import FormField from './FormField';
 import MapPicker from './MapPicker';
 import { KAZAKHSTAN_CITIES } from '@/constants/cities';
-import type { Club } from '@/types';
+import type { Club, ClubTheme } from '@/types';
+import { DEFAULT_CLUB_THEME } from '@/constants/theme';
 
 export interface ClubFormData {
   name: string;
@@ -13,6 +14,7 @@ export interface ClubFormData {
   city?: string;
   latitude: number;
   longitude: number;
+  theme?: ClubTheme;
 }
 
 interface ClubModalProps {
@@ -30,6 +32,9 @@ export default function ClubModal({ isOpen, onClose, onSave, club }: ClubModalPr
   const [city, setCity] = useState('');
   const [latitude, setLatitude] = useState<number>(43.238949);
   const [longitude, setLongitude] = useState<number>(76.945465);
+  const [themePrimary, setThemePrimary] = useState(DEFAULT_CLUB_THEME.primary);
+  const [themePrimaryDark, setThemePrimaryDark] = useState(DEFAULT_CLUB_THEME.primaryDark);
+  const [themeAccent, setThemeAccent] = useState(DEFAULT_CLUB_THEME.accent ?? DEFAULT_CLUB_THEME.primary);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -41,6 +46,15 @@ export default function ClubModal({ isOpen, onClose, onSave, club }: ClubModalPr
       setCity(club.city || '');
       setLatitude(club.latitude ?? 43.238949);
       setLongitude(club.longitude ?? 76.945465);
+      if (club.theme) {
+        setThemePrimary(club.theme.primary);
+        setThemePrimaryDark(club.theme.primaryDark);
+        setThemeAccent(club.theme.accent ?? club.theme.primary);
+      } else {
+        setThemePrimary(DEFAULT_CLUB_THEME.primary);
+        setThemePrimaryDark(DEFAULT_CLUB_THEME.primaryDark);
+        setThemeAccent(DEFAULT_CLUB_THEME.accent ?? DEFAULT_CLUB_THEME.primary);
+      }
     } else {
       setName('');
       setPhone('');
@@ -49,6 +63,9 @@ export default function ClubModal({ isOpen, onClose, onSave, club }: ClubModalPr
       setCity('');
       setLatitude(43.238949);
       setLongitude(76.945465);
+      setThemePrimary(DEFAULT_CLUB_THEME.primary);
+      setThemePrimaryDark(DEFAULT_CLUB_THEME.primaryDark);
+      setThemeAccent(DEFAULT_CLUB_THEME.accent ?? DEFAULT_CLUB_THEME.primary);
     }
   }, [club, isOpen]);
 
@@ -67,6 +84,7 @@ export default function ClubModal({ isOpen, onClose, onSave, club }: ClubModalPr
         city: city.trim() || undefined,
         latitude,
         longitude,
+        theme: { primary: themePrimary, primaryDark: themePrimaryDark, accent: themeAccent || undefined },
       });
       onClose();
     } catch (error) {
@@ -160,6 +178,64 @@ export default function ClubModal({ isOpen, onClose, onSave, club }: ClubModalPr
             height={260}
           />
         </div>
+        {club && (
+          <div className="form-field club-modal-theme">
+            <label>Цветовая палитра клуба</label>
+            <div className="club-modal-theme-row">
+              <div className="club-modal-theme-item">
+                <span>Основной</span>
+                <div className="club-modal-theme-inputs">
+                  <input
+                    type="color"
+                    value={themePrimary}
+                    onChange={(e) => setThemePrimary(e.target.value)}
+                    className="club-modal-color"
+                  />
+                  <input
+                    type="text"
+                    value={themePrimary}
+                    onChange={(e) => setThemePrimary(e.target.value)}
+                    className="club-modal-color-text"
+                  />
+                </div>
+              </div>
+              <div className="club-modal-theme-item">
+                <span>Тёмный</span>
+                <div className="club-modal-theme-inputs">
+                  <input
+                    type="color"
+                    value={themePrimaryDark}
+                    onChange={(e) => setThemePrimaryDark(e.target.value)}
+                    className="club-modal-color"
+                  />
+                  <input
+                    type="text"
+                    value={themePrimaryDark}
+                    onChange={(e) => setThemePrimaryDark(e.target.value)}
+                    className="club-modal-color-text"
+                  />
+                </div>
+              </div>
+              <div className="club-modal-theme-item">
+                <span>Акцент</span>
+                <div className="club-modal-theme-inputs">
+                  <input
+                    type="color"
+                    value={themeAccent}
+                    onChange={(e) => setThemeAccent(e.target.value)}
+                    className="club-modal-color"
+                  />
+                  <input
+                    type="text"
+                    value={themeAccent}
+                    onChange={(e) => setThemeAccent(e.target.value)}
+                    className="club-modal-color-text"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="modal-actions">
           <button type="button" onClick={onClose} className="cancel-button">
             Отмена

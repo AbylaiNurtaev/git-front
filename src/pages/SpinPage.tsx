@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import { apiService } from '@/services/api';
 import { transformPrize } from '@/utils/transformers';
+import { useClubTheme } from '@/hooks/useClubTheme';
 import type { Club, Player, Prize } from '@/types';
 import './SpinPage.css';
 import './club/ClubPages.css';
@@ -22,6 +23,7 @@ export default function SpinPage() {
   const clubParam = searchParams.get('club');
   const { currentUser, spinRoulette, getClub, error } = useStore();
   const [resolvedClub, setResolvedClub] = useState<Club | null>(null);
+  useClubTheme(resolvedClub);
   const [clubResolveLoading, setClubResolveLoading] = useState(!!clubParam);
   const [isScanning, setIsScanning] = useState(!clubParam);
   const [spinPrizes, setSpinPrizes] = useState<Prize[]>([]);

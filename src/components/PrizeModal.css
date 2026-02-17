@@ -11,7 +11,7 @@
   margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
-  border: 2px solid rgba(139, 92, 246, 0.3);
+  border: 2px solid rgba(var(--theme-primary-rgb), 0.3);
   background: rgba(10, 10, 15, 0.6);
 }
 
@@ -51,10 +51,10 @@
   align-items: center;
   justify-content: center;
   padding: 12px 24px;
-  background: rgba(139, 92, 246, 0.1);
-  border: 2px dashed rgba(139, 92, 246, 0.4);
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  border: 2px dashed rgba(var(--theme-primary-rgb), 0.4);
   border-radius: 10px;
-  color: #8B5CF6;
+  color: var(--theme-primary);
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
@@ -63,8 +63,8 @@
 }
 
 .image-upload-button:hover {
-  background: rgba(139, 92, 246, 0.2);
-  border-color: rgba(139, 92, 246, 0.6);
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  border-color: rgba(var(--theme-primary-rgb), 0.6);
   transform: translateY(-2px);
 }
 

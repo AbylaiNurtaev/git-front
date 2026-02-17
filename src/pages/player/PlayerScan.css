@@ -80,7 +80,7 @@
   letter-spacing: 2px;
   text-align: center;
   background: rgba(10, 10, 15, 0.8);
-  border: 2px solid rgba(139, 92, 246, 0.4);
+  border: 2px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: 12px;
   color: #e0e0ff;
   box-sizing: border-box;
@@ -88,8 +88,8 @@
 
 .player-scan-manual-input:focus {
   outline: none;
-  border-color: #8B5CF6;
-  box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 12px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .player-scan-manual-input::placeholder {
@@ -101,7 +101,7 @@
   font-size: 16px;
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -110,7 +110,7 @@
 
 .player-scan-manual-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 16px rgba(var(--theme-primary-rgb), 0.4);
 }
 
 .player-scan-camera {

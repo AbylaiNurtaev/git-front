@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useStore } from '@/store/useStore';
+import { useClubTheme } from '@/hooks/useClubTheme';
 import { QRCodeSVG } from 'qrcode.react';
 import { apiService } from '@/services/api';
 import { getQrBaseUrl } from '@/config/api';
@@ -17,6 +18,7 @@ function maskPhone(phone: string): string {
 export default function ClubRoulettePage() {
   const { currentUser, fetchClubReports } = useStore();
   const club = currentUser as Club | null;
+  useClubTheme(club);
   const [roulettePrizes, setRoulettePrizes] = useState<Prize[]>([]);
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
@@ -84,8 +86,7 @@ export default function ClubRoulettePage() {
             status: 'pending',
             wonAt: new Date().toISOString(),
           } as Prize);
-        startSpin(toSpin);
-        setTimeout(loadHistory, 1000);
+        startSpin(toSpin, loadHistory);
       } catch {}
     };
 
@@ -95,7 +96,7 @@ export default function ClubRoulettePage() {
     };
   }, [club, lastSpinId, roulettePrizes]);
 
-  const startSpin = (prize: Prize) => {
+  const startSpin = (prize: Prize, onComplete?: () => void) => {
     if (isSpinning) return;
     const display = roulettePrizes.length >= 4 ? roulettePrizes.slice(0, 4) : roulettePrizes;
     if (display.length === 0) return;
@@ -127,6 +128,7 @@ export default function ClubRoulettePage() {
         setSelectedPrize(prize);
         setIsSpinning(false);
         setTimeout(() => setSelectedPrize(null), 5000);
+        onComplete?.();
       }
     }, stepMs);
   };
@@ -182,8 +184,10 @@ export default function ClubRoulettePage() {
               ) : (
                 historySpins.map((spin: any) => (
                   <li key={spin._id || spin.id || spin.createdAt} className="roulette-history-item">
-                    <span className="roulette-history-phone">{maskPhone(spin.playerPhone || spin.playerId?.phone || '')}</span>
-                    <span className="roulette-history-prize">Выиграл {spin.prize?.name || spin.prizeName || 'приз'}</span>
+                    <span className="roulette-history-name">
+                      {spin.playerName || spin.playerId?.name || maskPhone(spin.playerPhone || spin.playerId?.phone || '')}
+                    </span>
+                    <span className="roulette-history-prize">выиграл {spin.prize?.name || spin.prizeName || 'приз'}</span>
                   </li>
                 ))
               )}

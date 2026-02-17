@@ -14,7 +14,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #e0dcf0;
-  background: linear-gradient(135deg, #e0dcf0 0%, #a78bfa 100%);
+  background: linear-gradient(135deg, #e0dcf0 0%, var(--theme-accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -22,8 +22,8 @@
 
 .player-phone-badge {
   padding: 8px 14px;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(var(--theme-primary-rgb), 0.15);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.35);
   border-radius: 12px;
   font-size: 13px;
   font-weight: 600;
@@ -36,8 +36,8 @@
 }
 
 .player-balance-card {
-  background: linear-gradient(160deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.12) 50%, rgba(30, 27, 75, 0.4) 100%);
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: linear-gradient(160deg, rgba(var(--theme-primary-rgb), 0.2) 0%, rgba(var(--theme-primary-dark-rgb), 0.12) 50%, rgba(30, 27, 75, 0.4) 100%);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.35);
   border-radius: 24px;
   padding: 32px 28px;
   text-align: center;
@@ -55,7 +55,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+  background: radial-gradient(circle at 30% 20%, rgba(var(--theme-primary-rgb), 0.15) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -82,7 +82,7 @@
   line-height: 1;
   color: #f0eef6;
   letter-spacing: -0.03em;
-  text-shadow: 0 2px 20px rgba(139, 92, 246, 0.3);
+  text-shadow: 0 2px 20px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .player-balance-unit {
@@ -98,7 +98,7 @@
   gap: 10px;
   width: 100%;
   padding: 16px 24px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
   border: none;
   border-radius: 16px;
   color: #fff;
@@ -107,12 +107,12 @@
   letter-spacing: 0.02em;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 20px rgba(var(--theme-primary-rgb), 0.4);
 }
 
 .player-cta-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 8px 28px rgba(var(--theme-primary-rgb), 0.5);
 }
 
 .player-cta-button:active:not(:disabled) {
@@ -140,7 +140,7 @@
 
 .player-section {
   background: rgba(26, 26, 46, 0.6);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2);
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -151,10 +151,10 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #a78bfa;
+  color: var(--theme-accent);
   margin: 0 0 18px 0;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  border-bottom: 1px solid rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .player-prizes-list,
@@ -166,7 +166,7 @@
 
 .player-prize-card {
   background: rgba(15, 15, 25, 0.6);
-  border: 1px solid rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.15);
   border-radius: 16px;
   padding: 18px 20px;
   display: flex;
@@ -177,7 +177,7 @@
 }
 
 .player-prize-card:hover {
-  border-color: rgba(139, 92, 246, 0.35);
+  border-color: rgba(var(--theme-primary-rgb), 0.35);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
@@ -206,9 +206,9 @@
 }
 
 .player-prize-status.pending {
-  background: rgba(139, 92, 246, 0.2);
-  color: #a78bfa;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  color: var(--theme-accent);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .player-prize-status.confirmed {
@@ -231,7 +231,7 @@
 
 .player-history-item {
   background: rgba(15, 15, 25, 0.6);
-  border: 1px solid rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.12);
   border-radius: 14px;
   padding: 16px 18px;
   display: grid;
@@ -242,7 +242,7 @@
 }
 
 .player-history-item:hover {
-  border-color: rgba(139, 92, 246, 0.25);
+  border-color: rgba(var(--theme-primary-rgb), 0.25);
 }
 
 .player-history-type {
@@ -261,7 +261,7 @@
   font-size: 15px;
   font-weight: 700;
   text-align: right;
-  color: #a78bfa;
+  color: var(--theme-accent);
 }
 
 .player-history-amount.negative {
@@ -281,5 +281,5 @@
   font-size: 14px;
   border-radius: 16px;
   background: rgba(10, 10, 15, 0.3);
-  border: 1px dashed rgba(139, 92, 246, 0.2);
+  border: 1px dashed rgba(var(--theme-primary-rgb), 0.2);
 }

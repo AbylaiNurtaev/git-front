@@ -14,7 +14,7 @@
 }
 
 .player-home-header h1 {
-  color: #8B5CF6;
+  color: var(--theme-primary);
   font-size: 24px;
   margin: 0;
   font-weight: 700;
@@ -47,28 +47,28 @@
   border-radius: 24px;
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(139, 92, 246, 0.2);
+    0 0 0 1px rgba(var(--theme-primary-rgb), 0.2);
   overflow: hidden;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   display: flex;
   flex-direction: column;
 }
 
 .dashboard-header {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
-  color: #8B5CF6;
+  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.3) 0%, rgba(var(--theme-primary-dark-rgb), 0.3) 100%);
+  color: var(--theme-primary);
   padding: 30px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(139, 92, 246, 0.3);
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+  border-bottom: 1px solid rgba(var(--theme-primary-rgb), 0.3);
+  box-shadow: 0 4px 20px rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .dashboard-header h1 {
   font-size: 32px;
   margin: 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5)(139, 92, 246, 0.6);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(var(--theme-primary-rgb), 0.6);
   letter-spacing: 1px;
 }
 
@@ -117,8 +117,8 @@
 .logout-button {
   padding: 10px 20px;
   background: rgba(10, 10, 15, 0.6);
-  color: #7C3AED;
-  border: 1px solid rgba(124, 58, 237, 0.3);
+  color: var(--theme-primary-dark);
+  border: 1px solid rgba(var(--theme-primary-dark-rgb), 0.3);
   border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
@@ -127,8 +127,8 @@
 }
 
 .logout-button:hover {
-  background: rgba(124, 58, 237, 0.2);
-  border-color: #7C3AED;
+  background: rgba(var(--theme-primary-dark-rgb), 0.2);
+  border-color: var(--theme-primary-dark);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -142,12 +142,12 @@
 }
 
 .balance-card {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
-  color: #8B5CF6;
+  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2) 0%, rgba(var(--theme-primary-dark-rgb), 0.2) 100%);
+  color: var(--theme-primary);
   padding: 40px;
   border-radius: 20px;
   text-align: center;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
 }
@@ -193,7 +193,7 @@
 
 .spin-button {
   padding: 16px 40px;
-  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -204,13 +204,13 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   box-shadow: 
-    0 4px 20px rgba(139, 92, 246, 0.4),
+    0 4px 20px rgba(var(--theme-primary-rgb), 0.4),
 }
 
 .spin-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 
-    0 6px 30px rgba(139, 92, 246, 0.6),
+    0 6px 30px rgba(var(--theme-primary-rgb), 0.6),
 }
 
 .spin-button:disabled {
@@ -226,15 +226,15 @@
 }
 
 .club-spin-card {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.15) 0%, rgba(var(--theme-primary-dark-rgb), 0.15) 100%);
   padding: 28px 32px;
   border-radius: 20px;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .club-spin-card h2 {
-  color: #8B5CF6;
+  color: var(--theme-primary);
   font-size: 22px;
   margin-bottom: 10px;
   text-transform: uppercase;
@@ -259,7 +259,7 @@
   min-width: 180px;
   padding: 14px 18px;
   background: rgba(10, 10, 15, 0.6);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 12px;
   color: #e0e0e0;
   font-size: 15px;
@@ -272,8 +272,8 @@
 }
 
 .club-id-input:focus {
-  border-color: #8B5CF6;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 2px rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .club-spin-go {
@@ -297,7 +297,7 @@
   background: rgba(10, 10, 15, 0.6);
   padding: 30px;
   border-radius: 20px;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2);
 }
 
 @media (max-width: 768px) {
@@ -309,10 +309,10 @@
 
 .prizes-section h2,
 .history-section h2 {
-  color: #8B5CF6;
+  color: var(--theme-primary);
   margin-bottom: 25px;
   font-size: 28px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5)(139, 92, 246, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(var(--theme-primary-rgb), 0.4);
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -338,12 +338,12 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2);
   transition: all 0.3s;
 }
 
 .prize-card:hover {
-  border-color: rgba(139, 92, 246, 0.5);
+  border-color: rgba(var(--theme-primary-rgb), 0.5);
   box-shadow: 
     0 8px 30px rgba(0, 0, 0, 0.4),
   transform: translateY(-2px);
@@ -354,7 +354,7 @@
 }
 
 .prize-info h3 {
-  color: #8B5CF6;
+  color: var(--theme-primary);
   margin-bottom: 10px;
   font-size: 20px;
   font-weight: 700;
@@ -377,9 +377,9 @@
 }
 
 .status-pending {
-  background: rgba(139, 92, 246, 0.2);
-  color: #8B5CF6;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  color: var(--theme-primary);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .status-confirmed {
@@ -415,12 +415,12 @@
   grid-template-columns: 2fr 1fr 1fr;
   gap: 15px;
   align-items: center;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2);
   transition: all 0.3s;
 }
 
 .history-item:hover {
-  border-color: rgba(139, 92, 246, 0.5);
+  border-color: rgba(var(--theme-primary-rgb), 0.5);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0.2);
 }
 
@@ -444,7 +444,7 @@
   font-size: 20px;
   font-weight: 700;
   text-align: right;
-  color: #8B5CF6;
+  color: var(--theme-primary);
 }
 
 .transaction-date {

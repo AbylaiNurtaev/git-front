@@ -24,6 +24,15 @@ export function transformPlayer(player: any): Player {
   };
 }
 
+function transformClubTheme(theme: any): Club['theme'] {
+  if (!theme || typeof theme.primary !== 'string' || typeof theme.primaryDark !== 'string') return undefined;
+  return {
+    primary: theme.primary,
+    primaryDark: theme.primaryDark,
+    accent: typeof theme.accent === 'string' ? theme.accent : undefined,
+  };
+}
+
 export function transformClub(club: any): Club {
   const playersArray = Array.isArray(club.players) ? club.players : [];
   return {
@@ -49,6 +58,7 @@ export function transformClub(club: any): Club {
     address: club.address,
     latitude: club.latitude != null ? Number(club.latitude) : undefined,
     longitude: club.longitude != null ? Number(club.longitude) : undefined,
+    theme: transformClubTheme(club.theme),
   };
 }
 

@@ -19,6 +19,16 @@ export interface Player extends User {
   history: Transaction[];
 }
 
+/** Цветовая палитра клуба — сохраняется на бэкенде и подставляется в тему сайта */
+export interface ClubTheme {
+  /** Основной цвет (кнопки, акценты) — hex, например #8B5CF6 */
+  primary: string;
+  /** Тёмный вариант основного (градиенты, ховеры) — hex */
+  primaryDark: string;
+  /** Дополнительный акцент (подсветка, неон) — hex */
+  accent?: string;
+}
+
 export interface Club extends User {
   role: 'club';
   clubId: string;
@@ -41,6 +51,8 @@ export interface Club extends User {
   latitude?: number;
   /** Долгота (геолокация клуба) */
   longitude?: number;
+  /** Цветовая палитра клуба — тема сайта при входе по QR/коду клуба и в кабинете клуба */
+  theme?: ClubTheme;
 }
 
 export interface Admin extends User {

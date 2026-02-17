@@ -11,6 +11,7 @@ import ClubLayout from './pages/club/ClubLayout';
 import ClubOverview from './pages/club/ClubOverview';
 import ClubPlayers from './pages/club/ClubPlayers';
 import ClubQR from './pages/club/ClubQR';
+import ClubSettings from './pages/club/ClubSettings';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminOverview from './pages/admin/AdminOverview';
 import AdminClubs from './pages/admin/AdminClubs';
@@ -73,6 +74,7 @@ function App() {
         <Route index element={<ClubOverview />} />
         <Route path="players" element={<ClubPlayers />} />
         <Route path="qr" element={<ClubQR />} />
+        <Route path="settings" element={<ClubSettings />} />
       </Route>
       <Route
         path="/club/roulette"

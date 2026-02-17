@@ -14,14 +14,14 @@
 }
 
 .required {
-  color: #7C3AED;
+  color: var(--theme-primary-dark);
   margin-left: 4px;
 }
 
 .form-input {
   padding: 14px 18px;
   background: rgba(10, 10, 15, 0.6);
-  border: 2px solid rgba(139, 92, 246, 0.3);
+  border: 2px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 12px;
   font-size: 16px;
   color: #e0e0e0;
@@ -36,9 +36,9 @@
 }
 
 .form-input:focus {
-  border-color: #8B5CF6;
+  border-color: var(--theme-primary);
   box-shadow: 
-    0 0 0 4px rgba(139, 92, 246, 0.1);
+    0 0 0 4px rgba(var(--theme-primary-rgb), 0.1);
   background: rgba(10, 10, 15, 0.8);
 }
 

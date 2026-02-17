@@ -180,9 +180,9 @@ export default function AdminClubDetail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {clubAnalytics.recentSpins.map((spin: { id?: string; _id?: string; playerPhone?: string; playerId?: string; prizeName?: string; prizeId?: string; createdAt?: string }) => (
+                  {clubAnalytics.recentSpins.map((spin: { id?: string; _id?: string; playerPhone?: string; playerName?: string; playerId?: string; prizeName?: string; prizeId?: string; createdAt?: string }) => (
                     <tr key={spin.id || (spin as any)._id || Math.random()}>
-                      <td>{spin.playerPhone ?? spin.playerId ?? '—'}</td>
+                      <td>{spin.playerName ?? spin.playerPhone ?? spin.playerId ?? '—'}</td>
                       <td>{spin.prizeName ?? '—'}</td>
                       <td>{spin.createdAt ? new Date(spin.createdAt).toLocaleString('ru-RU') : '—'}</td>
                     </tr>
@@ -237,6 +237,7 @@ export default function AdminClubDetail() {
             address: data.address || undefined,
             latitude: data.latitude,
             longitude: data.longitude,
+            theme: data.theme,
           });
           await fetchClubs();
           setClubModalOpen(false);

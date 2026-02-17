@@ -3,10 +3,10 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background: #0a0a0f;
+  background: var(--theme-bg);
   background-image:
-    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(var(--theme-primary-rgb), 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(var(--theme-primary-dark-rgb), 0.08) 0%, transparent 50%);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -57,7 +57,7 @@
 .roulette-card {
   aspect-ratio: 0.75;
   background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(10, 10, 15, 0.95) 100%);
-  border: 2px solid rgba(139, 92, 246, 0.35);
+  border: 2px solid rgba(var(--theme-primary-rgb), 0.35);
   border-radius: 12px;
   padding: 12px;
   display: flex;
@@ -71,22 +71,22 @@
 }
 
 .roulette-card.highlighted {
-  border-color: #8B5CF6;
-  box-shadow: 0 0 24px rgba(139, 92, 246, 0.5);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 24px rgba(var(--theme-primary-rgb), 0.5);
   transform: scale(1.08);
   z-index: 2;
   animation: spinPulse 0.25s ease-in-out infinite;
 }
 
 @keyframes spinPulse {
-  0%, 100% { box-shadow: 0 0 24px rgba(139, 92, 246, 0.5); transform: scale(1.08); }
-  50% { box-shadow: 0 0 32px rgba(139, 92, 246, 0.7); transform: scale(1.12); }
+  0%, 100% { box-shadow: 0 0 24px rgba(var(--theme-primary-rgb), 0.5); transform: scale(1.08); }
+  50% { box-shadow: 0 0 32px rgba(var(--theme-primary-rgb), 0.7); transform: scale(1.12); }
 }
 
 .roulette-card.selected {
-  border-color: #8B5CF6;
+  border-color: var(--theme-primary);
   border-width: 3px;
-  box-shadow: 0 0 28px rgba(139, 92, 246, 0.6);
+  box-shadow: 0 0 28px rgba(var(--theme-primary-rgb), 0.6);
   transform: scale(1.1);
   z-index: 3;
 }
@@ -106,27 +106,27 @@
   height: 80px;
   object-fit: cover;
   border-radius: 8px;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .roulette-card-placeholder {
   width: 100%;
   height: 80px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2) 0%, rgba(var(--theme-primary-dark-rgb), 0.2) 100%);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 32px;
   font-weight: 700;
-  color: #8B5CF6;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: var(--theme-primary);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .roulette-card-name {
   font-size: 13px;
   font-weight: 700;
-  color: #8B5CF6;
+  color: var(--theme-primary);
   text-align: center;
   line-height: 1.2;
   text-transform: uppercase;
@@ -162,7 +162,7 @@
   flex-direction: column;
   background: rgba(26, 26, 46, 0.6);
   border-radius: 12px;
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
   padding: 16px;
   overflow: hidden;
 }
@@ -170,7 +170,7 @@
 .roulette-history-heading {
   font-size: 18px;
   font-weight: 700;
-  color: #8B5CF6;
+  color: var(--theme-primary);
   margin: 0 0 12px 0;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -191,7 +191,7 @@
 }
 
 .roulette-history-list::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.3);
+  background: rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 3px;
 }
 
@@ -200,7 +200,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border-bottom: 1px solid rgba(139, 92, 246, 0.12);
+  border-bottom: 1px solid rgba(var(--theme-primary-rgb), 0.12);
   font-size: 14px;
   color: #b8b8d4;
 }
@@ -209,8 +209,9 @@
   border-bottom: none;
 }
 
-.roulette-history-phone {
-  color: #8B5CF6;
+.roulette-history-phone,
+.roulette-history-name {
+  color: var(--theme-primary);
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -235,7 +236,7 @@
 
 .roulette-qr-card {
   background: rgba(26, 26, 46, 0.9);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -249,7 +250,7 @@
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: #8B5CF6;
+  color: var(--theme-primary);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -261,14 +262,14 @@
 .roulette-qr-placeholder {
   width: 140px;
   height: 140px;
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(var(--theme-primary-rgb), 0.15);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
   font-weight: 700;
-  color: #8B5CF6;
+  color: var(--theme-primary);
 }
 
 /* Оверлей выигрыша */
@@ -294,8 +295,8 @@
   padding: 48px 56px;
   background: rgba(26, 26, 46, 0.98);
   border-radius: 24px;
-  border: 2px solid #8B5CF6;
-  box-shadow: 0 8px 40px rgba(139, 92, 246, 0.3);
+  border: 2px solid var(--theme-primary);
+  box-shadow: 0 8px 40px rgba(var(--theme-primary-rgb), 0.3);
   max-width: 420px;
   animation: resultPop 0.5s ease;
 }
@@ -307,7 +308,7 @@
 
 .roulette-result-title {
   font-size: 36px;
-  color: #8B5CF6;
+  color: var(--theme-primary);
   margin: 0 0 24px 0;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -318,12 +319,12 @@
   padding: 24px;
   background: rgba(10, 10, 15, 0.6);
   border-radius: 16px;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .roulette-result-name {
   font-size: 26px;
-  color: #8B5CF6;
+  color: var(--theme-primary);
   font-weight: 700;
   margin-bottom: 8px;
 }
@@ -339,9 +340,9 @@
   bottom: 16px;
   right: 16px;
   padding: 10px 20px;
-  background: rgba(139, 92, 246, 0.25);
-  color: #8B5CF6;
-  border: 1px solid rgba(139, 92, 246, 0.5);
+  background: rgba(var(--theme-primary-rgb), 0.25);
+  color: var(--theme-primary);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.5);
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
@@ -351,8 +352,8 @@
 }
 
 .roulette-test-btn:hover:not(:disabled) {
-  background: rgba(139, 92, 246, 0.4);
-  border-color: #8B5CF6;
+  background: rgba(var(--theme-primary-rgb), 0.4);
+  border-color: var(--theme-primary);
 }
 
 .roulette-test-btn:disabled {
