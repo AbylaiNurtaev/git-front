@@ -10,7 +10,8 @@ import './ClubRoulettePage.css';
 import { createPortal } from 'react-dom';
 
 const PRIZE_WIDTH = 284;
-const SPIN_DURATION_MS = 4000;
+/** Общая длительность спина; одна плавная кривая без скачков скорости */
+const SPIN_DURATION_MS = 11000;
 /** Буфер копий рулетки, чтобы справа не было пустого места */
 const ROULETTE_COPIES = 50;
 const NORMALIZE_THRESHOLD_COPIES = 3;
@@ -222,16 +223,18 @@ export default function SpinPage() {
     const startPosition = currentScroll;
 
     const startTime = Date.now();
+    const travel = targetPosition - startPosition;
+
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / SPIN_DURATION_MS, 1);
+      // Плавное замедление без «подвисания» в конце (степень 3 — не тянем последние секунды)
       const easeOut = 1 - Math.pow(1 - progress, 3);
-      const pos = startPosition + (targetPosition - startPosition) * easeOut;
+      const pos = startPosition + travel * easeOut;
       setScrollPosition(pos);
       scrollPositionRef.current = pos;
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
+
+      if (progress >= 1) {
         let finalPos = targetPosition;
         if (finalPos < -NORMALIZE_THRESHOLD_COPIES * oneLap) {
           const shift = Math.ceil(-finalPos / oneLap) * oneLap;
@@ -242,7 +245,9 @@ export default function SpinPage() {
         setSelectedPrize(prize);
         setIsSpinning(false);
         onComplete?.();
+        return;
       }
+      requestAnimationFrame(animate);
     };
     requestAnimationFrame(animate);
   };
@@ -393,9 +398,8 @@ export default function SpinPage() {
                 </button>
               </div>
               {result && createPortal(
-                <div className="result-overlay">
-                  <div className="result-content">
-                    <button onClick={() => setResult(null)} className="result-close-button" aria-label="Закрыть">×</button>
+                <div className="result-overlay" onClick={() => setResult(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setResult(null)} aria-label="Закрыть">
+                  <div className="result-content" onClick={(e) => e.stopPropagation()}>
                     <h2 className="result-title">Выигрыш!</h2>
                     <div className="result-prize">
                       {result.image && <img src={result.image} alt={result.name} className="result-prize-image" />}
@@ -614,16 +618,8 @@ export default function SpinPage() {
             </button>
 
             {result && createPortal(
-              <div className="result-overlay">
-                <div className="result-content">
-                  <button
-                    onClick={() => setResult(null)}
-                    className="result-close-button"
-                    aria-label="Закрыть"
-                    title="Закрыть (остаться на странице)"
-                  >
-                    ×
-                  </button>
+              <div className="result-overlay" onClick={() => setResult(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setResult(null)} aria-label="Закрыть">
+                <div className="result-content" onClick={(e) => e.stopPropagation()}>
                   <h2 className="result-title">Выигрыш!</h2>
                   <div className="result-prize">
                     {result.image && (

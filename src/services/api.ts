@@ -198,7 +198,7 @@ class ApiService {
     return response.data;
   }
 
-  async createClub(data: { name: string; phone: string; address: string; managerFio?: string; city?: string }) {
+  async createClub(data: { name: string; phone: string; address: string; managerFio?: string; city?: string; latitude: number; longitude: number }) {
     const response = await this.api.post('/admin/clubs', data);
     return response.data;
   }
@@ -213,7 +213,7 @@ class ApiService {
     return response.data;
   }
 
-  async updateClub(id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string }>) {
+  async updateClub(id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string; latitude?: number; longitude?: number }>) {
     const response = await this.api.put(`/admin/clubs/${id}`, data);
     return response.data;
   }

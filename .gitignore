@@ -24,4 +24,7 @@ dist-ssr
 *.sw?
 
 .env
-.env.example
+!.env.example
+
+# Telegram bot
+telegram-bot/store.json

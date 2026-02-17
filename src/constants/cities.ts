@@ -1,0 +1,23 @@
+/** Города Казахстана с координатами (широта, долгота) */
+export const KAZAKHSTAN_CITIES: { name: string; latitude: number; longitude: number }[] = [
+  { name: 'Астана', latitude: 51.1694, longitude: 71.4491 },
+  { name: 'Алматы', latitude: 43.238949, longitude: 76.945465 },
+  { name: 'Шымкент', latitude: 41.311081, longitude: 69.240562 },
+  { name: 'Актобе', latitude: 50.2839, longitude: 57.207 },
+  { name: 'Караганда', latitude: 49.8047, longitude: 73.0856 },
+  { name: 'Тараз', latitude: 42.8983, longitude: 71.367 },
+  { name: 'Павлодар', latitude: 52.274, longitude: 76.9577 },
+  { name: 'Усть-Каменогорск', latitude: 49.9485, longitude: 82.6153 },
+  { name: 'Семей', latitude: 50.4111, longitude: 80.2274 },
+  { name: 'Атырау', latitude: 47.1072, longitude: 51.9167 },
+  { name: 'Костанай', latitude: 53.2144, longitude: 63.6246 },
+  { name: 'Уральск', latitude: 51.2333, longitude: 51.3667 },
+  { name: 'Петропавловск', latitude: 54.8667, longitude: 69.15 },
+  { name: 'Актау', latitude: 43.65, longitude: 51.15 },
+  { name: 'Темиртау', latitude: 50.0544, longitude: 72.9483 },
+  { name: 'Туркестан', latitude: 43.2973, longitude: 68.2517 },
+  { name: 'Кызылорда', latitude: 44.8528, longitude: 65.5092 },
+  { name: 'Кокшетау', latitude: 53.2833, longitude: 69.4 },
+  { name: 'Талдыкорган', latitude: 45.0167, longitude: 78.3833 },
+  { name: 'Экибастуз', latitude: 51.7236, longitude: 75.3228 },
+];

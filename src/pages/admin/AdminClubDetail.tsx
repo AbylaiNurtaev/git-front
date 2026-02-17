@@ -130,6 +130,14 @@ export default function AdminClubDetail() {
                 <span>{club.address}</span>
               </div>
             )}
+            {(club.latitude != null || club.longitude != null) && (
+              <div className="info-item">
+                <strong>Геолокация:</strong>
+                <span>
+                  {club.latitude?.toFixed(6)}, {club.longitude?.toFixed(6)}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -222,10 +230,16 @@ export default function AdminClubDetail() {
         isOpen={clubModalOpen}
         onClose={() => setClubModalOpen(false)}
         onSave={async (data) => {
-          await updateClub(club.id, { name: data.name, managerFio: data.managerFio, city: data.city, address: data.address || undefined });
+          await updateClub(club.id, {
+            name: data.name,
+            managerFio: data.managerFio,
+            city: data.city,
+            address: data.address || undefined,
+            latitude: data.latitude,
+            longitude: data.longitude,
+          });
           await fetchClubs();
           setClubModalOpen(false);
-          // Обновляем данные клуба
           const clubs = await fetchClubs();
           const updatedClub = clubs.find((c: Club) => c.id === club.id);
           if (updatedClub) {

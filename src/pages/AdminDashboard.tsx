@@ -384,7 +384,14 @@ export default function AdminDashboard() {
         }}
         onSave={async (data) => {
           if (selectedClub) {
-            await updateClub(selectedClub.id, { name: data.name, managerFio: data.managerFio, city: data.city, address: data.address || undefined });
+            await updateClub(selectedClub.id, {
+              name: data.name,
+              managerFio: data.managerFio,
+              city: data.city,
+              address: data.address || undefined,
+              latitude: data.latitude,
+              longitude: data.longitude,
+            });
           } else {
             await createClub(data);
           }

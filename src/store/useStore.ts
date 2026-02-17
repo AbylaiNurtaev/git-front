@@ -54,8 +54,8 @@ interface Store {
   
   // Admin actions
   fetchClubs: () => Promise<Club[]>;
-  createClub: (data: { name: string; phone: string; address: string; managerFio?: string; city?: string }) => Promise<Club | null>;
-  updateClub: (id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string }>) => Promise<boolean>;
+  createClub: (data: { name: string; phone: string; address: string; managerFio?: string; city?: string; latitude: number; longitude: number }) => Promise<Club | null>;
+  updateClub: (id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string; latitude?: number; longitude?: number }>) => Promise<boolean>;
   deleteClub: (id: string) => Promise<boolean>;
   fetchUsers: (role?: string) => Promise<User[]>;
   updateUser: (id: string, data: Partial<{ balance: number; isActive: boolean }>) => Promise<boolean>;
@@ -418,7 +418,7 @@ export const useStore = create<Store>()(
         }
       },
 
-      createClub: async (data: { name: string; phone: string; address: string; managerFio?: string; city?: string }) => {
+      createClub: async (data: { name: string; phone: string; address: string; managerFio?: string; city?: string; latitude: number; longitude: number }) => {
         try {
           const response = await apiService.createClub(data);
           const club = transformClub(response);
@@ -430,7 +430,7 @@ export const useStore = create<Store>()(
         }
       },
 
-      updateClub: async (id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string }>) => {
+      updateClub: async (id: string, data: Partial<{ name: string; isActive: boolean; managerFio?: string; city?: string; address?: string; latitude?: number; longitude?: number }>) => {
         try {
           await apiService.updateClub(id, data);
           await get().fetchClubs();

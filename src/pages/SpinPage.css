@@ -329,7 +329,7 @@
   margin: 0;
 }
 
-/* Оверлей выигрыша — на весь экран, контент строго по центру */
+/* Оверлей выигрыша — на весь экран, контент строго по центру; закрыть по клику вне контента */
 .spin-page .result-overlay {
   position: fixed;
   top: 0;
@@ -347,22 +347,36 @@
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(10px);
+  cursor: pointer;
 }
 
 .spin-page .result-overlay .result-content {
   margin: auto;
-  max-height: 90vh;
-  max-width: min(500px, 90vw);
+  max-height: 95vh;
+  max-width: min(900px, 95vw);
+  min-width: min(360px, 90vw);
   overflow-y: auto;
   flex-shrink: 0;
   position: relative;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spin-page .result-overlay .result-prize {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .spin-page .result-overlay .result-prize-image {
   object-fit: contain;
-  max-height: 40vh;
-  background: rgba(10, 10, 15, 0.5);
-  border-radius: 12px;
+  max-height: 78vh;
+  width: auto;
+  max-width: 100%;
+  display: block;
 }
 
 .result-modal {
@@ -382,19 +396,29 @@
 .result-content {
   background: rgba(26, 26, 46, 0.95);
   backdrop-filter: blur(20px);
-  padding: 50px;
-  border-radius: 24px;
+  padding: 40px 48px 48px;
+  border-radius: 28px;
   text-align: center;
-  max-width: 500px;
+  max-width: 900px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 24px rgba(139, 92, 246, 0.2);
   border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
-.result-content h2 {
+.result-content .result-title {
   color: #8B5CF6;
-  margin-bottom: 30px;
-  font-size: 32px;
+  margin-bottom: 28px;
+  font-size: 38px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 92, 246, 0.3);
+}
+
+.result-content .result-prize-name {
+  font-size: 22px;
+  margin-top: 16px;
+}
+
+.result-content .result-prize-desc {
+  font-size: 16px;
+  margin-top: 10px;
 }
 
 /* Попап "Спасибо за участие" (клиент по QR) */
@@ -453,12 +477,12 @@
 
 @media (max-width: 768px) {
   .result-content {
-    padding: 30px 20px;
+    padding: 36px 24px;
     margin: 20px;
   }
 
-  .result-content h2 {
-    font-size: 24px;
+  .result-content .result-title {
+    font-size: 28px;
   }
 
   .thank-you-text,

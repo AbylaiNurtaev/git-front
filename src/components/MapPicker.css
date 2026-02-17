@@ -1,0 +1,17 @@
+.map-picker {
+  margin: 0.5rem 0;
+}
+
+.map-picker-container {
+  min-height: 200px;
+}
+
+.map-picker-container.leaflet-container {
+  font-family: inherit;
+}
+
+.map-picker-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-muted, #666);
+}

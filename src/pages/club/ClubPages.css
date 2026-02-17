@@ -574,24 +574,55 @@
   object-fit: contain;
 }
 
-/* Линия-указатель только по высоте призов на странице QR */
+/* На странице QR: без линии по центру, стрелки строго над и под полосой cs-prize-item */
 .club-qr-page .cs-roulette-pointer {
-  height: 78%;
+  width: 0;
+  height: 100%;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+  border: none;
   box-sizing: border-box;
+  pointer-events: none;
 }
 
+/* Верхняя стрелка — прямо над верхним краем карточек (cs-prize-item 480px по центру) */
 .club-qr-page .cs-roulette-pointer::before {
-  top: -6px;
-  border-left-width: 6px;
-  border-right-width: 6px;
-  border-bottom-width: 8px;
+  top: calc(50% - 240px - 20px);
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: none;
+  border-top: 22px solid #8b5cf6;
+  filter:
+    drop-shadow(0 2px 8px rgba(139, 92, 246, 0.6))
+    drop-shadow(0 0 14px rgba(139, 92, 246, 0.35));
+  box-shadow: none;
 }
 
+/* Нижняя стрелка — прямо под нижним краем карточек (cs-prize-item) */
 .club-qr-page .cs-roulette-pointer::after {
-  bottom: -6px;
-  border-left-width: 6px;
-  border-right-width: 6px;
-  border-top-width: 8px;
+  top: calc(50% + 240px + 6px);
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: none;
+  border-bottom: 22px solid #8b5cf6;
+  filter:
+    drop-shadow(0 -2px 8px rgba(139, 92, 246, 0.6))
+    drop-shadow(0 0 14px rgba(139, 92, 246, 0.35));
+  box-shadow: none;
 }
 
 /* Кнопка тестового спина — только в полноэкранном режиме */

@@ -37,6 +37,10 @@ export interface Club extends User {
   city?: string;
   /** Адрес (с бэкенда) */
   address?: string;
+  /** Широта (геолокация клуба) */
+  latitude?: number;
+  /** Долгота (геолокация клуба) */
+  longitude?: number;
 }
 
 export interface Admin extends User {

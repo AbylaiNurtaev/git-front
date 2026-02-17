@@ -47,6 +47,8 @@ export function transformClub(club: any): Club {
     managerFio: club.managerFio,
     city: club.city,
     address: club.address,
+    latitude: club.latitude != null ? Number(club.latitude) : undefined,
+    longitude: club.longitude != null ? Number(club.longitude) : undefined,
   };
 }
 

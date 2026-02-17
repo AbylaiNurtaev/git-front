@@ -34,7 +34,7 @@ export default function AdminLayout() {
             to="/admin/clubs"
             className={({ isActive }) => isActive ? 'active' : ''}
           >
-            Infinity
+            Клубы
           </NavLink>
           <NavLink
             to="/admin/users"

@@ -246,28 +246,28 @@ export default function ClubQR() {
     const k = Math.floor((startPosition - T) / oneSetWidth) - 1;
     const targetPosition = T + k * oneSetWidth;
 
-    // Динамичная рулетка: лишние обороты, дольше по времени, быстрый старт и плавное замедление
-    const extraRotations = 3; // сколько полных оборотов добавить для зрелищности
+    // Одна плавная кривая: быстро в начале, долгое плавное замедление до нуля в конце (без скачков)
+    const extraRotations = 3;
     const endPosition = targetPosition - extraRotations * oneSetWidth;
-    const duration = 7500; // 7.5 сек — дольше наблюдать
+    const duration = 11000;
+    const travel = endPosition - startPosition;
     const startTime = Date.now();
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease-out quint: в начале быстро, к концу потихоньку замедляется
-      const easeOut = 1 - Math.pow(1 - progress, 5);
-      const currentPosition = startPosition + (endPosition - startPosition) * easeOut;
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const currentPosition = startPosition + travel * easeOut;
       setScrollPosition(currentPosition);
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
+      if (progress >= 1) {
         setScrollPosition(endPosition);
         idlePositionRef.current = endPosition;
         setSelectedPrize(prize);
         setIsSpinning(false);
+        return;
       }
+      requestAnimationFrame(animate);
     };
 
     requestAnimationFrame(animate);
@@ -356,15 +356,8 @@ export default function ClubQR() {
             </div>
 
             {selectedPrize && !isSpinning && (
-              <div className="result-overlay">
-                <div className="result-content">
-                  <button
-                    onClick={() => setSelectedPrize(null)}
-                    className="result-close-button"
-                    aria-label="Закрыть"
-                  >
-                    ×
-                  </button>
+              <div className="result-overlay" onClick={() => setSelectedPrize(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setSelectedPrize(null)} aria-label="Закрыть">
+                <div className="result-content" onClick={(e) => e.stopPropagation()}>
                   <h2 className="result-title">Выигрыш!</h2>
                   <div className="result-prize">
                     {selectedPrize.image && (
