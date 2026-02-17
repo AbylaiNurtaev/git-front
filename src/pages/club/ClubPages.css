@@ -366,7 +366,11 @@
 }
 
 .confirm-button {
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-dark) 100%
+  );
   color: white;
   box-shadow: 0 4px 15px rgba(var(--theme-primary-rgb), 0.3);
 }
@@ -592,7 +596,7 @@
 
 /* Верхняя стрелка — прямо над верхним краем карточек (cs-prize-item 480px по центру) */
 .club-qr-page .cs-roulette-pointer::before {
-  top: calc(50% - 240px - 20px);
+  top: calc(50% - 240px - 30px);
   bottom: auto;
   left: 50%;
   transform: translateX(-50%);
@@ -602,8 +606,7 @@
   border-right: 20px solid transparent;
   border-bottom: none;
   border-top: 22px solid var(--theme-primary);
-  filter:
-    drop-shadow(0 2px 8px rgba(var(--theme-primary-rgb), 0.6))
+  filter: drop-shadow(0 2px 8px rgba(var(--theme-primary-rgb), 0.6))
     drop-shadow(0 0 14px rgba(var(--theme-primary-rgb), 0.35));
   box-shadow: none;
 }
@@ -620,8 +623,7 @@
   border-right: 20px solid transparent;
   border-top: none;
   border-bottom: 22px solid var(--theme-primary);
-  filter:
-    drop-shadow(0 -2px 8px rgba(var(--theme-primary-rgb), 0.6))
+  filter: drop-shadow(0 -2px 8px rgba(var(--theme-primary-rgb), 0.6))
     drop-shadow(0 0 14px rgba(var(--theme-primary-rgb), 0.35));
   box-shadow: none;
 }
@@ -1039,7 +1041,11 @@
 }
 
 .pagination-num.active {
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-dark) 100%
+  );
   color: white;
   border-color: var(--theme-primary);
   box-shadow: 0 2px 12px rgba(var(--theme-primary-rgb), 0.4);
