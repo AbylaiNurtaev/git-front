@@ -5,6 +5,7 @@ import { apiService } from '@/services/api';
 import { getSocketUrl } from '@/config/api';
 import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
+import logoUrl from '@/assets/logo.png';
 import './ClubPages.css';
 import '../ClubRoulettePage.css';
 import '../SpinPage.css';
@@ -61,6 +62,9 @@ interface SpinPayload {
 export default function ClubQR() {
   const { currentUser, fetchClubData } = useStore();
   const club = currentUser as Club | null;
+  const isLocalhost =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
   // Подтягиваем данные клуба с бэка (GET /api/clubs/me), чтобы в объекте был pinCode
   useEffect(() => {
@@ -76,6 +80,7 @@ export default function ClubQR() {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [winsChat, setWinsChat] = useState<Array<{ id: string; text: string }>>([]);
+  const [currentSpinnerName, setCurrentSpinnerName] = useState<string | null>(null);
   const winsChatIdRef = useRef(0);
   const roulettePrizesRef = useRef<Prize[]>([]);
   roulettePrizesRef.current = roulettePrizes;
@@ -86,6 +91,15 @@ export default function ClubQR() {
   const idleRafRef = useRef<number | null>(null);
   const isSpinningRef = useRef(false);
   isSpinningRef.current = isSpinning;
+  type PendingWin =
+    | { type: 'recentWins'; recentWins: WinItem[] }
+    | { type: 'single'; displayName: string; prizeName: string };
+  type QueuedSpin = {
+    prize: Prize;
+    pendingWin?: PendingWin;
+    spinnerName?: string;
+  };
+  const spinQueueRef = useRef<QueuedSpin[]>([]);
 
   // Авто-закрытие оверлея с призом через 7 секунд
   useEffect(() => {
@@ -119,27 +133,6 @@ export default function ClubQR() {
     if (club) loadPrizes();
   }, [club?.id, club?.clubId, club?.token]);
 
-  // Загрузка ленты последних выигрышей (GET /api/players/recent-wins, публичный)
-  useEffect(() => {
-    if (!club) return;
-    let cancelled = false;
-    apiService
-      .getRecentWins()
-      .then((list) => {
-        if (!cancelled && Array.isArray(list) && list.length > 0) {
-          setWinsChat(
-            list.slice(0, MAX_WINS_CHAT).map((w, i) => {
-              const item = w as WinItem;
-              const text = item.text?.includes('выиграл') ? item.text! : `${winDisplayName(item)} выиграл ${item.prizeName}`;
-              return { id: `recent-${i}`, text };
-            })
-          );
-        }
-      })
-      .catch(() => { /* тихо игнорируем, лента остаётся пустой или от сокета */ });
-    return () => { cancelled = true; };
-  }, [club?.id, club?.clubId, club?.token]);
-
   useEffect(() => {
     setRouletteCopies(ROULETTE_MIN_COPIES);
     rouletteCopiesRef.current = ROULETTE_MIN_COPIES;
@@ -166,6 +159,7 @@ export default function ClubQR() {
       const prize = transformPrize(prizeData);
       const prizeName = prize.name || 'Приз';
       const singleDisplayName = payload.name ?? payload.playerName ?? (payload.playerPhone ? maskPhone(payload.playerPhone) : randomMaskedPhone());
+      const spinnerName = payload.playerName ?? (payload.playerPhone ? maskPhone(payload.playerPhone) : undefined);
       const pendingWin =
         Array.isArray(payload.recentWins) && payload.recentWins.length > 0
           ? { type: 'recentWins' as const, recentWins: payload.recentWins }
@@ -174,18 +168,7 @@ export default function ClubQR() {
               displayName: singleDisplayName,
               prizeName,
             };
-      startSpin(prize, () => {
-        if (pendingWin.type === 'recentWins') {
-          setWinsChat(
-            pendingWin.recentWins.map((w, i) => {
-              const text = w.text?.includes('выиграл') ? w.text : `${winDisplayName(w)} выиграл ${w.prizeName}`;
-              return { id: `win-${i}`, text };
-            })
-          );
-        } else {
-          addWinToChat(pendingWin.displayName, pendingWin.prizeName);
-        }
-      });
+      enqueueSpin({ prize, pendingWin, spinnerName });
     });
 
     socket.on('connect_error', (err) => {
@@ -237,15 +220,51 @@ export default function ClubQR() {
     setWinsChat(prev => [{ id, text }, ...prev.slice(0, MAX_WINS_CHAT - 1)]);
   };
 
-  // Чат побед — только из payload.recentWins с бэкенда (без фейковых сообщений)
+  const runNextSpinFromQueue = () => {
+    if (isSpinningRef.current) return;
+    const queue = spinQueueRef.current;
+    if (queue.length === 0) return;
+    const next = queue.shift();
+    if (!next) return;
+    const { prize, pendingWin, spinnerName } = next;
+    if (spinnerName) {
+      setCurrentSpinnerName(spinnerName);
+    }
+    startSpin(prize, () => {
+      if (pendingWin) {
+        if (pendingWin.type === 'recentWins') {
+          setWinsChat(
+            pendingWin.recentWins.map((w, i) => {
+              const text = w.text?.includes('выиграл') ? w.text : `${winDisplayName(w)} выиграл ${w.prizeName}`;
+              return { id: `win-${i}`, text };
+            })
+          );
+        } else {
+          addWinToChat(pendingWin.displayName, pendingWin.prizeName);
+        }
+      }
+      setCurrentSpinnerName(null);
+      runNextSpinFromQueue();
+    });
+  };
 
-  // Тестовый спин — закомментирован
-  // const handleTestSpin = () => {
-  //   if (roulettePrizes.length > 0 && !isSpinning) {
-  //     const randomPrize = roulettePrizes[Math.floor(Math.random() * roulettePrizes.length)];
-  //     startSpin(randomPrize);
-  //   }
-  // };
+  const enqueueSpin = (item: QueuedSpin) => {
+    spinQueueRef.current = [...spinQueueRef.current, item];
+    if (!isSpinningRef.current) {
+      runNextSpinFromQueue();
+    }
+  };
+
+  // Тестовый спин — только на локалхосте (для отладки)
+  const handleTestSpin = () => {
+    if (roulettePrizes.length > 0 && isLocalhost) {
+      const randomPrize = roulettePrizes[Math.floor(Math.random() * roulettePrizes.length)];
+      enqueueSpin({
+        prize: randomPrize,
+        spinnerName: 'Тестовый игрок',
+      });
+    }
+  };
 
   const startSpin = (prize: Prize, onComplete?: () => void) => {
     if (isSpinningRef.current || !rouletteRef.current) return;
@@ -275,17 +294,18 @@ export default function ClubQR() {
     const k = Math.floor((startPosition - T) / oneSetWidth) - 1;
     const targetPosition = T + k * oneSetWidth;
 
-    // Одна плавная кривая: быстро в начале, долгое плавное замедление до нуля в конце (без скачков)
-    const extraRotations = 3;
+    // Одна плавная кривая: сначала очень быстро, затем плавное замедление до нуля в конце (без скачков)
+    const extraRotations = 6;
     const endPosition = targetPosition - extraRotations * oneSetWidth;
-    const duration = 11000;
+    const duration = 15000;
     const travel = endPosition - startPosition;
     const startTime = Date.now();
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const easeOut = 1 - Math.pow(1 - progress, 3);
+      // Очень быстрый старт (призы почти не различимы), затем плавное замедление
+      const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -8 * progress);
       const currentPosition = startPosition + travel * easeOut;
       setScrollPosition(currentPosition);
 
@@ -347,6 +367,15 @@ export default function ClubQR() {
           <div className="spin-container club-qr-spin-container">
             <div className="spin-roulette-section club-qr-roulette-section">
               <div className="cs-roulette-container">
+                <div className="club-qr-top-bar">
+                  <img src={logoUrl} alt="Infinity" className="club-qr-logo" />
+                  {currentSpinnerName && (
+                    <div className="club-qr-current-spinner">
+                      <span className="club-qr-current-spinner-label">Сейчас крутит:</span>
+                      <span className="club-qr-current-spinner-value">{currentSpinnerName}</span>
+                    </div>
+                  )}
+                </div>
                 <div className="cs-roulette-pointer" />
                 <div ref={rouletteRef} className="cs-roulette-track">
                   <div
@@ -437,19 +466,18 @@ export default function ClubQR() {
         </div>
       )}
 
-      {/* Тестовый спин — закомментирован
-      {isFullscreen && (
+      {/* Тестовый спин — только на локалхосте */}
+      {isFullscreen && isLocalhost && (
         <button
           type="button"
           className="club-qr-test-spin-btn"
           onClick={handleTestSpin}
           disabled={isSpinning || roulettePrizes.length === 0}
-          title="Крутит рулетку с замедлением и показывает выигрыш"
+          title="Крутит рулетку с очень быстрым стартом и плавным замедлением"
         >
           {isSpinning ? 'Крутится…' : 'Тестовый спин (динамичная рулетка)'}
         </button>
       )}
-      */}
     </div>
   );
 }

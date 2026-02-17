@@ -233,6 +233,47 @@
   color: #fff;
 }
 
+/* Club QR top bar (logo + current spinner) */
+.club-qr-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  position: absolute;
+  top: 90px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.club-qr-logo {
+  height: 88px;
+  position: absolute;
+  left: 50px;
+}
+
+.club-qr-current-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 32px;
+}
+
+.club-qr-current-spinner-label {
+  font-weight: 700;
+  color: var(--theme-accent);
+}
+
+.club-qr-current-spinner-value {
+  color: var(--theme-accent);
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
 /* Players */
 .players-tab {
   display: flex;
