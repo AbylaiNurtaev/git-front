@@ -24,6 +24,8 @@ interface Store {
   admins: Admin[];
   prizes: Prize[];
   rouletteConfig: RouletteConfig;
+  /** URL кастомного логотипа компании для админки (если загружен) */
+  companyLogoUrl: string | null;
   
   // Loading states
   isLoading: boolean;
@@ -37,6 +39,12 @@ interface Store {
   fetchPlayerData: () => Promise<void>;
   fetchClubData: () => Promise<void>;
   fetchAdminData: () => Promise<void>;
+  /** Загрузить URL логотипа компании (для админа) */
+  fetchCompanyLogo: () => Promise<void>;
+  /** Загрузить/обновить логотип компании */
+  uploadCompanyLogo: (image: File) => Promise<boolean>;
+  /** Удалить кастомный логотип компании (вернуться к дефолтному) */
+  deleteCompanyLogo: () => Promise<boolean>;
   
   // Player actions
   spinRoulette: (clubId: string) => Promise<Prize | null>;
@@ -82,7 +90,11 @@ interface Store {
   
   // Utility
   setError: (error: string | null) => void;
-  clearError: () => void;
+      clearError: () => void;
+
+      // Bans
+      banUser: (id: string, data: { days?: number; reason: string }) => Promise<boolean>;
+      unbanUser: (id: string) => Promise<boolean>;
 }
 
 export const useStore = create<Store>()(
@@ -99,6 +111,7 @@ export const useStore = create<Store>()(
         slots: [],
         totalProbability: 0,
       },
+      companyLogoUrl: null,
       isLoading: false,
       error: null,
 
@@ -288,6 +301,63 @@ export const useStore = create<Store>()(
           });
         } catch (error: any) {
           set({ error: error.response?.data?.message || 'Ошибка загрузки данных', isLoading: false });
+        }
+      },
+
+      fetchCompanyLogo: async () => {
+        try {
+          const data = await apiService.getCompanyLogo();
+          // Бэкенд может вернуть строку-URL или объект с полем url/logoUrl
+          const url =
+            typeof data === 'string'
+              ? data
+              : data?.url || data?.logoUrl || null;
+          set({ companyLogoUrl: url });
+        } catch (error: any) {
+          set({
+            error: error.response?.data?.message || 'Ошибка загрузки логотипа',
+            companyLogoUrl: null,
+          });
+        }
+      },
+
+      uploadCompanyLogo: async (image: File) => {
+        try {
+          set({ isLoading: true, error: null });
+          const data = await apiService.uploadCompanyLogo(image);
+          const url =
+            typeof data === 'string'
+              ? data
+              : data?.url || data?.logoUrl || null;
+          set({
+            companyLogoUrl: url,
+            isLoading: false,
+          });
+          return true;
+        } catch (error: any) {
+          set({
+            error: error.response?.data?.message || 'Ошибка загрузки логотипа',
+            isLoading: false,
+          });
+          return false;
+        }
+      },
+
+      deleteCompanyLogo: async () => {
+        try {
+          set({ isLoading: true, error: null });
+          await apiService.deleteCompanyLogo();
+          set({
+            companyLogoUrl: null,
+            isLoading: false,
+          });
+          return true;
+        } catch (error: any) {
+          set({
+            error: error.response?.data?.message || 'Ошибка удаления логотипа',
+            isLoading: false,
+          });
+          return false;
         }
       },
 
@@ -618,6 +688,29 @@ export const useStore = create<Store>()(
         } catch (error: any) {
           set({ error: error.response?.data?.message || 'Ошибка загрузки логов' });
           return {};
+        }
+      },
+
+      banUser: async (id: string, data: { days?: number; reason: string }) => {
+        try {
+          await apiService.banUser(id, data);
+          // Обновляем список пользователей, чтобы статус сразу подтянулся
+          await get().fetchUsers();
+          return true;
+        } catch (error: any) {
+          set({ error: error.response?.data?.message || 'Ошибка бана пользователя' });
+          return false;
+        }
+      },
+
+      unbanUser: async (id: string) => {
+        try {
+          await apiService.unbanUser(id);
+          await get().fetchUsers();
+          return true;
+        } catch (error: any) {
+          set({ error: error.response?.data?.message || 'Ошибка разбана пользователя' });
+          return false;
         }
       },
 

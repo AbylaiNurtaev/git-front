@@ -24,12 +24,16 @@ function formatDate(s: string) {
 export default function AdminUserDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { updateUser, deleteUser } = useStore();
+  const { updateUser, deleteUser, banUser, unbanUser } = useStore();
   const [user, setUser] = useState<AdminUserDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Player | null>(null);
+  const [banDays, setBanDays] = useState<string>('');
+  const [banReason, setBanReason] = useState<string>('');
+  const [banLoading, setBanLoading] = useState(false);
+  const [unbanLoading, setUnbanLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -77,6 +81,54 @@ export default function AdminUserDetail() {
       </div>
     );
   }
+
+  const isBanned = user.isBanned === true;
+  const canBan = !isBanned && !banLoading && !unbanLoading;
+  const canUnban = isBanned && !banLoading && !unbanLoading;
+
+  const handleBan = async () => {
+    if (user.isBanned) {
+      window.alert('Пользователь уже забанен. Сначала снимите текущий бан.');
+      return;
+    }
+    if (!banReason.trim()) {
+      window.alert('Укажите причину бана');
+      return;
+    }
+    setBanLoading(true);
+    try {
+      const daysNumber = banDays.trim() ? Number(banDays) : undefined;
+      const payload: { days?: number; reason: string } = {
+        reason: banReason.trim(),
+      };
+      if (!Number.isNaN(daysNumber) && daysNumber && daysNumber > 0) {
+        payload.days = daysNumber;
+      }
+      await banUser(user._id, payload);
+      const dataAgain = await apiService.getAdminUser(user._id);
+      setUser(dataAgain);
+      // очищаем форму после успешного бана
+      setBanDays('');
+      setBanReason('');
+    } finally {
+      setBanLoading(false);
+    }
+  };
+
+  const handleUnban = async () => {
+    if (!user.isBanned) {
+      window.alert('Пользователь сейчас не забанен.');
+      return;
+    }
+    setUnbanLoading(true);
+    try {
+      await unbanUser(user._id);
+      const dataAgain = await apiService.getAdminUser(user._id);
+      setUser(dataAgain);
+    } finally {
+      setUnbanLoading(false);
+    }
+  };
 
   return (
     <div className="admin-page">
@@ -152,6 +204,79 @@ export default function AdminUserDetail() {
             </div>
           </div>
         )}
+
+        <div className="club-detail-info">
+          <h2>Блокировка игрока</h2>
+          <p className={`user-ban-status ${isBanned ? 'user-ban-status-banned' : 'user-ban-status-ok'}`}>
+            {isBanned ? (
+              <>
+                Игрок <strong>забанен</strong>
+                {user.banUntil && (
+                  <>
+                    {' '}до {formatDate(user.banUntil)}
+                  </>
+                )}
+                {user.banReason && (
+                  <>
+                    {' '}— причина: <span>{user.banReason}</span>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                Игрок <strong>не забанен</strong>.
+              </>
+            )}
+          </p>
+          <p className="user-detail-hint">
+            Вы можете заблокировать игрока навсегда или на определённое число дней. Для бессрочного бана оставьте поле
+            «Срок бана» пустым.
+          </p>
+          <div className="user-ban-fields">
+            <div className="user-ban-field">
+              <label className="user-ban-label">
+                Срок бана (дней, опционально)
+                <input
+                  type="number"
+                  min={1}
+                  value={banDays}
+                  onChange={(e) => setBanDays(e.target.value)}
+                  placeholder="Например, 7"
+                  disabled={isBanned || banLoading || unbanLoading}
+                />
+              </label>
+            </div>
+            <div className="user-ban-field user-ban-field-full">
+              <label className="user-ban-label">
+                Причина бана
+                <textarea
+                  value={banReason}
+                  onChange={(e) => setBanReason(e.target.value)}
+                  placeholder="Нарушение правил"
+                  disabled={isBanned || banLoading || unbanLoading}
+                />
+              </label>
+            </div>
+          </div>
+          <div className="user-ban-actions">
+            <button
+              type="button"
+              className="delete-button"
+              onClick={handleBan}
+              disabled={!canBan}
+            >
+              {banLoading ? 'Применение бана...' : 'Забанить'}
+            </button>
+            <button
+              type="button"
+              className="edit-button"
+              onClick={handleUnban}
+              disabled={!canUnban}
+            >
+              {unbanLoading ? 'Снятие бана...' : 'Разбанить'}
+            </button>
+          </div>
+        </div>
 
         {user.visitHistory && user.visitHistory.length > 0 && (
           <div className="club-detail-info">

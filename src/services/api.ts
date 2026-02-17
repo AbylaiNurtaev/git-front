@@ -268,6 +268,26 @@ class ApiService {
     return response.data;
   }
 
+  /** Временный или бессрочный бан пользователя (POST /api/admin/users/:id/ban) */
+  async banUser(
+    id: string,
+    data: {
+      /** Кол-во дней бана. Если не указывать — бессрочный бан. */
+      days?: number;
+      /** Причина блокировки (обязательно). */
+      reason: string;
+    }
+  ) {
+    const response = await this.api.post(`/admin/users/${id}/ban`, data);
+    return response.data;
+  }
+
+  /** Снять бан с пользователя (POST /api/admin/users/:id/unban) */
+  async unbanUser(id: string) {
+    const response = await this.api.post(`/admin/users/${id}/unban`, {});
+    return response.data;
+  }
+
   async createPrize(data: {
     name: string;
     type: string;
@@ -361,6 +381,32 @@ class ApiService {
     if (type) params.append('type', type);
     if (startDate) params.append('startDate', startDate);
     const response = await this.api.get(`/admin/logs?${params.toString()}`);
+    return response.data;
+  }
+
+  // Company logo (admin)
+  /** Получить логотип компании (для админки). GET /api/admin/company/logo */
+  async getCompanyLogo() {
+    const response = await this.api.get('/admin/company/logo');
+    return response.data;
+  }
+
+  /** Загрузить/обновить логотип компании. POST /api/admin/company/logo (multipart/form-data, поле image) */
+  async uploadCompanyLogo(image: File) {
+    const formData = new FormData();
+    formData.append('image', image);
+
+    const response = await this.api.post('/admin/company/logo', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  }
+
+  /** Удалить кастомный логотип компании, вернуть дефолтный. DELETE /api/admin/company/logo */
+  async deleteCompanyLogo() {
+    const response = await this.api.delete('/admin/company/logo');
     return response.data;
   }
 }

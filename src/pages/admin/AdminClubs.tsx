@@ -19,14 +19,33 @@ export default function AdminClubs() {
   const [clubModalOpen, setClubModalOpen] = useState(false);
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+
+  const cities = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          clubs
+            .map((club: Club) => club.city)
+            .filter((city): city is string => Boolean(city))
+        )
+      ).sort((a, b) => a.localeCompare(b, 'ru')),
+    [clubs]
+  );
 
   const filteredClubs = useMemo(() => {
-    if (!searchQuery.trim()) return clubs;
     const q = searchQuery.trim().toLowerCase();
-    return clubs.filter((club: Club) =>
-      club.clubName?.toLowerCase().includes(q) || club.city?.toLowerCase().includes(q)
-    );
-  }, [clubs, searchQuery]);
+
+    return clubs.filter((club: Club) => {
+      const matchesCity = !selectedCity || club.city === selectedCity;
+      const matchesSearch =
+        !q ||
+        club.clubName?.toLowerCase().includes(q) ||
+        club.city?.toLowerCase().includes(q);
+
+      return matchesCity && matchesSearch;
+    });
+  }, [clubs, searchQuery, selectedCity]);
 
   useEffect(() => {
     fetchClubs();
@@ -45,14 +64,33 @@ export default function AdminClubs() {
           setClubModalOpen(true);
         }}>+ Добавить клуб</button>
       </div>
-      <div className="admin-search-row">
+      <div className="admin-search-row admin-clubs-filters">
         <input
           type="search"
-          className="admin-search"
+          className="admin-search admin-clubs-search"
           placeholder="Поиск по названию..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        {cities.length > 0 && (
+          <div className="admin-clubs-city-filter">
+            <label className="admin-clubs-city-label">
+              Город
+              <select
+                className="admin-search admin-clubs-city-select"
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+              >
+                <option value="">Все города</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
       </div>
       {clubs.length === 0 ? (
         <div className="empty-state">

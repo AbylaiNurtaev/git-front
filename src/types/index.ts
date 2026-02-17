@@ -137,6 +137,12 @@ export interface AdminUserDetail {
   balance: number;
   clubId?: string;
   isActive?: boolean;
+  /** Флаг бана (GET /admin/users/:id → isBanned: true/false) */
+  isBanned?: boolean;
+  /** Причина бана, если есть */
+  banReason?: string;
+  /** Дата окончания временного бана (ISO-строка), если есть */
+  banUntil?: string;
   createdAt: string;
   name?: string;
   email?: string;

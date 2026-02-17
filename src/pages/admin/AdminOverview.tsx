@@ -21,7 +21,7 @@ export default function AdminOverview() {
       </div>
       <div className="stats-grid">
         <div className="stat-card">
-          <h3>Всего Infinity</h3>
+          <h3>Всего клубов</h3>
           <div className="stat-value">{clubs.length}</div>
         </div>
         <div className="stat-card">

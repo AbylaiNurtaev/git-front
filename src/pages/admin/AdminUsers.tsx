@@ -4,7 +4,7 @@ import { useStore } from '@/store/useStore';
 import UserModal from '@/components/UserModal';
 import Skeleton from '@/components/Skeleton';
 import type { Player } from '@/types';
-import { phoneMatchesSearch } from '@/utils/phone';
+import { phoneMatchesSearch, formatPhoneForDisplay } from '@/utils/phone';
 import './AdminPages.css';
 
 export default function AdminUsers() {
@@ -60,7 +60,7 @@ export default function AdminUsers() {
               <tr>
                 <th>Телефон</th>
                 <th>Баланс</th>
-                <th>Призов</th>
+                <th>Призы</th>
                 <th>Дата регистрации</th>
                 <th>Действия</th>
               </tr>
@@ -79,7 +79,7 @@ export default function AdminUsers() {
                     className="clickable-row"
                     onClick={() => navigate(`/admin/users/${player.id}`)}
                   >
-                    <td>{player.phone}</td>
+                    <td>{formatPhoneForDisplay(player.phone)}</td>
                     <td>{player.balance} баллов</td>
                     <td>{player.prizeCount ?? player.prizes?.length ?? 0}</td>
                     <td>{new Date(player.createdAt).toLocaleDateString('ru-RU')}</td>
