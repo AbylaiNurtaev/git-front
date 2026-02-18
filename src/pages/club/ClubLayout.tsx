@@ -47,12 +47,6 @@ export default function ClubLayout() {
             Игроки
           </NavLink>
           <NavLink
-            to="/club/qr"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            QR-код
-          </NavLink>
-          <NavLink
             to="/club/settings"
             className={({ isActive }) => isActive ? 'active' : ''}
           >
