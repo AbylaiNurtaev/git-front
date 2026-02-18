@@ -1,4 +1,4 @@
-import type { User, Player, Club, Admin, Prize, QRPageTheme, QRPageBackground, Transaction } from '@/types';
+import type { User, Player, Club, Admin, Prize, QRPageTheme, Transaction } from '@/types';
 import { DEFAULT_QR_PAGE_THEME } from '@/constants/qrTheme';
 
 // Transform backend response to frontend types

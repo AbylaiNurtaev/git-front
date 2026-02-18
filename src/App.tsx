@@ -6,7 +6,6 @@ import PlayerHome from './pages/player/PlayerHome';
 import PlayerPrizes from './pages/player/PlayerPrizes';
 import PlayerScan from './pages/player/PlayerScan';
 import SpinPage from './pages/SpinPage';
-import ClubRoulettePage from './pages/ClubRoulettePage';
 import ClubLayout from './pages/club/ClubLayout';
 import ClubOverview from './pages/club/ClubOverview';
 import ClubPlayers from './pages/club/ClubPlayers';

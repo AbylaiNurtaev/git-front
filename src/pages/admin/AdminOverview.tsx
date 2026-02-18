@@ -151,7 +151,7 @@ export default function AdminOverview() {
                     nameKey="name"
                     label={({ name, value }) => `${name}: ${value}`}
                   >
-                    {pieData.map((entry, index) => (
+                    {pieData.map((entry) => (
                       <Cell key={entry.name} fill={entry.color} />
                     ))}
                   </Pie>
@@ -162,7 +162,7 @@ export default function AdminOverview() {
                       borderRadius: '10px',
                       color: '#fff',
                     }}
-                    formatter={(value: number) => [value, '']}
+                    formatter={(value: number | undefined) => [value ?? 0, '']}
                   />
                   <Legend />
                 </PieChart>
@@ -197,7 +197,7 @@ export default function AdminOverview() {
                       borderRadius: '10px',
                       color: '#fff',
                     }}
-                    formatter={(value: number) => [value, '']}
+                    formatter={(value: number | undefined) => [value ?? 0, '']}
                     labelStyle={{ color: 'var(--theme-primary)' }}
                   />
                   <Bar
