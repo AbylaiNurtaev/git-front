@@ -44,7 +44,7 @@ export default function AdminUserDetail() {
         const data = await apiService.getAdminUser(id);
         setUser(data);
       } catch (e: any) {
-        setError(e.response?.data?.message || 'Не удалось загрузить пользователя');
+        setError(e.response?.data?.message || 'Не удалось загрузить игрока');
         setUser(null);
       } finally {
         setLoading(false);
@@ -75,7 +75,7 @@ export default function AdminUserDetail() {
     return (
       <div className="admin-page">
         <div className="empty-state">
-          <p>{error || 'Пользователь не найден'}</p>
+          <p>{error || 'Игрок не найден'}</p>
           <Link to="/admin/users" className="back-button">← Вернуться к списку</Link>
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function AdminUserDetail() {
 
   const handleBan = async () => {
     if (user.isBanned) {
-      window.alert('Пользователь уже забанен. Сначала снимите текущий бан.');
+      window.alert('Игрок уже забанен. Сначала снимите текущий бан.');
       return;
     }
     if (!banReason.trim()) {
@@ -117,7 +117,7 @@ export default function AdminUserDetail() {
 
   const handleUnban = async () => {
     if (!user.isBanned) {
-      window.alert('Пользователь сейчас не забанен.');
+      window.alert('Игрок сейчас не забанен.');
       return;
     }
     setUnbanLoading(true);
@@ -141,7 +141,7 @@ export default function AdminUserDetail() {
           <button
             className="delete-button"
             onClick={async () => {
-              if (window.confirm('Удалить пользователя?')) {
+              if (window.confirm('Удалить игрока?')) {
                 await deleteUser(user._id);
                 navigate('/admin/users');
               }

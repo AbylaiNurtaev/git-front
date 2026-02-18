@@ -36,7 +36,7 @@ export default function AdminUsers() {
   return (
     <div className="admin-page">
       <div className="tab-header">
-        <h2>Управление пользователями</h2>
+        <h2>Управление игроками</h2>
       </div>
       {players.length > 0 && (
         <div className="admin-search-row">
@@ -51,7 +51,7 @@ export default function AdminUsers() {
       )}
       {players.length === 0 ? (
         <div className="empty-state">
-          <p>Нет зарегистрированных пользователей</p>
+          <p>Нет зарегистрированных игроков</p>
         </div>
       ) : (
         <div className="users-table-container">
@@ -90,7 +90,7 @@ export default function AdminUsers() {
                           setUserModalOpen(true);
                         }}>Редактировать</button>
                         <button className="delete-button" onClick={async () => {
-                          if (window.confirm('Удалить пользователя?')) {
+                          if (window.confirm('Удалить игрока?')) {
                             await deleteUser(player.id);
                             await fetchUsers('player');
                           }

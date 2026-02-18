@@ -60,7 +60,7 @@ interface Store {
   updateClubTime: (claimId: string, action: string) => Promise<boolean>;
   fetchClubReports: (startDate?: string, endDate?: string) => Promise<any>;
   /** Обновить профиль своего клуба (в т.ч. палитру) */
-  updateClubMe: (data: Partial<{ theme: import('@/types').ClubTheme }>) => Promise<boolean>;
+  updateClubMe: (data: Partial<{ theme: import('@/types').ClubTheme; qrPageTheme: import('@/types').QRPageTheme; qrPageBackground: import('@/types').QRPageBackground }>) => Promise<boolean>;
   
   // Admin actions
   fetchClubs: () => Promise<Club[]>;

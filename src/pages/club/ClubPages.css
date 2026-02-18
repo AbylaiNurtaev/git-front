@@ -265,11 +265,11 @@
 
 .club-qr-current-spinner-label {
   font-weight: 700;
-  color: var(--theme-accent);
+  color: var(--qr-spinner-label, var(--theme-accent));
 }
 
 .club-qr-current-spinner-value {
-  color: var(--theme-accent);
+  color: var(--qr-spinner-value, var(--theme-accent));
   font-weight: 800;
   letter-spacing: 1px;
 }
@@ -658,9 +658,32 @@
 }
 
 /* Fullscreen Roulette Layout */
-/* Страница QR рулетки — тот же вид, что и /spin */
+/* Страница QR рулетки — цвета из темы (--qr-* задаются в настройках) */
 .club-qr-page {
   position: relative;
+  background: var(--qr-page-bg, var(--theme-bg));
+}
+
+/* Фон внутри cs-roulette-container (изображение/видео) */
+.club-qr-page .cs-roulette-container {
+  position: relative;
+}
+
+.club-qr-roulette-bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.club-qr-roulette-bg-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
 }
 
 /* Без скролла на /club/qr */
@@ -721,7 +744,7 @@
   margin: 0;
   width: 100%;
   max-width: none;
-  background: radial-gradient(var(--theme-bg), transparent);
+  background: var(--qr-spin-container-bg, var(--theme-bg));
 }
 
 .club-qr-page .club-qr-roulette-section {
@@ -737,6 +760,82 @@
   width: 100vw;
   max-width: none;
   height: 100%;
+  background: var(--qr-track-bg, rgba(var(--theme-primary-rgb), 0.05));
+}
+
+/* Карточки призов на странице QR — цвета из темы */
+.club-qr-page .cs-prize-item {
+  background: var(--qr-card-bg, rgba(var(--theme-primary-rgb), 0.08));
+  border-color: var(--qr-card-border, rgba(var(--theme-primary-rgb), 0.15));
+}
+.club-qr-page .cs-prize-item.selected {
+  border-color: var(--qr-selected-card-border, var(--theme-primary));
+}
+.club-qr-page .cs-prize-name {
+  color: var(--qr-card-text, var(--theme-text));
+}
+.club-qr-page .cs-prize-placeholder {
+  background: var(--qr-card-placeholder-bg, rgba(var(--theme-primary-rgb), 0.08));
+}
+
+/* Оверлей результата на странице QR */
+.club-qr-page .result-overlay {
+  background: var(--qr-result-overlay-bg, rgba(0, 0, 0, 0.75));
+}
+
+/* Одно большое пульсирующее свечение за попапом выигрыша */
+.club-qr-page .result-overlay-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.club-qr-page .result-overlay-glow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(120vmax, 180vh);
+  height: min(120vmax, 180vh);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--theme-primary-rgb), 0.4) 0%,
+    rgba(var(--theme-primary-rgb), 0.2) 30%,
+    rgba(var(--theme-primary-rgb), 0.08) 55%,
+    transparent 75%
+  );
+  filter: blur(20px);
+  animation: resultGlowPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes resultGlowPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+
+.club-qr-page .result-content {
+  position: relative;
+  z-index: 1;
+  background: var(--qr-result-content-bg, rgba(var(--theme-primary-rgb), 0.12));
+}
+.club-qr-page .result-title {
+  color: var(--qr-result-title, var(--theme-text));
+}
+.club-qr-page .result-prize-name,
+.club-qr-page .result-prize-desc {
+  color: var(--qr-result-prize-text, var(--theme-text));
 }
 
 .club-qr-page .club-qr-loading {
@@ -749,7 +848,7 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  color: rgba(var(--theme-text-rgb), 0.85);
+  color: var(--qr-loading-text, var(--theme-text));
   font-size: 16px;
 }
 
@@ -765,8 +864,8 @@
 
 .club-qr-retry-btn {
   padding: 12px 24px;
-  background: rgba(var(--theme-primary-rgb), 0.25);
-  color: var(--theme-text);
+  background: var(--qr-retry-btn-bg, rgba(var(--theme-primary-rgb), 0.25));
+  color: var(--qr-retry-btn-text, var(--theme-text));
   border: 1px solid rgba(var(--theme-primary-rgb), 0.5);
   border-radius: 10px;
   font-size: 14px;
@@ -789,9 +888,9 @@
   right: 16px;
   z-index: 1000;
   padding: 12px 24px;
-  background: rgba(var(--theme-primary-rgb), 0.25);
-  color: var(--theme-text);
-  border: 1px solid rgba(var(--theme-primary-rgb), 0.5);
+  background: var(--qr-fullscreen-btn-bg, rgba(var(--theme-primary-rgb), 0.25));
+  color: var(--qr-fullscreen-btn-text, var(--theme-text));
+  border: 1px solid var(--qr-fullscreen-btn-border, rgba(var(--theme-primary-rgb), 0.5));
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
@@ -805,6 +904,10 @@
 .club-qr-fullscreen-btn:hover {
   background: rgba(var(--theme-primary-rgb), 0.4);
   border-color: var(--theme-primary);
+}
+
+.club-qr-test-win-btn {
+  right: 180px;
 }
 
 /* QR в полноэкранном режиме — снизу справа */
@@ -861,7 +964,7 @@
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   border-bottom: none;
-  border-top: 22px solid var(--theme-primary);
+  border-top: 22px solid var(--qr-pointer, var(--theme-primary));
   filter: drop-shadow(0 2px 8px rgba(var(--theme-primary-rgb), 0.6))
     drop-shadow(0 0 14px rgba(var(--theme-primary-rgb), 0.35));
   box-shadow: none;
@@ -878,7 +981,7 @@
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   border-top: none;
-  border-bottom: 22px solid var(--theme-primary);
+  border-bottom: 22px solid var(--qr-pointer, var(--theme-primary));
   filter: drop-shadow(0 -2px 8px rgba(var(--theme-primary-rgb), 0.6))
     drop-shadow(0 0 14px rgba(var(--theme-primary-rgb), 0.35));
   box-shadow: none;
@@ -933,7 +1036,7 @@
   max-height: 220px;
   overflow: hidden;
   padding: 12px 20px;
-  background: rgba(var(--theme-primary-rgb), 0.08);
+  background: var(--qr-wins-chat-bg, rgba(var(--theme-primary-rgb), 0.08));
   border-radius: 12px;
   border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
   backdrop-filter: blur(12px);
@@ -943,7 +1046,7 @@
 .club-qr-wins-chat-line {
   font-size: 14px;
   font-weight: 500;
-  color: rgba(230, 230, 245, 0.95);
+  color: var(--qr-wins-chat-text, rgba(230, 230, 245, 0.95));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1004,7 +1107,7 @@
   width: 100%;
   min-height: calc(100vh - 200px);
   overflow: hidden;
-  background: linear-gradient(180deg, var(--theme-bg) 0%, #1a1a2e 100%);
+  background: linear-gradient(180deg, var(--theme-bg) 0%, var(--theme-bg) 100%);
   margin: 0;
   padding: 0;
 }

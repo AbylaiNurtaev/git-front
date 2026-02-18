@@ -42,7 +42,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Редактировать пользователя"
+      title="Редактировать игрока"
       size="small"
     >
       <form onSubmit={handleSubmit}>

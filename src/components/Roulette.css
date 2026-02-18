@@ -16,7 +16,7 @@
 }
 
 .roulette-wrapper.roulette-empty p {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   margin: 0;
   padding: 20px;

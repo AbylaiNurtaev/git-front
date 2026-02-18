@@ -131,8 +131,29 @@ class ApiService {
     return response.data;
   }
 
-  /** Обновить профиль своего клуба (в т.ч. цветовую палитру) — для авторизованного клуба */
-  async updateClubMe(data: Partial<{ theme: { primary: string; primaryDark: string; accent?: string } }>) {
+  /**
+   * Загрузить фон страницы QR (PNG, GIF, видео). Бэкенд: POST /clubs/me/qr-background, multipart, поле file.
+   * Ответ: { url: string }. Лимиты: объём до 10 MB, рекомендуемый размер 1920×1080.
+   */
+  async uploadClubQRBackground(file: File): Promise<{ url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await this.api.post<{ url: string }>('/clubs/me/qr-background', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  }
+
+  /**
+   * Обновить профиль своего клуба (theme, qrPageTheme, qrPageBackground и т.д.) — для авторизованного клуба.
+   * Бэкенд: PATCH /clubs/me принимает body { theme?, qrPageTheme?, qrPageBackground? }.
+   * qrPageBackground: { url: string, opacity: number } (opacity 0–1). GET /clubs/me возвращает qrPageBackground.
+   */
+  async updateClubMe(data: Partial<{
+    theme: { primary: string; primaryDark: string; accent?: string };
+    qrPageTheme: import('@/types').QRPageTheme;
+    qrPageBackground: import('@/types').QRPageBackground;
+  }>) {
     const response = await this.api.patch('/clubs/me', data);
     return response.data;
   }

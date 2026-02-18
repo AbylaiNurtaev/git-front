@@ -33,7 +33,7 @@
   background: rgba(26, 26, 46, 0.8);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 10px;
-  color: #e0e0e0;
+  color: var(--theme-text);
   font-size: 14px;
   transition: border-color 0.2s;
 }
@@ -94,7 +94,7 @@
 }
 
 .stat-card h3 {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 16px;
   margin-bottom: 15px;
   font-weight: 600;
@@ -116,7 +116,7 @@
 }
 
 .empty-state .hint {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 13px;
   opacity: 0.7;
   margin-top: 5px;
@@ -189,7 +189,7 @@
 }
 
 .club-info .club-details p {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   margin: 0;
   word-wrap: break-word;
@@ -323,7 +323,7 @@
 }
 
 .prize-info p {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   margin: 5px 0;
 }
@@ -370,7 +370,7 @@
 .users-table td {
   padding: 15px;
   border-bottom: 1px solid rgba(var(--theme-primary-rgb), 0.2);
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .users-table tbody tr:hover {
@@ -401,7 +401,7 @@
 }
 
 .roulette-info .info-text {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   line-height: 1.6;
   margin: 8px 0;
@@ -498,7 +498,7 @@
 .cancel-ready-button {
   padding: 14px 28px;
   background: transparent;
-  color: #b8b8d4;
+  color: var(--theme-text);
   border: 1px solid rgba(184, 184, 212, 0.4);
   border-radius: 12px;
   font-size: 15px;
@@ -508,7 +508,7 @@
 }
 
 .cancel-ready-button:hover {
-  color: #e0e0e0;
+  color: var(--theme-text);
   border-color: rgba(184, 184, 212, 0.6);
   background: rgba(255, 255, 255, 0.05);
 }
@@ -516,7 +516,7 @@
 .roulette-ready-hint {
   margin: 10px 0 0;
   font-size: 13px;
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .roulette-check-result {
@@ -616,14 +616,14 @@
 .slot-index-badge {
   font-size: 11px;
   font-weight: 500;
-  color: #b8b8d4;
+  color: var(--theme-text);
   background: rgba(var(--theme-primary-rgb), 0.2);
   padding: 2px 6px;
   border-radius: 6px;
 }
 
 .slot-info p {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   margin: 5px 0;
 }
@@ -649,7 +649,7 @@
 .total-probability p {
   margin: 8px 0;
   font-size: 16px;
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .total-probability p strong {
@@ -710,19 +710,19 @@
 }
 
 .prize-roulette-info strong {
-  color: #e0e0e0;
+  color: var(--theme-text);
   display: block;
   margin-bottom: 4px;
 }
 
 .prize-roulette-meta {
   font-size: 13px;
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .prize-slot-index {
   font-size: 11px;
-  color: #b8b8d4;
+  color: var(--theme-text);
   opacity: 0.9;
 }
 
@@ -742,7 +742,7 @@
 }
 
 .roulette-toggle-label {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
 }
 
@@ -763,7 +763,7 @@
 }
 
 .hint-text {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 13px;
   text-align: center;
   margin: 0;
@@ -793,7 +793,7 @@
   flex-direction: column;
   gap: 6px;
   font-size: 12px;
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .admin-clubs-city-select {
@@ -817,6 +817,51 @@
 .analytics-section h3 {
   color: var(--theme-primary);
   margin-bottom: 15px;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+/* Обзор: секция графиков */
+.admin-overview-page .overview-stats .stats-grid {
+  margin-bottom: 0;
+}
+
+.overview-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.chart-card {
+  background: rgba(26, 26, 46, 0.6);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
+  border-radius: 16px;
+  padding: 20px;
+  min-height: 300px;
+}
+
+.chart-card h4 {
+  color: var(--theme-text);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 16px 0;
+}
+
+.chart-card.chart-pie {
+  min-height: 320px;
+}
+
+.chart-card.chart-bars-wide {
+  /* в одной строке с остальными графиками */
+}
+
+@media (max-width: 1100px) {
+  .overview-charts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .club-stats-list {
@@ -826,12 +871,12 @@
 }
 
 .club-stats-list p {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
 }
 
 .stat-card h4 {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   margin-bottom: 10px;
   font-weight: 600;
@@ -856,7 +901,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 13px;
 }
 
@@ -865,7 +910,7 @@
   background: rgba(26, 26, 46, 0.8);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 10px;
-  color: #e0e0e0;
+  color: var(--theme-text);
   font-size: 14px;
   min-width: 160px;
 }
@@ -899,7 +944,7 @@
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 16px;
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
 }
 
@@ -942,14 +987,14 @@
 }
 
 .by-city-club-name {
-  color: #e0e0e0;
+  color: var(--theme-text);
   font-weight: 600;
   font-size: 15px;
 }
 
 .by-city-club-address,
 .by-city-club-manager {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 13px;
 }
 
@@ -957,7 +1002,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 13px;
 }
 
@@ -1027,7 +1072,7 @@
 }
 
 .info-item span {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 16px;
 }
 
@@ -1166,14 +1211,14 @@
 }
 
 .visit-history-club-count {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
 }
 
 .visit-history-dates {
   margin: 0;
   padding-left: 20px;
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   line-height: 1.8;
   max-height: 200px;
@@ -1210,7 +1255,7 @@
   flex-direction: column;
   gap: 6px;
   font-size: 13px;
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .user-ban-label input,
@@ -1219,7 +1264,7 @@
   background: rgba(26, 26, 46, 0.8);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 10px;
-  color: #e0e0e0;
+  color: var(--theme-text);
   font-size: 14px;
   resize: vertical;
 }

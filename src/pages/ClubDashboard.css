@@ -1,7 +1,7 @@
 .club-dashboard {
   height: 100vh;
   padding: 20px;
-  background: #0a0a0f;
+  background: var(--theme-bg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -69,8 +69,8 @@
 }
 
 .dashboard-header {
-  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.3) 0%, rgba(var(--theme-primary-dark-rgb), 0.3) 100%);
-  color: var(--theme-primary);
+  background: var(--theme-bg);
+  color: var(--theme-text);
   padding: 30px 40px;
   display: flex;
   justify-content: space-between;
@@ -239,7 +239,7 @@
 }
 
 .player-info p {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   margin: 5px 0;
 }
@@ -278,7 +278,7 @@
 }
 
 .prize-info p {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   margin-bottom: 8px;
 }
@@ -413,7 +413,7 @@
   border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: 8px;
   background: rgba(26, 26, 46, 0.6);
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -434,14 +434,14 @@
 }
 
 .pagination-ellipsis {
-  color: #b8b8d4;
+  color: var(--theme-text);
   padding: 0 4px;
   font-size: 14px;
   user-select: none;
 }
 
 .pagination-info {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 14px;
 }
 
@@ -465,7 +465,7 @@
 }
 
 .qr-info {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 16px;
   text-align: center;
   max-width: 400px;

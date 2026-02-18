@@ -189,7 +189,7 @@
   margin: 0 0 6px 0;
   font-size: 16px;
   font-weight: 700;
-  color: #e0e0e0;
+  color: var(--theme-text);
 }
 
 .player-prize-info p {

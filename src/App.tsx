@@ -20,7 +20,6 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminUserDetail from './pages/admin/AdminUserDetail';
 import AdminPrizes from './pages/admin/AdminPrizes';
 import AdminRoulette from './pages/admin/AdminRoulette';
-import AdminAnalytics from './pages/admin/AdminAnalytics';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function RedirectAfterLogin() {
@@ -77,14 +76,6 @@ function App() {
         <Route path="settings" element={<ClubSettings />} />
       </Route>
       <Route
-        path="/club/roulette"
-        element={
-          <ProtectedRoute requiredRole="club">
-            <ClubRoulettePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/admin"
         element={
           <ProtectedRoute requiredRole="admin">
@@ -99,7 +90,7 @@ function App() {
         <Route path="users/:id" element={<AdminUserDetail />} />
         <Route path="prizes" element={<AdminPrizes />} />
         <Route path="roulette" element={<AdminRoulette />} />
-        <Route path="analytics" element={<AdminAnalytics />} />
+        <Route path="analytics" element={<Navigate to="/admin" replace />} />
       </Route>
       <Route
         path="/"

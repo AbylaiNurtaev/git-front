@@ -1,7 +1,7 @@
 .admin-dashboard {
   height: 100vh;
   padding: 0;
-  background: #0a0a0f;
+  background: var(--theme-bg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -23,8 +23,8 @@
 }
 
 .dashboard-header {
-  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.3) 0%, rgba(var(--theme-primary-dark-rgb), 0.3) 100%);
-  color: var(--theme-primary);
+  background: var(--theme-bg);
+  color: var(--theme-text);
   padding: 30px 40px;
   display: flex;
   justify-content: space-between;
@@ -79,7 +79,7 @@
 }
 
 .admin-name {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 16px;
   font-weight: 600;
 }
@@ -178,27 +178,36 @@
   letter-spacing: 0.08em;
 }
 
-.logo-modal-hint {
-  margin: 0 0 16px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #b8b8d4;
-}
-
-.logo-modal-preview {
+.logo-modal-preview-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  gap: 24px;
   margin-bottom: 16px;
 }
 
+.logo-modal-preview {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .logo-modal-preview img {
-  height: 64px;
+  height: 120px;
   width: auto;
+  max-width: 160px;
+  object-fit: contain;
   border-radius: 14px;
   border: 1px solid rgba(var(--theme-primary-rgb), 0.6);
   background: radial-gradient(circle at 30% 0, rgba(var(--theme-primary-rgb), 0.35), transparent 55%);
-  padding: 6px 10px;
+  padding: 10px 14px;
+}
+
+.logo-modal-limits {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--theme-text-muted, rgba(255, 255, 255, 0.65));
 }
 
 .logo-modal-controls {
@@ -313,5 +322,9 @@
 
   .logo-modal-content {
     padding: 20px 18px 18px;
+  }
+
+  .logo-modal-preview-row {
+    flex-wrap: wrap;
   }
 }

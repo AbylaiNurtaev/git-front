@@ -29,6 +29,39 @@ export interface ClubTheme {
   accent?: string;
 }
 
+/** Цвета страницы QR рулетки — каждый элемент редактируемый (пока хранится в localStorage) */
+export interface QRPageTheme {
+  pageBg: string;
+  spinContainerBg: string;
+  spinnerLabel: string;
+  spinnerValue: string;
+  pointer: string;
+  trackBg: string;
+  cardBg: string;
+  cardBorder: string;
+  cardText: string;
+  cardPlaceholderBg: string;
+  selectedCardBorder: string;
+  winsChatBg: string;
+  winsChatText: string;
+  fullscreenBtnBg: string;
+  fullscreenBtnText: string;
+  fullscreenBtnBorder: string;
+  resultOverlayBg: string;
+  resultContentBg: string;
+  resultTitle: string;
+  resultPrizeText: string;
+  loadingText: string;
+  retryBtnBg: string;
+  retryBtnText: string;
+}
+
+/** Фон страницы QR (изображение/видео) — URL загруженного файла и непрозрачность 0–1 */
+export interface QRPageBackground {
+  url: string;
+  opacity: number;
+}
+
 export interface Club extends User {
   role: 'club';
   clubId: string;
@@ -53,6 +86,10 @@ export interface Club extends User {
   longitude?: number;
   /** Цветовая палитра клуба — тема сайта при входе по QR/коду клуба и в кабинете клуба */
   theme?: ClubTheme;
+  /** Оформление страницы QR рулетки (цвета элементов) — сохраняется на бэкенде */
+  qrPageTheme?: QRPageTheme;
+  /** Фон страницы QR (PNG, GIF, видео) + непрозрачность — сохраняется на бэкенде */
+  qrPageBackground?: QRPageBackground;
 }
 
 export interface Admin extends User {

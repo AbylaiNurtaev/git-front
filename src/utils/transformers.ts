@@ -1,4 +1,5 @@
-import type { User, Player, Club, Admin, Prize, Transaction } from '@/types';
+import type { User, Player, Club, Admin, Prize, QRPageTheme, QRPageBackground, Transaction } from '@/types';
+import { DEFAULT_QR_PAGE_THEME } from '@/constants/qrTheme';
 
 // Transform backend response to frontend types
 export function transformUser(user: any): User {
@@ -33,6 +34,23 @@ function transformClubTheme(theme: any): Club['theme'] {
   };
 }
 
+/** Мержит тему страницы QR с бэкенда с дефолтом (бэкенд может отдавать частично) */
+function transformQRPageTheme(data: any): QRPageTheme | undefined {
+  if (!data || typeof data !== 'object') return undefined;
+  const keys: (keyof QRPageTheme)[] = [
+    'pageBg', 'spinContainerBg', 'spinnerLabel', 'spinnerValue', 'pointer', 'trackBg',
+    'cardBg', 'cardBorder', 'cardText', 'cardPlaceholderBg', 'selectedCardBorder',
+    'winsChatBg', 'winsChatText', 'fullscreenBtnBg', 'fullscreenBtnText', 'fullscreenBtnBorder',
+    'resultOverlayBg', 'resultContentBg', 'resultTitle', 'resultPrizeText',
+    'loadingText', 'retryBtnBg', 'retryBtnText',
+  ];
+  const partial: Partial<QRPageTheme> = {};
+  for (const k of keys) {
+    if (typeof data[k] === 'string') partial[k as keyof QRPageTheme] = data[k];
+  }
+  return Object.keys(partial).length > 0 ? { ...DEFAULT_QR_PAGE_THEME, ...partial } : undefined;
+}
+
 export function transformClub(club: any): Club {
   const playersArray = Array.isArray(club.players) ? club.players : [];
   return {
@@ -59,7 +77,15 @@ export function transformClub(club: any): Club {
     latitude: club.latitude != null ? Number(club.latitude) : undefined,
     longitude: club.longitude != null ? Number(club.longitude) : undefined,
     theme: transformClubTheme(club.theme),
+    qrPageTheme: transformQRPageTheme(club.qrPageTheme) ?? undefined,
+    qrPageBackground: transformQRPageBackground(club.qrPageBackground),
   };
+}
+
+function transformQRPageBackground(bg: any): Club['qrPageBackground'] {
+  if (!bg || typeof bg.url !== 'string' || !bg.url.trim()) return undefined;
+  const opacity = typeof bg.opacity === 'number' ? Math.max(0, Math.min(1, bg.opacity)) : 0.5;
+  return { url: bg.url.trim(), opacity };
 }
 
 export function transformAdmin(admin: any): Admin {

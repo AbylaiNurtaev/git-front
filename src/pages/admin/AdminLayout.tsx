@@ -4,6 +4,12 @@ import { useStore } from '@/store/useStore';
 import logoUrl from '@/assets/logo.png';
 import './AdminLayout.css';
 
+// Ограничения для загрузки логотипа
+const LOGO_MAX_FILE_SIZE_MB = 2;
+const LOGO_MAX_FILE_SIZE_BYTES = LOGO_MAX_FILE_SIZE_MB * 1024 * 1024;
+const LOGO_MAX_WIDTH = 512;
+const LOGO_MAX_HEIGHT = 512;
+
 export default function AdminLayout() {
   const {
     currentUser,
@@ -19,6 +25,7 @@ export default function AdminLayout() {
   const [preview, setPreview] = useState<string | null>(null);
   const [logoError, setLogoError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [validatingDimensions, setValidatingDimensions] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -30,14 +37,39 @@ export default function AdminLayout() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > LOGO_MAX_FILE_SIZE_BYTES) {
+      setLogoError(`Размер файла не должен превышать ${LOGO_MAX_FILE_SIZE_MB} МБ.`);
+      setSelectedFile(null);
+      setPreview(null);
+      e.target.value = '';
+      return;
+    }
+
     setSelectedFile(file);
     setLogoError(null);
+    setValidatingDimensions(true);
 
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreview(reader.result as string);
     };
     reader.readAsDataURL(file);
+
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      setValidatingDimensions(false);
+      if (img.naturalWidth > LOGO_MAX_WIDTH || img.naturalHeight > LOGO_MAX_HEIGHT) {
+        setLogoError(`Размер изображения не должен превышать ${LOGO_MAX_WIDTH}×${LOGO_MAX_HEIGHT} px.`);
+      }
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      setValidatingDimensions(false);
+    };
+    img.src = url;
   };
 
   const handleSaveLogo = async () => {
@@ -45,6 +77,11 @@ export default function AdminLayout() {
       setLogoError('Выберите файл логотипа.');
       return;
     }
+    if (selectedFile.size > LOGO_MAX_FILE_SIZE_BYTES) {
+      setLogoError(`Размер файла не должен превышать ${LOGO_MAX_FILE_SIZE_MB} МБ.`);
+      return;
+    }
+    if (logoError) return; // ошибка размеров изображения
     setIsSaving(true);
     const ok = await uploadCompanyLogo(selectedFile);
     if (ok) {
@@ -120,16 +157,16 @@ export default function AdminLayout() {
             Клубы
           </NavLink>
           <NavLink
+            to="/admin/roulette"
+            className={({ isActive }) => isActive ? 'active' : ''}
+          >
+            Рулетка
+          </NavLink>
+          <NavLink
             to="/admin/users"
             className={({ isActive }) => isActive ? 'active' : ''}
           >
-            Пользователи
-          </NavLink>
-          <NavLink
-            to="/admin/analytics"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            Аналитика
+            Игроки
           </NavLink>
         </nav>
 
@@ -142,11 +179,13 @@ export default function AdminLayout() {
         <div className="logo-modal-overlay" onClick={() => setIsLogoModalOpen(false)}>
           <div className="logo-modal-content" onClick={(e) => e.stopPropagation()}>
             <h2 className="logo-modal-title">Логотип компании</h2>
-            <p className="logo-modal-hint">
-              Загрузите новый логотип, который будет отображаться в админке. Рекомендуется квадратное изображение в PNG или SVG.
-            </p>
-            <div className="logo-modal-preview">
-              <img src={effectiveLogoSrc} alt="Текущий логотип" />
+            <div className="logo-modal-preview-row">
+              <div className="logo-modal-preview">
+                <img src={effectiveLogoSrc} alt="Текущий логотип" />
+              </div>
+              <p className="logo-modal-limits">
+                Ограничения: объём файла — до {LOGO_MAX_FILE_SIZE_MB} МБ, размер изображения — не более {LOGO_MAX_WIDTH}×{LOGO_MAX_HEIGHT} px.
+              </p>
             </div>
             <div className="logo-modal-controls">
               <button
@@ -188,7 +227,7 @@ export default function AdminLayout() {
                 type="button"
                 className="save-button"
                 onClick={handleSaveLogo}
-                disabled={isSaving || !selectedFile}
+                disabled={isSaving || !selectedFile || validatingDimensions || !!logoError}
               >
                 {isSaving ? 'Сохранение...' : 'Сохранить'}
               </button>

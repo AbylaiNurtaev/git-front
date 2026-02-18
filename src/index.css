@@ -1,14 +1,14 @@
-/* Палитра по умолчанию (можно переопределять темой клуба через useClubTheme) */
+/* Дефолтная палитра сайта (клубы могут переопределять через useClubTheme) */
 :root {
-  --theme-primary: #8b5cf6;
-  --theme-primary-dark: #7c3aed;
-  --theme-primary-rgb: 139, 92, 246;
-  --theme-primary-dark-rgb: 124, 58, 237;
-  --theme-accent: #a78bfa;
-  --theme-accent-rgb: 167, 139, 250;
-  --theme-text: #a78bfa;
-  --theme-text-rgb: 167, 139, 250;
-  --theme-bg: #0a0a0f;
+  --theme-bg: #14141C;
+  --theme-text: #ffffff;
+  --theme-text-rgb: 255, 255, 255;
+  --theme-primary: #EF3F54;
+  --theme-primary-dark: #d63648;
+  --theme-primary-rgb: 239, 63, 84;
+  --theme-primary-dark-rgb: 214, 54, 72;
+  --theme-accent: #EF3F54;
+  --theme-accent-rgb: 239, 63, 84;
 }
 
 /* Логотип в шапке — общий класс для всех header */
@@ -53,21 +53,16 @@ body {
   background-image:
     radial-gradient(
       ellipse 120% 100% at 50% -20%,
-      rgba(var(--theme-primary-rgb), 0.18) 0%,
+      rgba(var(--theme-primary-rgb), 0.12) 0%,
       transparent 55%
     ),
     radial-gradient(
       ellipse 80% 80% at 90% 80%,
-      rgba(var(--theme-primary-dark-rgb), 0.12) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse 80% 60% at 10% 50%,
-      rgba(var(--theme-accent-rgb), 0.12) 0%,
+      rgba(var(--theme-primary-dark-rgb), 0.08) 0%,
       transparent 50%
     );
   min-height: 100vh;
-  color: #e0e0e0;
+  color: var(--theme-text);
   overflow-x: hidden;
 }
 
@@ -96,7 +91,7 @@ code {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a2e;
+  background: var(--theme-bg);
 }
 
 ::-webkit-scrollbar-thumb {

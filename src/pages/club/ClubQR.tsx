@@ -6,6 +6,9 @@ import { getSocketUrl } from '@/config/api';
 import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
 import logoUrl from '@/assets/logo.png';
+import { useQRPageTheme } from '@/hooks/useQRPageTheme';
+import { qrThemeToCssVars } from '@/constants/qrTheme';
+import { DEFAULT_QR_PAGE_THEME } from '@/constants/qrTheme';
 import './ClubPages.css';
 import '../ClubRoulettePage.css';
 import '../SpinPage.css';
@@ -62,6 +65,8 @@ interface SpinPayload {
 export default function ClubQR() {
   const { currentUser, fetchClubData } = useStore();
   const club = currentUser as Club | null;
+  const { theme: storedQRTheme } = useQRPageTheme();
+  const qrTheme = club?.qrPageTheme ?? storedQRTheme ?? DEFAULT_QR_PAGE_THEME;
   const isLocalhost =
     typeof window !== 'undefined' &&
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -349,24 +354,65 @@ export default function ClubQR() {
     return null;
   }
 
+  const bg = club.qrPageBackground;
+  const isVideoBg = bg?.url && /\.(mp4|webm)$/i.test(bg.url);
+
   return (
-    <div ref={fullscreenRef} className="spin-page club-qr-page club-qr-page-wrap">
+    <div
+      ref={fullscreenRef}
+      className="spin-page club-qr-page club-qr-page-wrap"
+      style={qrThemeToCssVars(qrTheme) as React.CSSProperties}
+    >
       {!isFullscreen && (
-        <button
-          type="button"
-          className="club-qr-fullscreen-btn"
-          onClick={toggleFullscreen}
-          title="Полный экран (выйти — Esc)"
-          aria-label="Полный экран"
-        >
-          Полный экран
-        </button>
+        <>
+          <button
+            type="button"
+            className="club-qr-fullscreen-btn"
+            onClick={toggleFullscreen}
+            title="Полный экран (выйти — Esc)"
+            aria-label="Полный экран"
+          >
+            Полный экран
+          </button>
+          {isLocalhost && (
+            <button
+              type="button"
+              className="club-qr-fullscreen-btn club-qr-test-win-btn"
+              onClick={() => {
+                const prize =
+                  roulettePrizes[0] ??
+                  ({
+                    id: 'test',
+                    name: 'Тестовый приз',
+                    description: 'Проверка попапа выигрыша',
+                    type: 'physical',
+                    probability: 0,
+                    status: 'confirmed',
+                    wonAt: new Date().toISOString(),
+                  } as Prize);
+                setSelectedPrize(prize);
+              }}
+              title="Показать попап выигрыша (только localhost)"
+            >
+              Показать выигрыш
+            </button>
+          )}
+        </>
       )}
       {roulettePrizes.length > 0 ? (
         <>
           <div className="spin-container club-qr-spin-container">
             <div className="spin-roulette-section club-qr-roulette-section">
               <div className="cs-roulette-container">
+                {bg?.url && (
+                  <div className="club-qr-roulette-bg-layer" style={{ opacity: bg.opacity ?? 0.5 }}>
+                    {isVideoBg ? (
+                      <video src={bg.url} className="club-qr-roulette-bg-media" muted loop playsInline autoPlay />
+                    ) : (
+                      <img src={bg.url} alt="" className="club-qr-roulette-bg-media" />
+                    )}
+                  </div>
+                )}
                 <div className="club-qr-top-bar">
                   <img src={logoUrl} alt="Infinity" className="club-qr-logo" />
                   {currentSpinnerName && (
@@ -413,27 +459,6 @@ export default function ClubQR() {
                 </div>
               </div>
             </div>
-
-            {selectedPrize && !isSpinning && (
-              <div className="result-overlay" onClick={() => setSelectedPrize(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setSelectedPrize(null)} aria-label="Закрыть">
-                <div className="result-content" onClick={(e) => e.stopPropagation()}>
-                  <h2 className="result-title">Выигрыш!</h2>
-                  <div className="result-prize">
-                    {selectedPrize.image && (
-                      <img
-                        src={selectedPrize.image}
-                        alt={selectedPrize.name}
-                        className="result-prize-image"
-                      />
-                    )}
-                    <div className="result-prize-name">{selectedPrize.name}</div>
-                    {selectedPrize.description && (
-                      <div className="result-prize-desc">{selectedPrize.description}</div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </>
       ) : prizesLoadError ? (
@@ -449,6 +474,29 @@ export default function ClubQR() {
         <div className="spin-container club-qr-spin-container">
           <div className="spin-page-loading club-qr-loading">
             <p>Загрузка призов...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Попап выигрыша — показывается при selectedPrize (в т.ч. по тестовой кнопке на localhost) */}
+      {selectedPrize && !isSpinning && (
+        <div className="result-overlay" onClick={() => setSelectedPrize(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setSelectedPrize(null)} aria-label="Закрыть">
+          <div className="result-overlay-glow" aria-hidden />
+          <div className="result-content" onClick={(e) => e.stopPropagation()}>
+            <h2 className="result-title">Выигрыш!</h2>
+            <div className="result-prize">
+              {selectedPrize.image && (
+                <img
+                  src={selectedPrize.image}
+                  alt={selectedPrize.name}
+                  className="result-prize-image"
+                />
+              )}
+              <div className="result-prize-name">{selectedPrize.name}</div>
+              {selectedPrize.description && (
+                <div className="result-prize-desc">{selectedPrize.description}</div>
+              )}
+            </div>
           </div>
         </div>
       )}

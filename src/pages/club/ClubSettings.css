@@ -1,6 +1,6 @@
 .club-settings-page {
   padding: 24px;
-  max-width: 520px;
+  max-width: 100%;
 }
 
 .club-settings-title {
@@ -75,6 +75,10 @@
 
 .club-settings-actions {
   margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 .club-settings-save {
@@ -97,4 +101,420 @@
 .club-settings-save:disabled {
   opacity: 0.8;
   cursor: not-allowed;
+}
+
+.club-settings-reset {
+  padding: 14px 24px;
+  background: transparent;
+  color: var(--theme-text);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.5);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.club-settings-reset:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  border-color: var(--theme-primary);
+}
+
+/* --- Оформление страницы QR --- */
+.club-settings-qr-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(var(--theme-primary-rgb), 0.2);
+  width: 100%;
+}
+
+.club-settings-qr-preview-wrap {
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
+  background: var(--theme-bg);
+  margin-bottom: 28px;
+  width: 90vw;
+  max-width: 90vw;
+  height: min(100vh, 720px);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.club-settings-qr-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+  pointer-events: none;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Левая колонка — превью результата выигрыша (меняется вместе с темой) */
+.club-settings-qr-preview-result {
+  flex-shrink: 0;
+  width: 260px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  gap: 12px;
+}
+
+.club-settings-qr-preview-result-caption {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text);
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.club-settings-qr-preview-result-overlay {
+  width: 100%;
+  max-width: 220px;
+  background: var(--qr-result-overlay-bg);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.club-settings-qr-preview-result-content {
+  width: 100%;
+  background: var(--qr-result-content-bg);
+  border-radius: 14px;
+  padding: 20px 16px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.club-settings-qr-preview-result-title {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--qr-result-title);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.club-settings-qr-preview-result-prize {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--qr-result-prize-text);
+}
+
+.club-settings-qr-preview-page {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  background: var(--qr-page-bg);
+  height: 100%;
+  min-height: 100%;
+}
+
+.club-settings-qr-preview-fullscreen {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 10;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--qr-fullscreen-btn-bg);
+  color: var(--qr-fullscreen-btn-text);
+  border: 1px solid var(--qr-fullscreen-btn-border);
+  cursor: default;
+}
+
+.club-settings-qr-preview-topbar {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.club-settings-qr-preview-logo {
+  position: absolute;
+  left: 50px;
+  height: 56px;
+}
+
+.club-settings-qr-preview-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+}
+
+.club-settings-qr-preview-spinner-label {
+  font-weight: 700;
+  color: var(--qr-spinner-label);
+}
+
+.club-settings-qr-preview-spinner-value {
+  font-weight: 800;
+  color: var(--qr-spinner-value);
+}
+
+.club-settings-qr-preview-track {
+  position: absolute;
+  top: 140px;
+  left: 24px;
+  right: 24px;
+  bottom: 100px;
+  background: var(--qr-track-bg);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.club-settings-qr-preview-pointer {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 18px solid var(--qr-pointer);
+  z-index: 2;
+}
+
+.club-settings-qr-preview-cards {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px 20px;
+}
+
+.club-settings-qr-preview-card {
+  flex-shrink: 0;
+  width: 120px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--qr-card-bg);
+  border: 1px solid var(--qr-card-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.club-settings-qr-preview-card.selected {
+  border-color: var(--qr-selected-card-border);
+  border-width: 2px;
+}
+
+.club-settings-qr-preview-card-placeholder {
+  width: 100%;
+  height: 80px;
+  border-radius: 6px;
+  background: var(--qr-card-placeholder-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--qr-card-text);
+  opacity: 0.6;
+}
+
+.club-settings-qr-preview-card-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--qr-card-text);
+  text-align: center;
+}
+
+.club-settings-qr-preview-wins {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: var(--qr-wins-chat-bg);
+}
+
+.club-settings-qr-preview-wins-line {
+  font-size: 14px;
+  color: var(--qr-wins-chat-text);
+  white-space: nowrap;
+}
+
+/* Палитра в ряд — компактные карточки */
+.club-settings-qr-palette-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.club-settings-qr-palette-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--theme-text);
+  margin: 0;
+}
+
+.club-settings-qr-palette-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.club-settings-qr-save {
+  margin: 0;
+}
+
+.club-settings-qr-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.club-settings-qr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: rgba(var(--theme-primary-rgb), 0.06);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2);
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.club-settings-qr-field:hover {
+  border-color: rgba(var(--theme-primary-rgb), 0.35);
+}
+
+.club-settings-qr-field span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.club-settings-qr-field .theme-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.club-settings-qr-field .theme-color-input {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.club-settings-qr-field .theme-text-input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+/* Фон страницы QR */
+.club-settings-qr-background-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(var(--theme-primary-rgb), 0.2);
+}
+
+.club-settings-qr-background-requirements {
+  font-size: 14px;
+  color: var(--theme-text);
+  opacity: 0.9;
+  margin: 0 0 16px;
+  max-width: 560px;
+}
+
+.club-settings-qr-background-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.club-settings-qr-background-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.club-settings-qr-background-opacity-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--theme-text);
+}
+
+.club-settings-qr-background-opacity-label span {
+  font-weight: 600;
+}
+
+.club-settings-qr-background-opacity {
+  width: 160px;
+  height: 8px;
+  accent-color: var(--theme-primary);
+}
+
+.club-settings-qr-background-preview-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--theme-bg);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
+}
+
+.club-settings-qr-background-preview-wrap img,
+.club-settings-qr-background-preview-wrap video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.club-settings-qr-background-preview-mask {
+  position: absolute;
+  inset: 0;
+  background: var(--theme-bg);
+  pointer-events: none;
 }

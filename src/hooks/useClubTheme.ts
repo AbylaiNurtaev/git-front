@@ -26,11 +26,13 @@ function applyTheme(theme: { primary: string; primaryDark: string; accent?: stri
   root.style.setProperty(VAR_PREFIX + 'primary-dark', theme.primaryDark);
   root.style.setProperty(VAR_PREFIX + 'primary-rgb', hexToRgb(theme.primary));
   root.style.setProperty(VAR_PREFIX + 'primary-dark-rgb', hexToRgb(theme.primaryDark));
-  root.style.setProperty(VAR_PREFIX + 'bg', hexToBg(theme.primary));
+  /* Если тёмный оттенок = фон сайта (#14141C), используем его и для --theme-bg */
+  const bg = theme.primaryDark.toLowerCase() === '#14141c' ? '#14141C' : hexToBg(theme.primary);
+  root.style.setProperty(VAR_PREFIX + 'bg', bg);
   const accentColor = theme.accent || theme.primary;
   root.style.setProperty(VAR_PREFIX + 'accent', accentColor);
   root.style.setProperty(VAR_PREFIX + 'accent-rgb', hexToRgb(accentColor));
-  /* Цвет текста у клубов = акцент (подсветка) */
+  /* Цвет текста у клубов = акцент (белый в заводской теме) */
   root.style.setProperty(VAR_PREFIX + 'text', accentColor);
   root.style.setProperty(VAR_PREFIX + 'text-rgb', hexToRgb(accentColor));
 }

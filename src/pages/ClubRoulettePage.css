@@ -202,7 +202,7 @@
   padding: 10px 12px;
   border-bottom: 1px solid rgba(var(--theme-primary-rgb), 0.12);
   font-size: 14px;
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .roulette-history-item:last-child {
@@ -331,7 +331,7 @@
 
 .roulette-result-desc {
   font-size: 15px;
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 /* Кнопка тест (dev) */

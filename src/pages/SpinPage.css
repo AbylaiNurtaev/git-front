@@ -26,7 +26,7 @@
 }
 
 .scan-subtitle {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 18px;
   margin-bottom: 30px;
   text-align: center;
@@ -118,7 +118,7 @@
   align-items: center;
   gap: 10px;
   font-size: 15px;
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .spin-phone-label {
@@ -127,7 +127,7 @@
 }
 
 .spin-phone-value {
-  color: #e0e0e0;
+  color: var(--theme-text);
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -206,7 +206,7 @@
   justify-content: space-between;
   align-items: center;
   border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .rescan-button {
@@ -591,7 +591,7 @@
 
 .scanner-placeholder p {
   font-size: 20px;
-  color: #b8b8d4;
+  color: var(--theme-text);
   margin: 15px 0;
 }
 
@@ -612,7 +612,7 @@
   border: 2px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 12px;
   font-size: 16px;
-  color: #e0e0e0;
+  color: var(--theme-text);
   outline: none;
   transition: all 0.3s;
 }
@@ -664,7 +664,7 @@
 }
 
 .error-container p {
-  color: #b8b8d4;
+  color: var(--theme-text);
 }
 
 .prizes-preview {
@@ -746,7 +746,7 @@
 }
 
 .result-prize-info p {
-  color: #b8b8d4;
+  color: var(--theme-text);
   font-size: 16px;
   margin: 0;
 }
