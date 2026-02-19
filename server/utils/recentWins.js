@@ -2,13 +2,13 @@
  * Утилита хранения последних 10 выигрышей по клубу (в памяти).
  * Используется в POST /api/players/spin и при эмите события spin в сокет.
  *
- * Формат записи: { maskedPhone, prizeName, text }
- * text = maskedPhone + " выиграл " + prizeName (для отображения в чате на /club/qr)
+ * Формат записи: { playerName?, maskedPhone, prizeName }
+ * На фронте /club/qr выводится «playerName выиграл prizeName»; если playerName нет — maskedPhone.
  */
 
 const MAX_RECENT_WINS = 10;
 
-/** @type {Record<string, Array<{ maskedPhone: string, prizeName: string, text: string }>>} */
+/** @type {Record<string, Array<{ playerName?: string, maskedPhone: string, prizeName: string }>>} */
 const byClubId = {};
 
 /**
@@ -31,14 +31,15 @@ function maskPhone(phone) {
  * @param {string} clubId
  * @param {string} playerPhone - сырой телефон игрока
  * @param {string} prizeName - название приза
- * @returns {Array<{ maskedPhone: string, prizeName: string, text: string }>} текущий список recentWins после добавления
+ * @param {string} [playerName] - имя игрока (ФИО); если есть, на /club/qr выводится «Имя выиграл Приз»
+ * @returns {Array<{ playerName?: string, maskedPhone: string, prizeName: string }>} текущий список recentWins после добавления
  */
-function addWin(clubId, playerPhone, prizeName) {
+function addWin(clubId, playerPhone, prizeName, playerName) {
   if (!clubId) return [];
   if (!byClubId[clubId]) byClubId[clubId] = [];
   const masked = maskPhone(playerPhone);
-  const text = `${masked} выиграл ${prizeName}`;
-  const entry = { maskedPhone: masked, prizeName, text };
+  const entry = { prizeName, maskedPhone: masked };
+  if (playerName != null && String(playerName).trim()) entry.playerName = String(playerName).trim();
   byClubId[clubId].unshift(entry);
   byClubId[clubId] = byClubId[clubId].slice(0, MAX_RECENT_WINS);
   return byClubId[clubId];
@@ -47,7 +48,7 @@ function addWin(clubId, playerPhone, prizeName) {
 /**
  * Получить последние выигрыши по клубу (до 10).
  * @param {string} clubId
- * @returns {Array<{ maskedPhone: string, prizeName: string, text: string }>}
+ * @returns {Array<{ playerName?: string, maskedPhone: string, prizeName: string }>}
  */
 function getRecentWins(clubId) {
   if (!clubId) return [];
