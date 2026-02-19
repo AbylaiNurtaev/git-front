@@ -14,6 +14,8 @@ import '../ClubRoulettePage.css';
 import '../SpinPage.css';
 
 const PRIZE_WIDTH = 284;
+/** Левый padding у .cs-roulette-items — без него рулетка останавливается мимо приза */
+const ROULETTE_ITEMS_PADDING_LEFT = 20;
 const IDLE_SPEED_PX = 15.5;
 
 /** Фоновые изображения для карточек призов на странице QR (цикл по 4 картинкам) */
@@ -351,13 +353,16 @@ export default function ClubQR() {
     // Размер одного элемента приза (260px карточка + 24px gap в .cs-roulette-items)
     const prizeWidth = PRIZE_WIDTH;
     const containerWidth = rouletteRef.current.offsetWidth;
+    // Центр экрана: левый край слота под стрелкой (карточка 260px + gap 24px)
     const centerOffset = containerWidth / 2 - prizeWidth / 2;
+    // У .cs-roulette-items padding-left: 20px — первый приз начинается не с 0, а с 20px
+    const contentStart = centerOffset - ROULETTE_ITEMS_PADDING_LEFT;
 
     // Стартуем с текущей позиции (где остановился idle) — без прыжка
     const startPosition = idlePositionRef.current;
     const oneSetWidth = prizes.length * prizeWidth;
-    // Целевая позиция: выигранный приз по центру (лента крутится вправо)
-    const T = -finalIndex * prizeWidth + centerOffset;
+    // Целевая позиция: левый край приза finalIndex = contentStart (под стрелкой)
+    const T = contentStart - finalIndex * prizeWidth;
     const k = Math.floor((startPosition - T) / oneSetWidth) - 1;
     const targetPosition = T + k * oneSetWidth;
 
