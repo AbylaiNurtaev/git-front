@@ -151,11 +151,12 @@ export default function ClubQR() {
     try {
       const prizes = await apiService.getRoulettePrizes(clubId);
       const transformedPrizes = prizes.map(transformPrize);
-      // Сортируем по slotIndex, чтобы порядок на ленте совпадал со слотами (0, 1, 2, …)
+      // Порядок на ленте = по slotIndex (как на бэкенде), при равенстве — по id для стабильности
       const sorted = [...transformedPrizes].sort((a, b) => {
         const sa = a.slotIndex ?? Infinity;
         const sb = b.slotIndex ?? Infinity;
-        return sa - sb;
+        if (sa !== sb) return sa - sb;
+        return String(a.id ?? '').localeCompare(String(b.id ?? ''));
       });
       setRoulettePrizes(sorted);
     } catch (error: unknown) {
@@ -337,18 +338,12 @@ export default function ClubQR() {
     setIsSpinning(true);
     setSelectedPrize(null);
 
-    // Целевой индекс: приоритет у slotIndex с сервера (рулетка должна точно попасть на выданный приз)
-    const hasValidSlot =
-      prize.slotIndex !== undefined &&
-      Number.isInteger(prize.slotIndex) &&
-      prize.slotIndex >= 0 &&
-      prize.slotIndex < prizes.length;
-    const targetIndex = hasValidSlot
-      ? prize.slotIndex!
-      : prizes.findIndex(
-          (p) => p.id === prize.id || (prize.slotIndex !== undefined && p.slotIndex === prize.slotIndex)
-        );
-    const finalIndex = targetIndex >= 0 ? Math.min(targetIndex, prizes.length - 1) : 0;
+    // Приз ВСЕГДА решает бэкенд. Мы только крутим ленту и останавливаем на НЁМ — ищем тот же приз в нашем списке по id или slotIndex.
+    // Важно: индекс в массиве (после сортировки по slotIndex), а НЕ номер слота! Призов может быть 5 со слотами 0,2,5,7,9 — индекс слота 5 = 2 в массиве.
+    const targetIndex = prizes.findIndex(
+      (p) => p.id === prize.id || (prize.slotIndex !== undefined && p.slotIndex === prize.slotIndex)
+    );
+    const finalIndex = targetIndex >= 0 ? targetIndex : 0;
 
     // Размер одного элемента приза (260px карточка + 24px gap в .cs-roulette-items)
     const prizeWidth = PRIZE_WIDTH;
