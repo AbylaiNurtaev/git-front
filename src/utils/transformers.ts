@@ -103,7 +103,7 @@ export function transformPrize(prize: any): Prize {
     value: prize.value || prize.prizeId?.value,
     description: prize.description || prize.prizeId?.description || '',
     image: prize.image || prize.prizeId?.image,
-    probability: prize.dropChance ? prize.dropChance / 100 : (prize.probability || 0),
+    probability: prize.dropChance != null ? prize.dropChance / 100 : prize.percentage != null ? prize.percentage / 100 : (prize.probability ?? 0),
     slotIndex: prize.slotIndex !== undefined ? prize.slotIndex : (prize.prizeId?.slotIndex),
     isActive: prize.isActive !== false,
     status: prize.status || 'pending',

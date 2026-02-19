@@ -13,7 +13,10 @@ import './ClubPages.css';
 import '../ClubRoulettePage.css';
 import '../SpinPage.css';
 
-const PRIZE_WIDTH = 284;
+/** Ширина одной карточки приза (400px) + gap (24px) — для расчёта позиции рулетки */
+const PRIZE_CARD_WIDTH = 400;
+const PRIZE_GAP = 24;
+const PRIZE_WIDTH = PRIZE_CARD_WIDTH + PRIZE_GAP;
 /** Левый padding у .cs-roulette-items — без него рулетка останавливается мимо приза */
 const ROULETTE_ITEMS_PADDING_LEFT = 20;
 const IDLE_SPEED_PX = 15.5;
@@ -55,6 +58,18 @@ interface WinItem {
   maskedPhone?: string;
   /** Игрок с бэкенда — объект с ФИО или id для подстановки по списку игроков */
   playerId?: { _id?: string; id?: string; name?: string; fio?: string } | string;
+}
+
+/** Тир приза по проценту выпадения (dropChance/percentage 0–100): цвет обводки и свечения */
+export type PrizeTier = 'red' | 'purple' | 'green' | 'blue' | 'gray';
+
+export function getPrizeTier(prize: Prize): PrizeTier {
+  const pct = (prize.probability ?? 0) * 100;
+  if (pct < 5) return 'red';
+  if (pct < 10) return 'purple';
+  if (pct < 15) return 'green';
+  if (pct <= 20) return 'blue';
+  return 'gray';
 }
 
 /** Отображаемое имя для ленты: ФИО/имя игрока, иначе замаскированный телефон, иначе "Гость" */
@@ -345,10 +360,10 @@ export default function ClubQR() {
     );
     const finalIndex = targetIndex >= 0 ? targetIndex : 0;
 
-    // Размер одного элемента приза (260px карточка + 24px gap в .cs-roulette-items)
+    // Размер одного элемента приза (карточка 400px + gap 24px в .cs-roulette-items)
     const prizeWidth = PRIZE_WIDTH;
     const containerWidth = rouletteRef.current.offsetWidth;
-    // Центр экрана: левый край слота под стрелкой (карточка 260px + gap 24px)
+    // Центр экрана: левый край слота под стрелкой (карточка 400px + gap 24px)
     const centerOffset = containerWidth / 2 - prizeWidth / 2;
     // У .cs-roulette-items padding-left: 20px — первый приз начинается не с 0, а с 20px
     const contentStart = centerOffset - ROULETTE_ITEMS_PADDING_LEFT;
@@ -501,6 +516,7 @@ export default function ClubQR() {
                         <div
                           key={`${prize.id}-${index}`}
                           className={`cs-prize-item ${isSelected ? 'selected' : ''}`}
+                          data-prize-tier={getPrizeTier(prize)}
                           style={{
                             backgroundImage: `linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url(${bgImageUrl})`,
                             backgroundSize: 'cover',
@@ -519,7 +535,6 @@ export default function ClubQR() {
                                 {prize.name.charAt(0)}
                               </div>
                             )}
-                            <div className="cs-prize-name">{prize.name}</div>
                           </div>
                         </div>
                       );
@@ -549,7 +564,7 @@ export default function ClubQR() {
 
       {/* Попап выигрыша — показывается при selectedPrize (в т.ч. по тестовой кнопке на localhost) */}
       {selectedPrize && !isSpinning && (
-        <div className="result-overlay" onClick={() => setSelectedPrize(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setSelectedPrize(null)} aria-label="Закрыть">
+        <div className="result-overlay" data-prize-tier={getPrizeTier(selectedPrize)} onClick={() => setSelectedPrize(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setSelectedPrize(null)} aria-label="Закрыть">
           <div className="result-overlay-glow" aria-hidden />
           <div className="result-content" onClick={(e) => e.stopPropagation()}>
             <h2 className="result-title">Выигрыш!</h2>

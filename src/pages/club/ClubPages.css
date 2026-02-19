@@ -246,7 +246,7 @@
   border: none;
   padding: 0;
   position: absolute;
-  top: 90px;
+  top: 30px;
   left: 0;
   right: 0;
   z-index: 2;
@@ -754,8 +754,8 @@
 
 .club-qr-page .club-qr-roulette-section {
   width: 100vw;
-  height: 55vh;
-  min-height: 320px;
+  height: 70vh;
+  min-height: 420px;
   margin: 0;
   flex-shrink: 0;
   align-self: flex-start;
@@ -768,14 +768,88 @@
   background: var(--qr-track-bg, rgba(var(--theme-primary-rgb), 0.05));
 }
 
-/* Карточки призов на странице QR — цвета из темы */
+/* Карточки призов на странице QR — шире чем в высоту, без названия (400×240px) */
 .club-qr-page .cs-prize-item {
+  width: 400px;
+  height: 240px;
+  padding: 12px;
   background: var(--qr-card-bg, rgba(var(--theme-primary-rgb), 0.08));
   border-color: var(--qr-card-border, rgba(var(--theme-primary-rgb), 0.15));
 }
+.club-qr-page .cs-prize-inner {
+  gap: 0;
+  justify-content: center;
+}
+.club-qr-page .cs-prize-image {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+}
+.club-qr-page .cs-prize-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  font-size: 64px;
+}
+.club-qr-page .cs-prize-name {
+  display: none;
+}
+
+/* Карточки призов на странице QR — цвета из темы */
 .club-qr-page .cs-prize-item.selected {
   border-color: var(--qr-selected-card-border, var(--theme-primary));
 }
+
+/* Обводка по редкости (толще, чтобы был виден цвет): 0–5% красный, 5–10% фиолетовый, 10–15% зелёный, 15–20% синий, >20% серый */
+.club-qr-page .cs-prize-item[data-prize-tier="red"] {
+  border-width: 3px;
+  border-color: #ef4444;
+}
+.club-qr-page .cs-prize-item[data-prize-tier="purple"] {
+  border-width: 3px;
+  border-color: #a855f7;
+}
+.club-qr-page .cs-prize-item[data-prize-tier="green"] {
+  border-width: 3px;
+  border-color: #22c55e;
+}
+.club-qr-page .cs-prize-item[data-prize-tier="blue"] {
+  border-width: 3px;
+  border-color: #3b82f6;
+}
+.club-qr-page .cs-prize-item[data-prize-tier="gray"] {
+  border-width: 3px;
+  border-color: #6b7280;
+}
+
+/* Свечение выигравшей карточки по цвету редкости */
+.club-qr-page .cs-prize-item.selected[data-prize-tier="red"] {
+  border-width: 3px;
+  border-color: #ef4444;
+  box-shadow: 0 0 50px rgba(239, 68, 68, 0.7), 0 0 100px rgba(239, 68, 68, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(239, 68, 68, 0.2);
+}
+.club-qr-page .cs-prize-item.selected[data-prize-tier="purple"] {
+  border-width: 3px;
+  border-color: #a855f7;
+  box-shadow: 0 0 50px rgba(168, 85, 247, 0.7), 0 0 100px rgba(168, 85, 247, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(168, 85, 247, 0.2);
+}
+.club-qr-page .cs-prize-item.selected[data-prize-tier="green"] {
+  border-width: 3px;
+  border-color: #22c55e;
+  box-shadow: 0 0 50px rgba(34, 197, 94, 0.7), 0 0 100px rgba(34, 197, 94, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(34, 197, 94, 0.2);
+}
+.club-qr-page .cs-prize-item.selected[data-prize-tier="blue"] {
+  border-width: 3px;
+  border-color: #3b82f6;
+  box-shadow: 0 0 50px rgba(59, 130, 246, 0.7), 0 0 100px rgba(59, 130, 246, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(59, 130, 246, 0.2);
+}
+.club-qr-page .cs-prize-item.selected[data-prize-tier="gray"] {
+  border-width: 3px;
+  border-color: #6b7280;
+  box-shadow: 0 0 50px rgba(107, 114, 128, 0.7), 0 0 100px rgba(107, 114, 128, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(107, 114, 128, 0.2);
+}
+
 .club-qr-page .cs-prize-name {
   color: var(--qr-card-text, var(--theme-text));
 }
@@ -818,8 +892,55 @@
     rgba(var(--theme-primary-rgb), 0.08) 55%,
     transparent 75%
   );
-  filter: blur(20px);
+  filter: blur(25px);
   animation: resultGlowPulse 2.5s ease-in-out infinite;
+}
+
+/* Свечение сзади попапа выигрыша — по цвету редкости приза (ярче) */
+.club-qr-page .result-overlay[data-prize-tier="red"] .result-overlay-glow::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(239, 68, 68, 0.55) 0%,
+    rgba(239, 68, 68, 0.35) 25%,
+    rgba(239, 68, 68, 0.15) 50%,
+    transparent 70%
+  );
+}
+.club-qr-page .result-overlay[data-prize-tier="purple"] .result-overlay-glow::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(168, 85, 247, 0.55) 0%,
+    rgba(168, 85, 247, 0.35) 25%,
+    rgba(168, 85, 247, 0.15) 50%,
+    transparent 70%
+  );
+}
+.club-qr-page .result-overlay[data-prize-tier="green"] .result-overlay-glow::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(34, 197, 94, 0.55) 0%,
+    rgba(34, 197, 94, 0.35) 25%,
+    rgba(34, 197, 94, 0.15) 50%,
+    transparent 70%
+  );
+}
+.club-qr-page .result-overlay[data-prize-tier="blue"] .result-overlay-glow::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(59, 130, 246, 0.55) 0%,
+    rgba(59, 130, 246, 0.35) 25%,
+    rgba(59, 130, 246, 0.15) 50%,
+    transparent 70%
+  );
+}
+.club-qr-page .result-overlay[data-prize-tier="gray"] .result-overlay-glow::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(107, 114, 128, 0.55) 0%,
+    rgba(107, 114, 128, 0.35) 25%,
+    rgba(107, 114, 128, 0.15) 50%,
+    transparent 70%
+  );
 }
 
 @keyframes resultGlowPulse {
@@ -842,6 +963,66 @@
 .club-qr-page .result-title {
   color: var(--qr-result-title, var(--theme-text));
 }
+
+/* Обводка модалки и цвет надписи «Выигрыш!» по редкости приза */
+.club-qr-page .result-overlay[data-prize-tier="red"] .result-content {
+  border: 3px solid #ef4444;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+}
+.club-qr-page .result-overlay[data-prize-tier="red"] .result-title {
+  color: #ef4444;
+}
+.club-qr-page .result-overlay[data-prize-tier="purple"] .result-content {
+  border: 3px solid #a855f7;
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+}
+.club-qr-page .result-overlay[data-prize-tier="purple"] .result-title {
+  color: #a855f7;
+}
+.club-qr-page .result-overlay[data-prize-tier="green"] .result-content {
+  border: 3px solid #22c55e;
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
+}
+.club-qr-page .result-overlay[data-prize-tier="green"] .result-title {
+  color: #22c55e;
+}
+.club-qr-page .result-overlay[data-prize-tier="blue"] .result-content {
+  border: 3px solid #3b82f6;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+}
+.club-qr-page .result-overlay[data-prize-tier="blue"] .result-title {
+  color: #3b82f6;
+}
+.club-qr-page .result-overlay[data-prize-tier="gray"] .result-content {
+  border: 3px solid #6b7280;
+  box-shadow: 0 0 30px rgba(107, 114, 128, 0.4);
+}
+.club-qr-page .result-overlay[data-prize-tier="gray"] .result-title {
+  color: #6b7280;
+}
+
+/* Обводка блока приза (картинка + название) по цвету редкости */
+.club-qr-page .result-overlay[data-prize-tier="red"] .result-prize {
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+.club-qr-page .result-overlay[data-prize-tier="purple"] .result-prize {
+  border: 2px solid #a855f7;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+.club-qr-page .result-overlay[data-prize-tier="green"] .result-prize {
+  border: 2px solid #22c55e;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+.club-qr-page .result-overlay[data-prize-tier="blue"] .result-prize {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+.club-qr-page .result-overlay[data-prize-tier="gray"] .result-prize {
+  border: 2px solid #6b7280;
+  box-shadow: 0 0 20px rgba(107, 114, 128, 0.3);
+}
+
 .club-qr-page .result-prize-name,
 .club-qr-page .result-prize-desc {
   color: var(--qr-result-prize-text, var(--theme-text));
@@ -963,9 +1144,9 @@
   pointer-events: none;
 }
 
-/* Верхняя стрелка — прямо над верхним краем карточек (cs-prize-item 480px по центру) */
+/* Верхняя стрелка — прямо над верхним краем карточек (cs-prize-item 240px по центру) */
 .club-qr-page .cs-roulette-pointer::before {
-  top: calc(50% - 240px - 30px);
+  top: calc(50% - 120px - 30px);
   bottom: auto;
   left: 50%;
   transform: translateX(-50%);
@@ -980,9 +1161,9 @@
   box-shadow: none;
 }
 
-/* Нижняя стрелка — прямо под нижним краем карточек (cs-prize-item) */
+/* Нижняя стрелка — прямо под нижним краем карточек (cs-prize-item 240px) */
 .club-qr-page .cs-roulette-pointer::after {
-  top: calc(50% + 240px + 6px);
+  top: calc(50% + 120px + 6px);
   bottom: auto;
   left: 50%;
   transform: translateX(-50%);
