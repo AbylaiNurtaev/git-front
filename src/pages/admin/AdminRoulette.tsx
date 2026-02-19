@@ -258,14 +258,24 @@ export default function AdminRoulette() {
         }}
         onSave={async (data) => {
           if (selectedPrize) {
-            await updatePrize(selectedPrize.id, { 
+            const ok = await updatePrize(selectedPrize.id, {
               dropChance: data.dropChance,
-              image: data.image || undefined
+              image: data.image || undefined,
+              backgroundImage: data.backgroundImage || undefined,
+              removeBackgroundImage: data.removeBackgroundImage,
             });
+            if (ok) {
+              const updated = useStore.getState().prizes.find((p) => p.id === selectedPrize.id);
+              if (updated) setSelectedPrize(updated);
+            }
+            // Не вызываем fetchPrizes — приз в сторе уже обновлён ответом API (с backgroundImage)
           } else {
-            await createPrize(data);
+            await createPrize({
+              ...data,
+              backgroundImage: data.backgroundImage || undefined,
+            });
+            await fetchPrizes();
           }
-          await fetchPrizes();
         }}
         prize={selectedPrize}
         existingSlotIndices={occupiedSlotIndices}

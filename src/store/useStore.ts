@@ -79,8 +79,15 @@ interface Store {
     slotIndex: number;
     totalQuantity: number;
     image?: File | null;
+    backgroundImage?: File | null;
   }) => Promise<Prize | null>;
-  updatePrize: (id: string, data: Partial<{ dropChance: number; isActive: boolean; image?: File | null }>) => Promise<boolean>;
+  updatePrize: (id: string, data: Partial<{
+    dropChance: number;
+    isActive: boolean;
+    image?: File | null;
+    backgroundImage?: File | null;
+    removeBackgroundImage?: boolean;
+  }>) => Promise<boolean>;
   deletePrize: (id: string) => Promise<boolean>;
   fetchAnalytics: (startDate?: string, endDate?: string) => Promise<any>;
   fetchAnalyticsByCity: (startDate?: string, endDate?: string) => Promise<AnalyticsByCityResponse | null>;
@@ -610,6 +617,7 @@ export const useStore = create<Store>()(
         slotIndex: number;
         totalQuantity: number;
         image?: File | null;
+        backgroundImage?: File | null;
       }) => {
         try {
           const response = await apiService.createPrize(data);
@@ -623,10 +631,23 @@ export const useStore = create<Store>()(
         }
       },
 
-      updatePrize: async (id: string, data: Partial<{ dropChance: number; isActive: boolean; image?: File | null }>) => {
+      updatePrize: async (id: string, data: Partial<{
+        dropChance: number;
+        isActive: boolean;
+        image?: File | null;
+        backgroundImage?: File | null;
+        removeBackgroundImage?: boolean;
+      }>) => {
         try {
-          await apiService.updatePrize(id, data);
-          await get().fetchPrizes();
+          const response = await apiService.updatePrize(id, data);
+          const prev = get().prizes.find((p) => p.id === id);
+          const updated = transformPrize(response ?? { _id: id, ...data });
+          const merged = prev ? { ...prev, ...updated } : updated;
+          if (prev && merged.backgroundImage === undefined && prev.backgroundImage)
+            merged.backgroundImage = prev.backgroundImage;
+          set({
+            prizes: get().prizes.map((p) => (p.id === id ? merged : p)),
+          });
           return true;
         } catch (error: any) {
           set({ error: error.response?.data?.message || 'Ошибка обновления приза' });

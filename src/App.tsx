@@ -17,7 +17,6 @@ import AdminClubs from './pages/admin/AdminClubs';
 import AdminClubDetail from './pages/admin/AdminClubDetail';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminUserDetail from './pages/admin/AdminUserDetail';
-import AdminPrizes from './pages/admin/AdminPrizes';
 import AdminRoulette from './pages/admin/AdminRoulette';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -92,7 +91,6 @@ function App() {
         <Route path="clubs/:id" element={<AdminClubDetail />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:id" element={<AdminUserDetail />} />
-        <Route path="prizes" element={<AdminPrizes />} />
         <Route path="roulette" element={<AdminRoulette />} />
         <Route path="analytics" element={<Navigate to="/admin" replace />} />
       </Route>

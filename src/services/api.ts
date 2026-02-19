@@ -317,6 +317,7 @@ class ApiService {
     slotIndex: number;
     totalQuantity: number;
     image?: File | null;
+    backgroundImage?: File | null;
   }) {
     const formData = new FormData();
     formData.append('name', data.name);
@@ -329,6 +330,9 @@ class ApiService {
     formData.append('totalQuantity', data.totalQuantity.toString());
     if (data.image) {
       formData.append('image', data.image);
+    }
+    if (data.backgroundImage) {
+      formData.append('backgroundImage', data.backgroundImage);
     }
 
     const response = await this.api.post('/admin/prizes', formData, {
@@ -344,7 +348,13 @@ class ApiService {
     return response.data;
   }
 
-  async updatePrize(id: string, data: Partial<{ dropChance: number; isActive: boolean; image?: File | null }>) {
+  async updatePrize(id: string, data: Partial<{
+    dropChance: number;
+    isActive: boolean;
+    image?: File | null;
+    backgroundImage?: File | null;
+    removeBackgroundImage?: boolean;
+  }>) {
     const formData = new FormData();
     if (data.dropChance !== undefined) {
       formData.append('dropChance', data.dropChance.toString());
@@ -354,6 +364,12 @@ class ApiService {
     }
     if (data.image) {
       formData.append('image', data.image);
+    }
+    if (data.backgroundImage) {
+      formData.append('backgroundImage', data.backgroundImage);
+    }
+    if (data.removeBackgroundImage === true) {
+      formData.append('removeBackgroundImage', 'true');
     }
 
     const response = await this.api.put(`/admin/prizes/${id}`, formData, {

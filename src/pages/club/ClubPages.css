@@ -865,7 +865,20 @@
   background: var(--qr-result-overlay-bg, rgba(0, 0, 0, 0.75));
 }
 
-/* Одно большое пульсирующее свечение за попапом выигрыша */
+/* Фон картинкой за попапом (задаётся админом у приза) — общий и для QR-страницы */
+.result-overlay-bg,
+.club-qr-page .result-overlay-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  opacity: 0.85;
+}
+
+/* Свечение как тень попапа — уменьшено, чтобы не перекрывать фон */
 .club-qr-page .result-overlay-glow {
   position: absolute;
   inset: 0;
@@ -874,6 +887,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 
 .club-qr-page .result-overlay-glow::before {
@@ -881,18 +895,18 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(120vmax, 180vh);
-  height: min(120vmax, 180vh);
+  width: min(70vmax, 100vh);
+  height: min(70vmax, 100vh);
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(var(--theme-primary-rgb), 0.4) 0%,
-    rgba(var(--theme-primary-rgb), 0.2) 30%,
-    rgba(var(--theme-primary-rgb), 0.08) 55%,
+    rgba(var(--theme-primary-rgb), 0.35) 0%,
+    rgba(var(--theme-primary-rgb), 0.15) 35%,
+    rgba(var(--theme-primary-rgb), 0.05) 60%,
     transparent 75%
   );
-  filter: blur(25px);
+  filter: blur(20px);
   animation: resultGlowPulse 2.5s ease-in-out infinite;
 }
 
@@ -900,46 +914,46 @@
 .club-qr-page .result-overlay[data-prize-tier="red"] .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(239, 68, 68, 0.55) 0%,
-    rgba(239, 68, 68, 0.35) 25%,
-    rgba(239, 68, 68, 0.15) 50%,
-    transparent 70%
+    rgba(239, 68, 68, 0.4) 0%,
+    rgba(239, 68, 68, 0.22) 35%,
+    rgba(239, 68, 68, 0.08) 60%,
+    transparent 75%
   );
 }
 .club-qr-page .result-overlay[data-prize-tier="purple"] .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(168, 85, 247, 0.55) 0%,
-    rgba(168, 85, 247, 0.35) 25%,
-    rgba(168, 85, 247, 0.15) 50%,
-    transparent 70%
+    rgba(168, 85, 247, 0.4) 0%,
+    rgba(168, 85, 247, 0.22) 35%,
+    rgba(168, 85, 247, 0.08) 60%,
+    transparent 75%
   );
 }
 .club-qr-page .result-overlay[data-prize-tier="green"] .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(34, 197, 94, 0.55) 0%,
-    rgba(34, 197, 94, 0.35) 25%,
-    rgba(34, 197, 94, 0.15) 50%,
-    transparent 70%
+    rgba(34, 197, 94, 0.4) 0%,
+    rgba(34, 197, 94, 0.22) 35%,
+    rgba(34, 197, 94, 0.08) 60%,
+    transparent 75%
   );
 }
 .club-qr-page .result-overlay[data-prize-tier="blue"] .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(59, 130, 246, 0.55) 0%,
-    rgba(59, 130, 246, 0.35) 25%,
-    rgba(59, 130, 246, 0.15) 50%,
-    transparent 70%
+    rgba(59, 130, 246, 0.4) 0%,
+    rgba(59, 130, 246, 0.22) 35%,
+    rgba(59, 130, 246, 0.08) 60%,
+    transparent 75%
   );
 }
 .club-qr-page .result-overlay[data-prize-tier="gray"] .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(107, 114, 128, 0.55) 0%,
-    rgba(107, 114, 128, 0.35) 25%,
-    rgba(107, 114, 128, 0.15) 50%,
-    transparent 70%
+    rgba(107, 114, 128, 0.4) 0%,
+    rgba(107, 114, 128, 0.22) 35%,
+    rgba(107, 114, 128, 0.08) 60%,
+    transparent 75%
   );
 }
 
@@ -957,7 +971,7 @@
 
 .club-qr-page .result-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   background: var(--qr-result-content-bg, rgba(var(--theme-primary-rgb), 0.12));
 }
 .club-qr-page .result-title {
@@ -1071,11 +1085,37 @@
   border-color: var(--theme-primary);
 }
 
-/* Кнопка полноэкранного режима — внутри контента, не перекрывает Header */
-.club-qr-fullscreen-btn {
+/* Кнопка выхода — маленькая иконка справа сверху */
+.club-qr-logout-btn {
   position: absolute;
   top: 16px;
   right: 16px;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: var(--qr-fullscreen-btn-bg, rgba(var(--theme-primary-rgb), 0.25));
+  color: var(--qr-fullscreen-btn-text, var(--theme-text));
+  border: 1px solid
+    var(--qr-fullscreen-btn-border, rgba(var(--theme-primary-rgb), 0.5));
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+.club-qr-logout-btn:hover {
+  background: rgba(var(--theme-primary-rgb), 0.4);
+  border-color: var(--theme-primary);
+}
+
+/* Кнопка полноэкранного режима — слева от кнопки выхода */
+.club-qr-fullscreen-btn {
+  position: absolute;
+  top: 16px;
+  right: 64px;
   z-index: 1000;
   padding: 12px 24px;
   background: var(--qr-fullscreen-btn-bg, rgba(var(--theme-primary-rgb), 0.25));

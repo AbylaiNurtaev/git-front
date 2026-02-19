@@ -625,6 +625,13 @@ export default function SpinPage() {
 
             {result && createPortal(
               <div className="result-overlay" onClick={() => setResult(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setResult(null)} aria-label="Закрыть">
+                {result.backgroundImage && (
+                  <div
+                    className="result-overlay-bg"
+                    aria-hidden
+                    style={{ backgroundImage: `url(${result.backgroundImage})` }}
+                  />
+                )}
                 <div className="result-content" onClick={(e) => e.stopPropagation()}>
                   <h2 className="result-title">Выигрыш!</h2>
                   <div className="result-prize">

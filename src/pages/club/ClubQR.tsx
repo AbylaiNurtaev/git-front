@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { LogOut } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { apiService } from '@/services/api';
 import { getSocketUrl } from '@/config/api';
@@ -104,7 +105,7 @@ interface SpinPayload {
 }
 
 export default function ClubQR() {
-  const { currentUser, fetchClubData, players, fetchClubPlayers } = useStore();
+  const { currentUser, fetchClubData, players, fetchClubPlayers, logout } = useStore();
   const club = currentUser as Club | null;
   const { theme: storedQRTheme } = useQRPageTheme();
   const qrTheme = club?.qrPageTheme ?? storedQRTheme ?? DEFAULT_QR_PAGE_THEME;
@@ -445,6 +446,15 @@ export default function ClubQR() {
         <>
           <button
             type="button"
+            className="club-qr-logout-btn"
+            onClick={logout}
+            title="Выйти"
+            aria-label="Выйти"
+          >
+            <LogOut size={20} />
+          </button>
+          <button
+            type="button"
             className="club-qr-fullscreen-btn"
             onClick={toggleFullscreen}
             title="Полный экран (выйти — Esc)"
@@ -565,6 +575,13 @@ export default function ClubQR() {
       {/* Попап выигрыша — показывается при selectedPrize (в т.ч. по тестовой кнопке на localhost) */}
       {selectedPrize && !isSpinning && (
         <div className="result-overlay" data-prize-tier={getPrizeTier(selectedPrize)} onClick={() => setSelectedPrize(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setSelectedPrize(null)} aria-label="Закрыть">
+          {selectedPrize.backgroundImage && (
+            <div
+              className="result-overlay-bg"
+              aria-hidden
+              style={{ backgroundImage: `url(${selectedPrize.backgroundImage})` }}
+            />
+          )}
           <div className="result-overlay-glow" aria-hidden />
           <div className="result-content" onClick={(e) => e.stopPropagation()}>
             <h2 className="result-title">Выигрыш!</h2>

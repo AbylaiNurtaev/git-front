@@ -103,6 +103,8 @@ export interface Prize {
   value?: number;
   description: string;
   image?: string;
+  /** URL фона модалки выигрыша (задаётся админом) */
+  backgroundImage?: string;
   probability: number;
   slotIndex?: number;
   /** Участвует ли приз в рулетке (админ может отключить) */

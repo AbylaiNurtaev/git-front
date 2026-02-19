@@ -5,7 +5,6 @@ import {
   Building2,
   CircleDot,
   Users,
-  Gift,
   ChevronLeft,
   LogOut,
 } from 'lucide-react';
@@ -130,7 +129,6 @@ export default function AdminLayout() {
     { to: '/admin/clubs', end: false, label: 'Клубы', icon: Building2 },
     { to: '/admin/roulette', end: false, label: 'Рулетка', icon: CircleDot },
     { to: '/admin/users', end: false, label: 'Игроки', icon: Users },
-    { to: '/admin/prizes', end: false, label: 'Призы', icon: Gift },
   ] as const;
 
   return (

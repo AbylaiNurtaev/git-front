@@ -103,6 +103,15 @@ export function transformPrize(prize: any): Prize {
     value: prize.value || prize.prizeId?.value,
     description: prize.description || prize.prizeId?.description || '',
     image: prize.image || prize.prizeId?.image,
+    backgroundImage:
+      (typeof prize.backgroundImage === 'string' && prize.backgroundImage) ||
+      (typeof prize.prizeId?.backgroundImage === 'string' && prize.prizeId?.backgroundImage) ||
+      (typeof prize.background_image === 'string' && prize.background_image) ||
+      (typeof prize.prizeId?.background_image === 'string' && prize.prizeId?.background_image) ||
+      (prize.backgroundImage?.url) ||
+      (prize.prizeId?.backgroundImage?.url) ||
+      (prize.background_image?.url) ||
+      undefined,
     probability: prize.dropChance != null ? prize.dropChance / 100 : prize.percentage != null ? prize.percentage / 100 : (prize.probability ?? 0),
     slotIndex: prize.slotIndex !== undefined ? prize.slotIndex : (prize.prizeId?.slotIndex),
     isActive: prize.isActive !== false,
