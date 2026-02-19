@@ -20,6 +20,37 @@ import './AdminPages.css';
 
 const CHART_COLORS = ['#EF3F54', '#ff6b7a', '#d63648', '#ff8f9a', '#bd2d3d'];
 
+function getDefaultDateRange() {
+  const end = new Date();
+  const start = new Date();
+  start.setDate(start.getDate() - 30);
+  const fmt = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  return { startDate: fmt(start), endDate: fmt(end) };
+}
+
+const DEFAULT_DATES = getDefaultDateRange();
+
+/** Число игроков клуба из ответа by-city (playerCount / players / player_count) */
+function getClubPlayerCount(club: { playerCount?: number; players?: number; player_count?: number }): number {
+  return club.playerCount ?? club.players ?? (club as { player_count?: number }).player_count ?? 0;
+}
+
+/** Число игроков клуба из GET /admin/analytics (clubStats) — по имени или _id */
+function getPlayerCountFromClubStats(
+  club: { id?: string; _id?: string; name?: string },
+  clubStats: { _id?: string; clubName?: string; playerCount?: number }[] | null | undefined
+): number {
+  if (!clubStats?.length) return 0;
+  const stat = clubStats.find(
+    (s) =>
+      s._id === club._id ||
+      s._id === club.id ||
+      (s.clubName != null && club.name != null && String(s.clubName).trim() === String(club.name).trim())
+  );
+  return stat?.playerCount ?? 0;
+}
+
 export default function AdminOverview() {
   const navigate = useNavigate();
   const {
@@ -38,11 +69,12 @@ export default function AdminOverview() {
     totalSpins?: number;
     totalPrizes?: number;
     totalClubs?: number;
+    clubStats?: { _id?: string; clubName?: string; count?: number; playerCount?: number }[];
   } | null>(null);
   const [byCity, setByCity] = useState<AnalyticsByCityResponse | null>(null);
   const [byCityLoading, setByCityLoading] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(DEFAULT_DATES.startDate);
+  const [endDate, setEndDate] = useState(DEFAULT_DATES.endDate);
 
   useEffect(() => {
     const load = async () => {
@@ -258,6 +290,22 @@ export default function AdminOverview() {
         </div>
       </section>
 
+      {/* Статистика клубов (из GET /admin/analytics — clubStats) */}
+      {analytics?.clubStats && analytics.clubStats.length > 0 && (
+        <section className="analytics-section">
+          <h3>Статистика клубов</h3>
+          <div className="analytics-card-list">
+            {analytics.clubStats.map((stat: { _id?: string; clubName?: string; count?: number; playerCount?: number; player_count?: number }, index: number) => (
+              <div key={stat._id ?? index} className="analytics-card analytics-club-stat">
+                <strong>{stat.clubName ?? 'Без названия'}</strong>
+                <p>Прокруток: {stat.count ?? 0}</p>
+                <p>Игроков: {stat.playerCount ?? (stat as { player_count?: number }).player_count ?? 0}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Аналитика по городам */}
       <section className="analytics-section analytics-by-city">
         <h3>Аналитика по городам</h3>
@@ -323,7 +371,14 @@ export default function AdminOverview() {
                       Клубов: <strong>{item.clubCount}</strong>
                     </span>
                     <span>
-                      Игроков: <strong>{item.totalPlayers}</strong>
+                      Игроков: <strong>
+                        {item.totalPlayers ||
+                          (item.clubs ?? []).reduce(
+                            (sum, club) =>
+                              sum + (getClubPlayerCount(club) || getPlayerCountFromClubStats(club, analytics?.clubStats)),
+                            0
+                          )}
+                      </strong>
                     </span>
                     <span>
                       Прокруток: <strong>{item.totalSpins}</strong>
@@ -377,7 +432,7 @@ export default function AdminOverview() {
                               )}
                             </div>
                             <div className="by-city-club-stats">
-                              <span>Игроки: {club.playerCount ?? 0}</span>
+                              <span>Игроки: {getClubPlayerCount(club) || getPlayerCountFromClubStats(club, analytics?.clubStats)}</span>
                               <span>Спины: {club.spinsCount ?? 0}</span>
                               <span>Списано: {club.totalSpent ?? 0}</span>
                               <span>

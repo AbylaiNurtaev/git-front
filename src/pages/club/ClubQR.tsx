@@ -15,6 +15,14 @@ import '../SpinPage.css';
 
 const PRIZE_WIDTH = 284;
 const IDLE_SPEED_PX = 15.5;
+
+/** Фоновые изображения для карточек призов на странице QR (цикл по 4 картинкам) */
+const PRIZE_ITEM_BG_IMAGES = [
+  'https://zira.uz/wp-content/uploads/2018/07/coca-cola-co.jpg',
+  'https://news.store.rambler.ru/img/9b01eec37d7cc156eddf892f5feb5c5f?img-format=auto&img-1-resize=height:400,fit:max&img-2-filter=sharpen',
+  'https://tovaro.s3.eu-central-1.amazonaws.com/b/uploads/2023/08/08131459/pepsi-branding-3.jpg',
+  'https://lindeal.com/images/photos/red-bull-kak-lipkaya-voda-s-kofeinom-stala-legendoj-dayushchej-krylya.jpeg',
+];
 const MAX_WINS_CHAT = 10;
 /** Буфер копий рулетки справа, чтобы не было пустого места */
 const ROULETTE_MIN_COPIES = 50;
@@ -43,11 +51,25 @@ interface WinItem {
   playerName?: string;
   name?: string;
   maskedPhone?: string;
+  /** Игрок с бэкенда — объект с ФИО или id для подстановки по списку игроков */
+  playerId?: { _id?: string; id?: string; name?: string; fio?: string } | string;
 }
 
-/** Отображаемое имя для ленты: имя игрока, иначе замаскированный телефон, иначе "Гость" */
-function winDisplayName(w: WinItem): string {
-  return w.name ?? w.playerName ?? w.maskedPhone ?? 'Гость';
+/** Отображаемое имя для ленты: ФИО/имя игрока, иначе замаскированный телефон, иначе "Гость" */
+function winDisplayName(w: WinItem, resolvePlayerId?: (id: string) => string | undefined): string {
+  const fromObj =
+    w.name ??
+    w.playerName ??
+    (typeof w.playerId === 'object' && w.playerId !== null
+      ? w.playerId.name ?? w.playerId.fio
+      : undefined);
+  if (fromObj) return fromObj;
+  const id = typeof w.playerId === 'string' ? w.playerId : undefined;
+  if (id && resolvePlayerId) {
+    const resolved = resolvePlayerId(id);
+    if (resolved) return resolved;
+  }
+  return w.maskedPhone ?? 'Гость';
 }
 
 /** Payload события spin с бэкенда (с recentWins — последние 10 выигрышей по клубу) */
@@ -58,12 +80,14 @@ interface SpinPayload {
   playerPhone?: string;
   playerName?: string;
   name?: string;
+  /** Игрок с ФИО (приоритетнее номера) */
+  playerId?: { _id?: string; id?: string; name?: string; fio?: string };
   createdAt?: string;
   recentWins?: WinItem[];
 }
 
 export default function ClubQR() {
-  const { currentUser, fetchClubData } = useStore();
+  const { currentUser, fetchClubData, players, fetchClubPlayers } = useStore();
   const club = currentUser as Club | null;
   const { theme: storedQRTheme } = useQRPageTheme();
   const qrTheme = club?.qrPageTheme ?? storedQRTheme ?? DEFAULT_QR_PAGE_THEME;
@@ -71,10 +95,13 @@ export default function ClubQR() {
     typeof window !== 'undefined' &&
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-  // Подтягиваем данные клуба с бэка (GET /api/clubs/me), чтобы в объекте был pinCode
+  // Подтягиваем данные клуба и список игроков (для подстановки ФИО в истории)
   useEffect(() => {
-    if (club) fetchClubData();
-  }, [club?.id, fetchClubData]);
+    if (club) {
+      fetchClubData();
+      fetchClubPlayers();
+    }
+  }, [club?.id, fetchClubData, fetchClubPlayers]);
   const [roulettePrizes, setRoulettePrizes] = useState<Prize[]>([]);
   const [rouletteCopies, setRouletteCopies] = useState(ROULETTE_MIN_COPIES);
   const rouletteCopiesRef = useRef(ROULETTE_MIN_COPIES);
@@ -87,6 +114,8 @@ export default function ClubQR() {
   const [winsChat, setWinsChat] = useState<Array<{ id: string; text: string }>>([]);
   const [currentSpinnerName, setCurrentSpinnerName] = useState<string | null>(null);
   const winsChatIdRef = useRef(0);
+  const playersRef = useRef<typeof players>([]);
+  playersRef.current = players;
   const roulettePrizesRef = useRef<Prize[]>([]);
   roulettePrizesRef.current = roulettePrizes;
   const socketRef = useRef<Socket | null>(null);
@@ -163,8 +192,17 @@ export default function ClubQR() {
 
       const prize = transformPrize(prizeData);
       const prizeName = prize.name || 'Приз';
-      const singleDisplayName = payload.name ?? payload.playerName ?? (payload.playerPhone ? maskPhone(payload.playerPhone) : randomMaskedPhone());
-      const spinnerName = payload.playerName ?? (payload.playerPhone ? maskPhone(payload.playerPhone) : undefined);
+      const singleDisplayName =
+        payload.name ??
+        payload.playerName ??
+        payload.playerId?.name ??
+        payload.playerId?.fio ??
+        (payload.playerPhone ? maskPhone(payload.playerPhone) : randomMaskedPhone());
+      const spinnerName =
+        payload.playerName ??
+        payload.playerId?.name ??
+        payload.playerId?.fio ??
+        (payload.playerPhone ? maskPhone(payload.playerPhone) : undefined);
       const pendingWin =
         Array.isArray(payload.recentWins) && payload.recentWins.length > 0
           ? { type: 'recentWins' as const, recentWins: payload.recentWins }
@@ -238,9 +276,15 @@ export default function ClubQR() {
     startSpin(prize, () => {
       if (pendingWin) {
         if (pendingWin.type === 'recentWins') {
+          const resolveFio = (id: string) => {
+            const list = playersRef.current;
+            const p = list.find((pl) => pl.id === id);
+            return (p?.name ?? (p as { fio?: string })?.fio)?.trim() || undefined;
+          };
           setWinsChat(
             pendingWin.recentWins.map((w, i) => {
-              const text = w.text?.includes('выиграл') ? w.text : `${winDisplayName(w)} выиграл ${w.prizeName}`;
+              const displayName = winDisplayName(w, resolveFio);
+              const text = w.text?.includes('выиграл') ? w.text : `${displayName} выиграл ${w.prizeName}`;
               return { id: `win-${i}`, text };
             })
           );
@@ -249,6 +293,8 @@ export default function ClubQR() {
         }
       }
       setCurrentSpinnerName(null);
+      // Сбрасываем флаг до запуска следующего спина из очереди (state обновится позже)
+      isSpinningRef.current = false;
       runNextSpinFromQueue();
     });
   };
@@ -276,6 +322,9 @@ export default function ClubQR() {
     const prizes = roulettePrizesRef.current;
     if (prizes.length === 0) return;
 
+    // Сразу помечаем спин как активный, чтобы при двух быстрых socket-событиях
+    // второй не запускал анимацию параллельно (очередь обработает его после завершения первого)
+    isSpinningRef.current = true;
     setIsSpinning(true);
     setSelectedPrize(null);
 
@@ -318,6 +367,7 @@ export default function ClubQR() {
         setScrollPosition(endPosition);
         idlePositionRef.current = endPosition;
         setSelectedPrize(prize);
+        isSpinningRef.current = false;
         setIsSpinning(false);
         onComplete?.();
         return;
@@ -433,10 +483,16 @@ export default function ClubQR() {
                   >
                     {Array.from({ length: rouletteCopies }, () => roulettePrizes).flat().map((prize, index) => {
                       const isSelected = !isSpinning && selectedPrize?.id === prize.id;
+                      const bgImageUrl = PRIZE_ITEM_BG_IMAGES[index % PRIZE_ITEM_BG_IMAGES.length];
                       return (
                         <div
                           key={`${prize.id}-${index}`}
                           className={`cs-prize-item ${isSelected ? 'selected' : ''}`}
+                          style={{
+                            backgroundImage: `linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url(${bgImageUrl})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                          }}
                         >
                           <div className="cs-prize-inner">
                             {prize.image ? (

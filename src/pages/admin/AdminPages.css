@@ -821,6 +821,32 @@
   letter-spacing: 1px;
 }
 
+.analytics-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.analytics-card.analytics-club-stat {
+  background: rgba(26, 26, 46, 0.6);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.analytics-club-stat strong {
+  display: block;
+  color: var(--theme-text);
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.analytics-club-stat p {
+  color: var(--theme-text-muted);
+  font-size: 13px;
+  margin: 4px 0 0 0;
+}
+
 /* Обзор: секция графиков */
 .admin-overview-page .overview-stats .stats-grid {
   margin-bottom: 0;
@@ -1301,4 +1327,126 @@
 
 .user-ban-status-ok {
   color: #86efac;
+}
+
+/* ——— Переопределения внутри админ-панели (тёмная тема макета) ——— */
+.admin-dashboard .tab-header h2 {
+  color: var(--admin-primary, var(--theme-primary));
+}
+
+.admin-dashboard .admin-search {
+  background: var(--admin-card);
+  border-color: var(--admin-border, rgba(var(--theme-primary-rgb), 0.3));
+  color: var(--admin-text, var(--theme-text));
+}
+
+.admin-dashboard .admin-search:focus {
+  border-color: var(--admin-primary, rgba(var(--theme-primary-rgb), 0.6));
+}
+
+.admin-dashboard .add-button {
+  background: linear-gradient(135deg, var(--admin-primary) 0%, #4f46e5 100%);
+  box-shadow: 0 4px 15px rgba(var(--admin-primary-rgb), 0.3);
+}
+
+.admin-dashboard .add-button:hover {
+  box-shadow: 0 6px 25px rgba(var(--admin-primary-rgb), 0.5);
+}
+
+.admin-dashboard .stat-card {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border, rgba(var(--theme-primary-rgb), 0.3));
+  border-radius: 12px;
+  color: var(--admin-text, var(--theme-text));
+  box-shadow: none;
+}
+
+.admin-dashboard .stat-card h3,
+.admin-dashboard .stat-card h4 {
+  color: var(--admin-text-muted, var(--theme-text));
+}
+
+.admin-dashboard .stat-value {
+  color: var(--admin-primary, var(--theme-primary));
+}
+
+.admin-dashboard .club-card,
+.admin-dashboard .prize-card,
+.admin-dashboard .slot-card {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border, rgba(var(--theme-primary-rgb), 0.2));
+  border-radius: 12px;
+}
+
+.admin-dashboard .club-card:hover,
+.admin-dashboard .prize-card:hover,
+.admin-dashboard .slot-card:hover {
+  border-color: rgba(var(--admin-primary-rgb), 0.4);
+}
+
+.admin-dashboard .club-info .club-name,
+.admin-dashboard .prize-info h3,
+.admin-dashboard .by-city-name,
+.admin-dashboard .visit-history-club-name {
+  color: var(--admin-primary, var(--theme-primary));
+}
+
+.admin-dashboard .edit-button {
+  background: linear-gradient(135deg, var(--admin-primary) 0%, #4f46e5 100%);
+  box-shadow: 0 4px 15px rgba(var(--admin-primary-rgb), 0.3);
+}
+
+.admin-dashboard .users-table {
+  background: var(--admin-card);
+  border-radius: 12px;
+}
+
+.admin-dashboard .users-table thead {
+  background: rgba(var(--admin-primary-rgb), 0.2);
+  color: var(--admin-primary, var(--theme-primary));
+}
+
+.admin-dashboard .users-table td {
+  border-bottom-color: var(--admin-border, rgba(var(--theme-primary-rgb), 0.2));
+  color: var(--admin-text, var(--theme-text));
+}
+
+.admin-dashboard .chart-card,
+.admin-dashboard .analytics-section,
+.admin-dashboard .by-city-card,
+.admin-dashboard .club-detail-info,
+.admin-dashboard .club-detail-stats,
+.admin-dashboard .club-detail-players,
+.admin-dashboard .club-detail-analytics {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border, rgba(var(--theme-primary-rgb), 0.25));
+  border-radius: 12px;
+}
+
+.admin-dashboard .chart-card h4,
+.admin-dashboard .analytics-section h3,
+.admin-dashboard .club-detail-info h2,
+.admin-dashboard .club-detail-stats h3,
+.admin-dashboard .club-detail-players h3,
+.admin-dashboard .club-detail-analytics h3 {
+  color: var(--admin-text, var(--theme-text));
+}
+
+.admin-dashboard .back-button {
+  background: var(--admin-card);
+  color: var(--admin-primary, var(--theme-primary));
+  border-color: var(--admin-border, rgba(var(--theme-primary-rgb), 0.3));
+}
+
+.admin-dashboard .back-button:hover {
+  background: rgba(var(--admin-primary-rgb), 0.15);
+  border-color: var(--admin-primary);
+}
+
+.admin-dashboard .empty-state {
+  color: var(--admin-text-muted, rgba(184, 184, 212, 0.5));
+}
+
+.admin-dashboard .empty-state .hint {
+  color: var(--admin-text, var(--theme-text));
 }

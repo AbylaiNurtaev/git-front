@@ -5,6 +5,37 @@ import Skeleton from '@/components/Skeleton';
 import type { AnalyticsByCityResponse } from '@/types';
 import './AdminPages.css';
 
+function getDefaultDateRange() {
+  const end = new Date();
+  const start = new Date();
+  start.setDate(start.getDate() - 30);
+  const fmt = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  return { startDate: fmt(start), endDate: fmt(end) };
+}
+
+const DEFAULT_DATES = getDefaultDateRange();
+
+/** Число игроков клуба из ответа by-city (playerCount / players / player_count) */
+function getClubPlayerCount(club: { playerCount?: number; players?: number; player_count?: number }): number {
+  return club.playerCount ?? club.players ?? (club as { player_count?: number }).player_count ?? 0;
+}
+
+/** Число игроков клуба из GET /admin/analytics (clubStats) — по имени или _id */
+function getPlayerCountFromClubStats(
+  club: { id?: string; _id?: string; name?: string },
+  clubStats: { _id?: string; clubName?: string; playerCount?: number }[] | null | undefined
+): number {
+  if (!clubStats?.length) return 0;
+  const stat = clubStats.find(
+    (s) =>
+      s._id === club._id ||
+      s._id === club.id ||
+      (s.clubName != null && club.name != null && String(s.clubName).trim() === String(club.name).trim())
+  );
+  return stat?.playerCount ?? 0;
+}
+
 export default function AdminAnalytics() {
   const navigate = useNavigate();
   const { fetchAnalytics, fetchAnalyticsByCity, clubs } = useStore();
@@ -12,8 +43,8 @@ export default function AdminAnalytics() {
   const [byCity, setByCity] = useState<AnalyticsByCityResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [byCityLoading, setByCityLoading] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(DEFAULT_DATES.startDate);
+  const [endDate, setEndDate] = useState(DEFAULT_DATES.endDate);
 
   useEffect(() => {
     const loadAnalytics = async () => {
@@ -126,7 +157,14 @@ export default function AdminAnalytics() {
                   <h4 className="by-city-name">{item.city || 'Без города'}</h4>
                   <div className="by-city-totals">
                     <span>Клубов: <strong>{item.clubCount}</strong></span>
-                    <span>Игроков: <strong>{item.totalPlayers}</strong></span>
+                    <span>Игроков: <strong>
+                      {item.totalPlayers ||
+                        (item.clubs ?? []).reduce(
+                          (sum, club) =>
+                            sum + (getClubPlayerCount(club) || getPlayerCountFromClubStats(club, analytics?.clubStats)),
+                          0
+                        )}
+                    </strong></span>
                     <span>Прокруток: <strong>{item.totalSpins}</strong></span>
                     <span>Списано: <strong>{item.totalSpent}</strong> баллов</span>
                   </div>
@@ -145,7 +183,7 @@ export default function AdminAnalytics() {
                           {club.manager && <span className="by-city-club-manager">Менеджер: {club.manager}</span>}
                         </div>
                         <div className="by-city-club-stats">
-                          <span>Игроки: {club.playerCount ?? 0}</span>
+                          <span>Игроки: {getClubPlayerCount(club) || getPlayerCountFromClubStats(club, analytics?.clubStats)}</span>
                           <span>Спины: {club.spinsCount ?? 0}</span>
                           <span>Списано: {club.totalSpent ?? 0}</span>
                           <span>Призов: {club.prizeClaimsCount ?? 0}</span>

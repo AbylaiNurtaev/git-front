@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import Skeleton from '@/components/Skeleton';
 import logoUrl from '@/assets/logo.png';
+import backImage from '@/assets/back.webp';
 import './AuthPage.css';
 
 export default function AuthPage() {
@@ -70,7 +71,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page" style={{ backgroundImage: `url(${backImage})` }}>
       <div className="auth-container">
         <div className="auth-header">
           <img src={logoUrl} alt="Infinity" className="header-logo" />
@@ -132,17 +133,7 @@ export default function AuthPage() {
             )}
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setIsRegister(!isRegister);
-              setError('');
-            }}
-            className="switch-button"
-            disabled={isLoading}
-          >
-            {isRegister ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}
-          </button>
+
         </form>
       </div>
     </div>

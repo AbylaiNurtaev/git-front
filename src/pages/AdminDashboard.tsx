@@ -366,7 +366,9 @@ export default function AdminDashboard() {
                   <div className="analytics-card">
                     <h3>Статистика клубов</h3>
                     {analytics.clubStats?.map((stat: any, index: number) => (
-                      <p key={index}>{stat.clubName}: {stat.count}</p>
+                      <p key={index}>
+                        {stat.clubName}: {stat.count} прокруток, {stat.playerCount ?? 0} игроков
+                      </p>
                     ))}
                   </div>
                 </div>

@@ -132,7 +132,7 @@ export default function ClubPlayers() {
                         }}
                       >
                         <td className="players-cell-fio">{player.name?.trim() || '—'}</td>
-                        <td className="players-cell-phone">{player.phone ?? '—'}</td>
+                        <td className="players-cell-phone">{player.phone ? `+${String(player.phone).replace(/^\+/, '')}` : '—'}</td>
                         <td>{Number(player.balance) ?? 0} баллов</td>
                         <td>{prizeCountByUserId[String(player.id)] ?? 0}</td>
                       </tr>
@@ -160,7 +160,7 @@ export default function ClubPlayers() {
               </div>
               <div className="player-modal-row">
                 <dt>Телефон</dt>
-                <dd>{selectedPlayer.phone ?? '—'}</dd>
+                <dd>{selectedPlayer.phone ? `+${String(selectedPlayer.phone).replace(/^\+/, '')}` : '—'}</dd>
               </div>
               <div className="player-modal-row">
                 <dt>Баланс</dt>

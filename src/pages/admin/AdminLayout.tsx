@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Building2,
+  CircleDot,
+  Users,
+  Gift,
+  ChevronLeft,
+  LogOut,
+} from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import logoUrl from '@/assets/logo.png';
 import './AdminLayout.css';
@@ -26,6 +35,7 @@ export default function AdminLayout() {
   const [logoError, setLogoError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [validatingDimensions, setValidatingDimensions] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -115,16 +125,24 @@ export default function AdminLayout() {
 
   const effectiveLogoSrc = preview || companyLogoUrl || logoUrl;
 
+  const navItems = [
+    { to: '/admin', end: true, label: 'Главная', icon: LayoutDashboard },
+    { to: '/admin/clubs', end: false, label: 'Клубы', icon: Building2 },
+    { to: '/admin/roulette', end: false, label: 'Рулетка', icon: CircleDot },
+    { to: '/admin/users', end: false, label: 'Игроки', icon: Users },
+    { to: '/admin/prizes', end: false, label: 'Призы', icon: Gift },
+  ] as const;
+
   return (
     <div className="admin-dashboard">
-      <div className="dashboard-container">
-        <header className="dashboard-header">
-          <div className="header-left">
-            <div className="logo-edit-wrapper">
-              <img src={effectiveLogoSrc} alt="Infinity" className="header-logo" />
+      <aside className={`admin-sidebar ${sidebarCollapsed ? 'admin-sidebar--collapsed' : ''}`}>
+        <div className="admin-sidebar__top">
+          <div className="admin-sidebar__user">
+            <div className="admin-sidebar__avatar-wrap">
+              <img src={effectiveLogoSrc} alt="" className="admin-sidebar__avatar" />
               <button
                 type="button"
-                className="logo-edit-button"
+                className="admin-sidebar__logo-edit"
                 onClick={() => setIsLogoModalOpen(true)}
                 title="Изменить логотип"
                 aria-label="Изменить логотип"
@@ -132,45 +150,61 @@ export default function AdminLayout() {
                 ✎
               </button>
             </div>
-            <h1>Панель администратора</h1>
+            {!sidebarCollapsed && (
+              <>
+                <span className="admin-sidebar__name">{currentUser.name || 'Администратор'}</span>
+                <span className="admin-sidebar__role">Администратор</span>
+              </>
+            )}
           </div>
-          <div className="header-actions">
-            <span className="admin-name">{currentUser.name || 'Администратор'}</span>
-            <button onClick={logout} className="logout-button">
-              Выйти
+          <button
+            type="button"
+            className="admin-sidebar__collapse"
+            onClick={() => setSidebarCollapsed((c) => !c)}
+            title={sidebarCollapsed ? 'Развернуть меню' : 'Свернуть меню'}
+            aria-label={sidebarCollapsed ? 'Развернуть меню' : 'Свернуть меню'}
+          >
+            <ChevronLeft size={18} />
+          </button>
+        </div>
+
+        <nav className="admin-sidebar__nav">
+          {navItems.map(({ to, end, label, icon: Icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                `admin-sidebar__link ${isActive ? 'admin-sidebar__link--active' : ''}`
+              }
+            >
+              <Icon size={20} className="admin-sidebar__link-icon" />
+              {!sidebarCollapsed && <span>{label}</span>}
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+
+      <div className="admin-main">
+        <header className="admin-topbar">
+          <div className="admin-topbar__locations">
+            <span className="admin-topbar__location admin-topbar__location--active">Все клубы</span>
+          </div>
+          <div className="admin-topbar__actions">
+            <span className="admin-topbar__user-name">{currentUser.name || 'Администратор'}</span>
+            <button
+              type="button"
+              className="admin-topbar__icon-btn admin-topbar__icon-btn--logout"
+              onClick={logout}
+              title="Выйти"
+              aria-label="Выйти"
+            >
+              <LogOut size={20} />
             </button>
           </div>
         </header>
 
-        <nav className="dashboard-tabs">
-          <NavLink
-            to="/admin"
-            end
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            Обзор
-          </NavLink>
-          <NavLink
-            to="/admin/clubs"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            Клубы
-          </NavLink>
-          <NavLink
-            to="/admin/roulette"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            Рулетка
-          </NavLink>
-          <NavLink
-            to="/admin/users"
-            className={({ isActive }) => isActive ? 'active' : ''}
-          >
-            Игроки
-          </NavLink>
-        </nav>
-
-        <div className="dashboard-content">
+        <div className="admin-content">
           <Outlet />
         </div>
       </div>
