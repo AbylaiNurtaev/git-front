@@ -25,8 +25,13 @@ function RedirectAfterLogin() {
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirect');
   const { currentUser } = useStore();
-  if (redirectTo && currentUser?.role === 'player') {
-    const path = redirectTo.startsWith('/') ? redirectTo : `/${redirectTo}`;
+  const path = redirectTo?.startsWith('/') ? redirectTo : redirectTo ? `/${redirectTo}` : null;
+  // Игрок — редирект по redirect (например /spin?club=...)
+  if (path && currentUser?.role === 'player') {
+    return <Navigate to={path} replace />;
+  }
+  // Клуб: если изначально был /club/qr или другой /club/..., ведём туда
+  if (path && path.startsWith('/club') && currentUser?.role === 'club') {
     return <Navigate to={path} replace />;
   }
   return <Navigate to="/" replace />;

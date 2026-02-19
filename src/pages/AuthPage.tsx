@@ -20,12 +20,14 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (isAuthenticated && currentUser) {
-      if (redirectTo && currentUser.role === 'player') {
-        navigate(redirectTo.startsWith('/') ? redirectTo : `/${redirectTo}`, { replace: true });
+      const path = redirectTo?.startsWith('/') ? redirectTo : redirectTo ? `/${redirectTo}` : null;
+      if (path && currentUser.role === 'player') {
+        navigate(path, { replace: true });
       } else if (currentUser.role === 'admin') {
         navigate('/admin');
       } else if (currentUser.role === 'club') {
-        navigate('/club');
+        // Если до истечения сессии был /club/qr или другой /club/..., возвращаем туда
+        navigate(path && path.startsWith('/club') ? path : '/club', { replace: true });
       } else {
         navigate('/player');
       }
@@ -52,10 +54,13 @@ export default function AuthPage() {
       }
 
       if (success) {
-        // Сразу редирект по QR-ссылке (например /spin?club=...), иначе роут /auth переключится на "/"
         const user = useStore.getState().currentUser;
-        if (redirectTo && user?.role === 'player') {
-          const path = redirectTo.startsWith('/') ? redirectTo : `/${redirectTo}`;
+        const path = redirectTo?.startsWith('/') ? redirectTo : redirectTo ? `/${redirectTo}` : null;
+        if (path && user?.role === 'player') {
+          navigate(path, { replace: true });
+          return;
+        }
+        if (path && path.startsWith('/club') && user?.role === 'club') {
           navigate(path, { replace: true });
           return;
         }

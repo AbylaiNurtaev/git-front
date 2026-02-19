@@ -1,168 +1,107 @@
-.club-dashboard {
+/* Один вертикальный скролл: блокируем скролл у body, скроллит только .admin-content */
+body.club-layout-active {
+  overflow: hidden;
   height: 100vh;
-  padding: 20px;
-  background: var(--theme-bg);
-  background-image:
-    radial-gradient(ellipse 120% 80% at 50% -10%, rgba(var(--theme-primary-rgb), 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 60% at 100% 50%, rgba(var(--theme-primary-dark-rgb), 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 60% at 0% 80%, rgba(var(--theme-accent-rgb), 0.06) 0%, transparent 50%);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
-.dashboard-container {
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  background: rgba(var(--theme-primary-rgb), 0.06);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(var(--theme-primary-rgb), 0.2);
-  overflow: hidden;
-  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
-  display: flex;
-  flex-direction: column;
-}
-
-.dashboard-header {
-  background: var(--theme-bg);
-  color: var(--theme-text);
-  padding: 30px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(var(--theme-primary-rgb), 0.3);
-  box-shadow: 0 4px 20px rgba(var(--theme-primary-rgb), 0.2);
-}
-
-.dashboard-header h1 {
-  font-size: 28px;
-  margin: 0;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.club-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: rgba(var(--theme-text-rgb), 0.9);
-}
-
-.logout-button {
-  padding: 10px 20px;
-  background: rgba(var(--theme-primary-rgb), 0.15);
-  color: var(--theme-text);
-  border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s;
-  font-weight: 600;
-}
-
-.logout-button:hover {
-  background: rgba(var(--theme-primary-rgb), 0.25);
-  border-color: var(--theme-primary);
-  box-shadow: 0 0 20px rgba(var(--theme-primary-rgb), 0.3);
-}
-
-.dashboard-tabs {
-  display: flex;
-  background: rgba(var(--theme-primary-rgb), 0.04);
-  border-bottom: 2px solid rgba(var(--theme-primary-rgb), 0.3);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.dashboard-tabs a {
-  padding: 15px 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(var(--theme-text-rgb), 0.6);
-  transition: all 0.3s;
-  border-bottom: 3px solid transparent;
-  white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-decoration: none;
-  display: block;
-}
-
-.dashboard-tabs a:hover {
-  background: rgba(var(--theme-primary-rgb), 0.1);
-  color: var(--theme-text);
-}
-
-.dashboard-tabs a.active {
-  color: var(--theme-text);
-  border-bottom-color: var(--theme-primary);
-  background: rgba(var(--theme-primary-rgb), 0.2);
-  text-shadow: 0 0 10px rgba(var(--theme-primary-rgb), 0.5);
-}
-
-.dashboard-content {
+/* Страница QR: контент на весь экран без отступов */
+.club-dashboard--qr .club-content--full {
   padding: 0;
-  overflow-y: auto;
-  flex: 1;
+  display: flex;
+  flex-direction: column;
   min-height: 0;
 }
 
-.dashboard-content-no-scroll {
-  overflow: hidden !important;
+.club-dashboard--qr .club-content--full > * {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-.dashboard-content-no-scroll > * {
-  flex: 1;
+/* Стили страниц клуба в духе админ-панели (тёмная тема) */
+.admin-dashboard .club-page h2,
+.admin-dashboard .tab-header h2 {
+  color: var(--admin-primary);
+}
+
+.admin-dashboard .stat-card {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  color: var(--admin-text);
+  box-shadow: none;
+}
+
+.admin-dashboard .stat-card h3,
+.admin-dashboard .stat-card h4 {
+  color: var(--admin-text-muted);
+}
+
+.admin-dashboard .stat-value {
+  color: var(--admin-primary);
+}
+
+.admin-dashboard .overview-issued-section,
+.admin-dashboard .overview-issued-section h3 {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text);
+}
+
+.admin-dashboard .issued-claims-list li {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--admin-text-muted);
+}
+
+.admin-dashboard .club-page {
+  color: var(--admin-text);
+}
+
+/* Один вертикальный скролл: только в .admin-content, без второго ползунка у body */
+.admin-dashboard .admin-main {
   min-height: 0;
-  overflow: hidden;
+}
+
+.admin-dashboard .admin-content {
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+}
+
+/* Адаптив: убираем горизонтальный скролл при раскрытой нав-панели */
+
+.admin-dashboard .club-settings-page {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Превью QR на странице настроек — 95% ширины контентной области при раскрытой нав-панели */
+.admin-dashboard--sidebar-open .club-settings-qr-preview-wrap {
+  width: 95%;
+  max-width: none;
+}
+
+/* При средних экранах — чуть уже сайдбар и меньше отступы контента */
+@media (max-width: 1100px) {
+  .admin-dashboard .admin-sidebar:not(.admin-sidebar--collapsed) {
+    width: 220px;
+    min-width: 220px;
+  }
+
+  .admin-dashboard .admin-content {
+    padding: 16px;
+  }
 }
 
 @media (max-width: 768px) {
-  .club-dashboard {
-    padding: 10px;
+  .admin-dashboard .admin-sidebar:not(.admin-sidebar--collapsed) {
+    width: 200px;
+    min-width: 200px;
   }
 
-  .dashboard-container {
-    border-radius: 16px;
-  }
-
-  .dashboard-header {
-    padding: 20px;
-    flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
-  }
-
-  .dashboard-header h1 {
-    font-size: 24px;
-  }
-
-  .dashboard-tabs {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .dashboard-tabs a {
-    padding: 12px 15px;
-    font-size: 12px;
-    min-width: 70px;
-  }
-
-  .dashboard-content {
-    padding: 20px;
+  .admin-dashboard .admin-content {
+    padding: 12px;
   }
 }
