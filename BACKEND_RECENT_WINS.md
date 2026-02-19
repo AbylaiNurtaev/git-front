@@ -84,3 +84,15 @@
 | **emit('spin', payload)** | В payload добавить `playerName`/`name`; в каждом элементе `recentWins` добавить `playerName`/`name`. |
 | **addWin / getRecentWins** | Хранить и возвращать имя (например `playerName`) в каждой записи. |
 | **GET /players/recent-wins** | В каждом элементе массива отдавать `name` или `playerName`. |
+
+---
+
+## Реализация на бэкенде (пример)
+
+- Имя считается один раз и хранится в переменной `playerName` (при отсутствии имени — пустая строка `""`).
+- В объект `spinPayload` добавлены оба поля: **`playerName`** и **`name`** (то же значение для совместимости).
+- Этот же `spinPayload` уходит:
+  - в ответ эндпоинтов **POST /api/players/spin** и **POST /api/players/spin-by-phone**: `res.json({ spin: spinPayload, ... })`;
+  - в событие сокета: `io.to('club:...').emit('spin', { ...spinPayload, recentWins })`.
+
+Фронт использует `payload.name` и `payload.playerName` для строки «Имя выиграл Приз»; пустую строку считает «нет имени» и подставляет телефон или «Гость». Чтобы в ленте последних выигрышей везде было имя, каждый элемент массива **`recentWins`** тоже должен содержать **`playerName`** или **`name`** (при отсутствии — пустая строка или поле можно не передавать).

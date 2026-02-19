@@ -149,7 +149,13 @@ export default function ClubQR() {
     try {
       const prizes = await apiService.getRoulettePrizes(clubId);
       const transformedPrizes = prizes.map(transformPrize);
-      setRoulettePrizes(transformedPrizes);
+      // Сортируем по slotIndex, чтобы порядок на ленте совпадал со слотами (0, 1, 2, …)
+      const sorted = [...transformedPrizes].sort((a, b) => {
+        const sa = a.slotIndex ?? Infinity;
+        const sb = b.slotIndex ?? Infinity;
+        return sa - sb;
+      });
+      setRoulettePrizes(sorted);
     } catch (error: unknown) {
       console.error('Ошибка загрузки призов рулетки:', error);
       const isNetworkOrCors =
@@ -192,14 +198,15 @@ export default function ClubQR() {
 
       const prize = transformPrize(prizeData);
       const prizeName = prize.name || 'Приз';
+      // playerName/name с бэка: при отсутствии имени — пустая строка; пустую считаем «нет имени»
+      const nameOrEmpty = (payload.name ?? payload.playerName ?? '').trim() || undefined;
       const singleDisplayName =
-        payload.name ??
-        payload.playerName ??
+        nameOrEmpty ??
         payload.playerId?.name ??
         payload.playerId?.fio ??
         (payload.playerPhone ? maskPhone(payload.playerPhone) : randomMaskedPhone());
       const spinnerName =
-        payload.playerName ??
+        nameOrEmpty ??
         payload.playerId?.name ??
         payload.playerId?.fio ??
         (payload.playerPhone ? maskPhone(payload.playerPhone) : undefined);
@@ -328,15 +335,21 @@ export default function ClubQR() {
     setIsSpinning(true);
     setSelectedPrize(null);
 
-    // Находим индекс приза по актуальному списку
-    const targetIndex = prizes.findIndex(p =>
-      p.id === prize.id ||
-      (prize.slotIndex !== undefined && p.slotIndex === prize.slotIndex)
-    );
-    const finalIndex = targetIndex >= 0 ? targetIndex : 0;
+    // Целевой индекс: приоритет у slotIndex с сервера (рулетка должна точно попасть на выданный приз)
+    const hasValidSlot =
+      prize.slotIndex !== undefined &&
+      Number.isInteger(prize.slotIndex) &&
+      prize.slotIndex >= 0 &&
+      prize.slotIndex < prizes.length;
+    const targetIndex = hasValidSlot
+      ? prize.slotIndex!
+      : prizes.findIndex(
+          (p) => p.id === prize.id || (prize.slotIndex !== undefined && p.slotIndex === prize.slotIndex)
+        );
+    const finalIndex = targetIndex >= 0 ? Math.min(targetIndex, prizes.length - 1) : 0;
 
-    // Размер одного элемента приза
-    const prizeWidth = 284; // ширина карточки приза (260px) + gap (24px)
+    // Размер одного элемента приза (260px карточка + 24px gap в .cs-roulette-items)
+    const prizeWidth = PRIZE_WIDTH;
     const containerWidth = rouletteRef.current.offsetWidth;
     const centerOffset = containerWidth / 2 - prizeWidth / 2;
 
