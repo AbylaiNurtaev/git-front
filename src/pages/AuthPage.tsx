@@ -14,7 +14,7 @@ export default function AuthPage() {
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister] = useState(false);
   const [error, setError] = useState('');
   const { login, register, isAuthenticated, currentUser, error: storeError } = useStore();
 
