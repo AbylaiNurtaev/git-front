@@ -214,7 +214,9 @@
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 }
 
 .issued-pagination-btn:hover:not(:disabled) {
@@ -254,6 +256,8 @@
   height: 88px;
   position: absolute;
   left: 50px;
+  top: 50px;
+  z-index: 10;
 }
 
 .club-qr-current-spinner {
@@ -736,6 +740,7 @@
 
 /* Рулетка на всю ширину, фиксированная высота, сверху */
 .club-qr-page .club-qr-spin-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -775,7 +780,10 @@
   color: var(--qr-card-text, var(--theme-text));
 }
 .club-qr-page .cs-prize-placeholder {
-  background: var(--qr-card-placeholder-bg, rgba(var(--theme-primary-rgb), 0.08));
+  background: var(
+    --qr-card-placeholder-bg,
+    rgba(var(--theme-primary-rgb), 0.08)
+  );
 }
 
 /* Оверлей результата на странице QR */
@@ -815,7 +823,8 @@
 }
 
 @keyframes resultGlowPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.7;
     transform: translate(-50%, -50%) scale(1);
   }
@@ -890,7 +899,8 @@
   padding: 12px 24px;
   background: var(--qr-fullscreen-btn-bg, rgba(var(--theme-primary-rgb), 0.25));
   color: var(--qr-fullscreen-btn-text, var(--theme-text));
-  border: 1px solid var(--qr-fullscreen-btn-border, rgba(var(--theme-primary-rgb), 0.5));
+  border: 1px solid
+    var(--qr-fullscreen-btn-border, rgba(var(--theme-primary-rgb), 0.5));
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;

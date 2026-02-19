@@ -464,6 +464,7 @@ export default function ClubQR() {
       )}
       {roulettePrizes.length > 0 ? (
         <>
+            <img src={logoUrl} alt="Infinity" className="club-qr-logo" />
           <div className="spin-container club-qr-spin-container">
             <div className="spin-roulette-section club-qr-roulette-section">
               <div className="cs-roulette-container">
@@ -477,7 +478,6 @@ export default function ClubQR() {
                   </div>
                 )}
                 <div className="club-qr-top-bar">
-                  <img src={logoUrl} alt="Infinity" className="club-qr-logo" />
                   {currentSpinnerName && (
                     <div className="club-qr-current-spinner">
                       <span className="club-qr-current-spinner-label">Сейчас крутит:</span>
