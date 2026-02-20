@@ -254,7 +254,7 @@ export default function AdminRoulette() {
                     <div>
                       <strong>{prize.name}</strong>
                       <span className="prize-roulette-meta">
-                        {(prize.probability * 100).toFixed(1)}% · {prize.type}
+                        {(prize.probability * 100).toFixed(2)}% · {prize.type}
                         {prize.slotIndex != null && (
                           <span className="prize-slot-index"> · слот {prize.slotIndex}</span>
                         )}
@@ -370,7 +370,7 @@ export default function AdminRoulette() {
                           <img src={prize.image} alt={prize.name} />
                         </div>
                       )}
-                      <p><strong>Вероятность:</strong> {(slot.probability * 100).toFixed(1)}%</p>
+                      <p><strong>Вероятность:</strong> {(slot.probability * 100).toFixed(2)}%</p>
                       {prize?.type && <p><strong>Тип:</strong> {prize.type}</p>}
                     </div>
                     <div className="slot-actions">
@@ -400,7 +400,7 @@ export default function AdminRoulette() {
               })}
             </div>
             <div className="total-probability">
-              <p><strong>Сумма вероятностей (в рулетке):</strong> {(displayTotalProb * 100).toFixed(1)}%</p>
+              <p><strong>Сумма вероятностей (в рулетке):</strong> {(displayTotalProb * 100).toFixed(2)}%</p>
               {displayTotalProb > 1 && (
                 <p className="warning">⚠️ Сумма вероятностей больше 100%</p>
               )}

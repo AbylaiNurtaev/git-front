@@ -244,7 +244,7 @@ export default function AdminDashboard() {
                       <p>{prize.description}</p>
                       <p>Тип: {prize.type}</p>
                       {prize.value && <p>Значение: {prize.value}</p>}
-                      <p>Вероятность: {(prize.probability * 100).toFixed(1)}%</p>
+                      <p>Вероятность: {(prize.probability * 100).toFixed(2)}%</p>
                     </div>
                     <div className="prize-actions">
                       <button className="edit-button" onClick={() => {
@@ -300,7 +300,7 @@ export default function AdminDashboard() {
                                   <img src={prize.image} alt={prize.name} />
                                 </div>
                               )}
-                              <p><strong>Вероятность:</strong> {(slot.probability * 100).toFixed(1)}%</p>
+                              <p><strong>Вероятность:</strong> {(slot.probability * 100).toFixed(2)}%</p>
                               {prize?.type && <p><strong>Тип:</strong> {prize.type}</p>}
                             </div>
                             <div className="slot-actions">
@@ -319,7 +319,7 @@ export default function AdminDashboard() {
                       })}
                     </div>
                     <div className="total-probability">
-                      <p><strong>Общая вероятность:</strong> {(rouletteConfig.totalProbability * 100).toFixed(1)}%</p>
+                      <p><strong>Общая вероятность:</strong> {(rouletteConfig.totalProbability * 100).toFixed(2)}%</p>
                       {rouletteConfig.totalProbability !== 1 && (
                         <p className="warning">⚠️ Внимание: сумма вероятностей должна быть равна 100%</p>
                       )}

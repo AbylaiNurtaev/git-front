@@ -41,6 +41,8 @@ interface Store {
   fetchAdminData: () => Promise<void>;
   /** Загрузить URL логотипа компании (для админа) */
   fetchCompanyLogo: () => Promise<void>;
+  /** Загрузить логотип компании без авторизации (страница входа, клуб, QR) */
+  fetchCompanyLogoPublic: () => Promise<void>;
   /** Загрузить/обновить логотип компании */
   uploadCompanyLogo: (image: File) => Promise<boolean>;
   /** Удалить кастомный логотип компании (вернуться к дефолтному) */
@@ -332,6 +334,15 @@ export const useStore = create<Store>()(
             error: error.response?.data?.message || 'Ошибка загрузки логотипа',
             companyLogoUrl: null,
           });
+        }
+      },
+
+      fetchCompanyLogoPublic: async () => {
+        try {
+          const url = await apiService.getCompanyLogoPublic();
+          set({ companyLogoUrl: url ?? null });
+        } catch {
+          set({ companyLogoUrl: null });
         }
       },
 
@@ -629,7 +640,18 @@ export const useStore = create<Store>()(
         try {
           const response = await apiService.createPrize(data);
           const prize = transformPrize(response);
-          set({ prizes: [...get().prizes, prize] });
+          const prizes = [...get().prizes, prize];
+          const activePrizes = prizes.filter((p: Prize) => p.isActive !== false)
+            .sort((a, b) => (a.slotIndex ?? 999) - (b.slotIndex ?? 999));
+          const rouletteConfig = {
+            slots: activePrizes.map((p: Prize, index: number) => ({
+              id: `slot-${index}`,
+              prizeId: p.id,
+              probability: p.probability ?? 0,
+            })),
+            totalProbability: activePrizes.reduce((sum: number, p: Prize) => sum + (p.probability ?? 0), 0),
+          };
+          set({ prizes, rouletteConfig });
           return prize;
         } catch (error: any) {
           const message = error.response?.data?.message || 'Ошибка создания приза';
@@ -657,9 +679,18 @@ export const useStore = create<Store>()(
           const merged = prev ? { ...prev, ...updated } : updated;
           if (prev && merged.backgroundImage === undefined && prev.backgroundImage)
             merged.backgroundImage = prev.backgroundImage;
-          set({
-            prizes: get().prizes.map((p) => (p.id === id ? merged : p)),
-          });
+          const prizes = get().prizes.map((p) => (p.id === id ? merged : p));
+          const activePrizes = prizes.filter((p: Prize) => p.isActive !== false)
+            .sort((a, b) => (a.slotIndex ?? 999) - (b.slotIndex ?? 999));
+          const rouletteConfig = {
+            slots: activePrizes.map((p: Prize, index: number) => ({
+              id: `slot-${index}`,
+              prizeId: p.id,
+              probability: p.probability ?? 0,
+            })),
+            totalProbability: activePrizes.reduce((sum: number, p: Prize) => sum + (p.probability ?? 0), 0),
+          };
+          set({ prizes, rouletteConfig });
           return true;
         } catch (error: any) {
           set({ error: error.response?.data?.message || 'Ошибка обновления приза' });
@@ -670,7 +701,18 @@ export const useStore = create<Store>()(
       deletePrize: async (id: string) => {
         try {
           await apiService.deletePrize(id);
-          set({ prizes: get().prizes.filter(p => p.id !== id) });
+          const prizes = get().prizes.filter(p => p.id !== id);
+          const activePrizes = prizes.filter((p: Prize) => p.isActive !== false)
+            .sort((a, b) => (a.slotIndex ?? 999) - (b.slotIndex ?? 999));
+          const rouletteConfig = {
+            slots: activePrizes.map((p: Prize, index: number) => ({
+              id: `slot-${index}`,
+              prizeId: p.id,
+              probability: p.probability ?? 0,
+            })),
+            totalProbability: activePrizes.reduce((sum: number, p: Prize) => sum + (p.probability ?? 0), 0),
+          };
+          set({ prizes, rouletteConfig });
           return true;
         } catch (error: any) {
           set({ error: error.response?.data?.message || 'Ошибка удаления приза' });

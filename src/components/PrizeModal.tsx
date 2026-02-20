@@ -46,7 +46,8 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
   const [name, setName] = useState('');
   const [type, setType] = useState('points');
   const [value, setValue] = useState<number>(0);
-  const [dropChance, setDropChance] = useState<number>(0);
+  /** Строковое значение для ввода — чтобы можно было набирать "0", "0.", "1." и т.д. */
+  const [dropChanceInput, setDropChanceInput] = useState<string>('0');
   const [slotIndex, setSlotIndex] = useState<number>(0);
   const [totalQuantity, setTotalQuantity] = useState<number>(100);
   const [image, setImage] = useState<File | null>(null);
@@ -63,7 +64,8 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
       setName(prize.name || '');
       setType(prize.type || 'points');
       setValue(prize.value || 0);
-      setDropChance((prize.probability || 0) * 100);
+      const pct = (prize.probability || 0) * 100;
+      setDropChanceInput(pct === 0 ? '0' : String(pct));
       setSlotIndex(prize.slotIndex ?? 0);
       setTotalQuantity(100);
       setImage(null);
@@ -75,7 +77,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
       setName('');
       setType('points');
       setValue(0);
-      setDropChance(0);
+      setDropChanceInput('0');
       setSlotIndex(0);
       setTotalQuantity(100);
       setImage(null);
@@ -137,13 +139,23 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
     reader.readAsDataURL(file);
   };
 
+  const handleDropChanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let v = e.target.value.replace(/[^\d.,]/g, '').replace(',', '.');
+    if (/\./.test(v)) {
+      const parts = v.split('.');
+      if (parts.length > 2) v = parts[0] + '.' + parts.slice(1).join('');
+    }
+    setDropChanceInput(v);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errors: string[] = [];
+    const dropChanceNum = parseFloat(dropChanceInput);
 
     if (!name?.trim()) errors.push('Введите название приза.');
-    if (dropChance <= 0) errors.push('Вероятность выпадения должна быть больше 0%.');
-    if (dropChance > 100) errors.push('Вероятность не должна превышать 100%.');
+    if (Number.isNaN(dropChanceNum) || dropChanceNum <= 0) errors.push('Вероятность выпадения должна быть больше 0% (можно 0.01, 0.1 и т.д.).');
+    if (dropChanceNum > 100) errors.push('Вероятность не должна превышать 100%.');
 
     if (!prize) {
       if (!image && !imagePreview) {
@@ -166,11 +178,12 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
 
     setIsLoading(true);
     try {
+      const dropChanceToSave = parseFloat(dropChanceInput);
       await onSave({
         name: name.trim(),
         type,
         value: type === 'points' || type === 'club_time' ? value : undefined,
-        dropChance,
+        dropChance: Number.isFinite(dropChanceToSave) ? dropChanceToSave : 0,
         slotIndex,
         totalQuantity,
         image,
@@ -229,18 +242,22 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
             required
           />
         )}
-        <FormField
-          label="Вероятность выпадения (%)"
-          name="dropChance"
-          type="number"
-          value={dropChance}
-          onChange={(value) => setDropChance(typeof value === 'number' ? value : Number(value))}
-          placeholder="0-100"
-          min={0}
-          max={100}
-          step={0.1}
-          required
-        />
+        <div className="form-field">
+          <label htmlFor="dropChance" className="form-label">
+            Вероятность выпадения (%)<span className="required">*</span>
+          </label>
+          <input
+            id="dropChance"
+            name="dropChance"
+            type="text"
+            inputMode="decimal"
+            className="form-input"
+            value={dropChanceInput}
+            onChange={handleDropChanceChange}
+            placeholder="0.01–100 (дробные: 0.01, 0.1)"
+            required
+          />
+        </div>
         {!prize && (
           <>
             <div className="form-field">

@@ -1,6 +1,24 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { getApiBaseUrl } from '@/config/api';
 
+/** Запрос логотипа без авторизации (для страницы входа и клубов). Не использует this.api, чтобы 401 не сбрасывал сессию. */
+async function getCompanyLogoPublic(): Promise<string | null> {
+  try {
+    const baseURL = getApiBaseUrl();
+    const response = await axios.get<unknown>(`${baseURL}/company/logo`, {
+      timeout: 10000,
+      validateStatus: (status) => status === 200,
+    });
+    const data = response.data;
+    if (typeof data === 'string') return data;
+    if (data && typeof data === 'object' && 'url' in data) return (data as { url?: string }).url ?? null;
+    if (data && typeof data === 'object' && 'logoUrl' in data) return (data as { logoUrl?: string }).logoUrl ?? null;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 class ApiService {
   private api: AxiosInstance;
 
@@ -452,6 +470,11 @@ class ApiService {
   async getCompanyLogo() {
     const response = await this.api.get('/admin/company/logo');
     return response.data;
+  }
+
+  /** Получить логотип компании без авторизации (страница входа, клуб, QR). GET /api/company/logo */
+  async getCompanyLogoPublic() {
+    return getCompanyLogoPublic();
   }
 
   /** Загрузить/обновить логотип компании. POST /api/admin/company/logo (multipart/form-data, поле image) */

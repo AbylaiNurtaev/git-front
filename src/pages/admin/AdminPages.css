@@ -723,6 +723,10 @@
   margin-bottom: 16px;
 }
 
+.roulette-drag-hint {
+  margin-bottom: 20px;
+}
+
 .prize-roulette-list {
   display: flex;
   flex-direction: column;

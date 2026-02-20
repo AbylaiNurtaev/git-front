@@ -16,7 +16,11 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRegister] = useState(false);
   const [error, setError] = useState('');
-  const { login, register, isAuthenticated, currentUser, error: storeError } = useStore();
+  const { login, register, isAuthenticated, currentUser, error: storeError, companyLogoUrl, fetchCompanyLogoPublic } = useStore();
+
+  useEffect(() => {
+    fetchCompanyLogoPublic();
+  }, [fetchCompanyLogoPublic]);
 
   useEffect(() => {
     if (isAuthenticated && currentUser) {
@@ -79,7 +83,7 @@ export default function AuthPage() {
     <div className="auth-page" style={{ backgroundImage: `url(${backImage})` }}>
       <div className="auth-container">
         <div className="auth-header">
-          <img src={logoUrl} alt="Infinity" className="header-logo" />
+          <img src={companyLogoUrl || logoUrl} alt="Infinity" className="header-logo" />
           <div>
             <h1 className="auth-title">Infinity</h1>
             <p className="auth-subtitle">Игровая платформа</p>

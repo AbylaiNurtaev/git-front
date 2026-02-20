@@ -134,7 +134,7 @@ export default function FormField({
           name={name}
           type={type === 'number' ? 'text' : type}
           inputMode={type === 'number' ? 'decimal' : undefined}
-          value={type === 'number' ? (value === 0 || value === '' ? '' : String(value).replace(/^0+(?=\d)/, '')) : value}
+          value={type === 'number' ? (value === '' ? '' : (Number(value) === 0 ? '0' : String(value).replace(/^0+(?=\d)/, ''))) : value}
           onChange={handleChange}
           onBlur={(e) => {
             // При потере фокуса нормализуем значение

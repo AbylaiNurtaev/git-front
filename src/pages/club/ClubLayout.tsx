@@ -23,7 +23,7 @@ const navItems = [
 const BODY_CLASS = 'club-layout-active';
 
 export default function ClubLayout() {
-  const { currentUser, logout, companyLogoUrl, fetchCompanyLogo } = useStore();
+  const { currentUser, logout, companyLogoUrl, fetchCompanyLogoPublic } = useStore();
   const club = currentUser as Club | null;
   useClubTheme(club);
   const location = useLocation();
@@ -37,9 +37,9 @@ export default function ClubLayout() {
 
   useEffect(() => {
     if (currentUser?.role === 'club') {
-      fetchCompanyLogo();
+      fetchCompanyLogoPublic();
     }
-  }, [currentUser, fetchCompanyLogo]);
+  }, [currentUser, fetchCompanyLogoPublic]);
 
   if (!club || club.role !== 'club') {
     return null;
