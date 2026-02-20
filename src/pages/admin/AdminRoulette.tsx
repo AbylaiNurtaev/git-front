@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Trash2 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import PrizeModal from '@/components/PrizeModal';
 import Skeleton from '@/components/Skeleton';
@@ -14,6 +15,7 @@ export default function AdminRoulette() {
     fetchPrizes,
     createPrize,
     updatePrize,
+    deletePrize,
     isLoading,
   } = useStore();
   const [prizeModalOpen, setPrizeModalOpen] = useState(false);
@@ -63,7 +65,7 @@ export default function AdminRoulette() {
       slotIndices.forEach((idx) => seen.set(idx, (seen.get(idx) ?? 0) + 1));
       const duplicates = [...seen.entries()].filter(([, count]) => count > 1).map(([idx]) => idx);
       if (duplicates.length > 0) {
-        errors.push(`Дублирующиеся индексы слотов: ${duplicates.join(', ')}. У каждого приза в рулетке должен быть уникальный индекс (0–24).`);
+        errors.push(`Дублирующиеся индексы слотов: ${duplicates.join(', ')}. У каждого приза в рулетке должен быть уникальный индекс (0–34).`);
       }
     }
 
@@ -80,6 +82,18 @@ export default function AdminRoulette() {
   const handleCancelRoulette = () => {
     setDraftRoulette(null);
     setRouletteCheck(null);
+  };
+
+  const handleDeletePrize = async (prize: Prize) => {
+    if (!window.confirm(`Удалить приз «${prize.name}»?`)) return;
+    const ok = await deletePrize(prize.id);
+    if (ok) {
+      await fetchPrizes();
+      if (selectedPrize?.id === prize.id) {
+        setSelectedPrize(null);
+        setPrizeModalOpen(false);
+      }
+    }
   };
 
   if (isLoading && rouletteConfig.slots.length === 0) {
@@ -154,6 +168,15 @@ export default function AdminRoulette() {
                     }}
                   >
                     Изменить
+                  </button>
+                  <button
+                    type="button"
+                    className="roulette-prize-delete-icon"
+                    onClick={() => handleDeletePrize(prize)}
+                    title="Удалить приз"
+                    aria-label="Удалить приз"
+                  >
+                    <Trash2 size={18} />
                   </button>
                 </div>
               );
@@ -235,6 +258,17 @@ export default function AdminRoulette() {
                       >
                         Редактировать приз
                       </button>
+                      {prize && (
+                        <button
+                          type="button"
+                          className="roulette-prize-delete-icon"
+                          onClick={() => handleDeletePrize(prize)}
+                          title="Удалить приз"
+                          aria-label="Удалить приз"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 );
@@ -259,7 +293,12 @@ export default function AdminRoulette() {
         onSave={async (data) => {
           if (selectedPrize) {
             const ok = await updatePrize(selectedPrize.id, {
+              name: data.name,
+              type: data.type,
+              value: data.value,
               dropChance: data.dropChance,
+              slotIndex: data.slotIndex,
+              totalQuantity: data.totalQuantity,
               image: data.image || undefined,
               backgroundImage: data.backgroundImage || undefined,
               removeBackgroundImage: data.removeBackgroundImage,
@@ -268,7 +307,7 @@ export default function AdminRoulette() {
               const updated = useStore.getState().prizes.find((p) => p.id === selectedPrize.id);
               if (updated) setSelectedPrize(updated);
             }
-            // Не вызываем fetchPrizes — приз в сторе уже обновлён ответом API (с backgroundImage)
+            // Не вызываем fetchPrizes — приз в сторе уже обновлён ответом API
           } else {
             await createPrize({
               ...data,

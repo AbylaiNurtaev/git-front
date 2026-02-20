@@ -398,18 +398,18 @@ export default function ClubQR() {
     const k = Math.floor((startPosition - T) / oneSetWidth) - 1;
     const targetPosition = T + k * oneSetWidth;
 
-    // Одна плавная кривая: сначала очень быстро, затем плавное замедление до нуля в конце (без скачков)
+    // Быстро в начале и в середине; в конце — очень долгое и медленное замедление (рулетка медленно доползает до остановки)
     const extraRotations = 6;
     const endPosition = targetPosition - extraRotations * oneSetWidth;
-    const duration = 15000;
     const travel = endPosition - startPosition;
+    const duration = 16000 + prizes.length * 100;
     const startTime = Date.now();
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Очень быстрый старт (призы почти не различимы), затем плавное замедление
-      const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -8 * progress);
+      // Степень 6: почти весь путь за первые ~75% времени, последние ~25% — очень медленное ползание до нуля (долгая интрига)
+      const easeOut = progress >= 1 ? 1 : 1 - Math.pow(1 - progress, 6);
       const currentPosition = startPosition + travel * easeOut;
       setScrollPosition(currentPosition);
 

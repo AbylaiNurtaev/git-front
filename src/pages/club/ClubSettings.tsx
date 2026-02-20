@@ -13,7 +13,7 @@ const QR_BACKGROUND_MAX_SIZE = QR_BACKGROUND_MAX_SIZE_MB * 1024 * 1024;
 const QR_BACKGROUND_ACCEPT = 'image/png,image/gif,video/mp4,video/webm';
 
 export default function ClubSettings() {
-  const { currentUser, updateClubMe, setError } = useStore();
+  const { currentUser, updateClubMe, setError, companyLogoUrl } = useStore();
   const club = currentUser as Club | null;
   const { theme: qrTheme, setTheme: setQRTheme, updateColor: updateQRColor, resetToDefault: resetQRToDefault } = useQRPageTheme();
   const [qrDirty, setQrDirty] = useState(false);
@@ -115,7 +115,7 @@ export default function ClubSettings() {
                 Полный экран
               </button>
               <div className="club-settings-qr-preview-topbar">
-                <img src={logoUrl} alt="" className="club-settings-qr-preview-logo" />
+                <img src={companyLogoUrl || logoUrl} alt="" className="club-settings-qr-preview-logo" />
                 <div className="club-settings-qr-preview-spinner">
                   <span className="club-settings-qr-preview-spinner-label">Сейчас крутит:</span>
                   <span className="club-settings-qr-preview-spinner-value">Иван</span>

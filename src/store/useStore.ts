@@ -82,7 +82,12 @@ interface Store {
     backgroundImage?: File | null;
   }) => Promise<Prize | null>;
   updatePrize: (id: string, data: Partial<{
+    name: string;
+    type: string;
+    value?: number;
     dropChance: number;
+    slotIndex: number;
+    totalQuantity: number;
     isActive: boolean;
     image?: File | null;
     backgroundImage?: File | null;
@@ -632,7 +637,12 @@ export const useStore = create<Store>()(
       },
 
       updatePrize: async (id: string, data: Partial<{
+        name: string;
+        type: string;
+        value?: number;
         dropChance: number;
+        slotIndex: number;
+        totalQuantity: number;
         isActive: boolean;
         image?: File | null;
         backgroundImage?: File | null;

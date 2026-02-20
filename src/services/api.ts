@@ -349,15 +349,35 @@ class ApiService {
   }
 
   async updatePrize(id: string, data: Partial<{
+    name: string;
+    type: string;
+    value?: number;
     dropChance: number;
+    slotIndex: number;
+    totalQuantity: number;
     isActive: boolean;
     image?: File | null;
     backgroundImage?: File | null;
     removeBackgroundImage?: boolean;
   }>) {
     const formData = new FormData();
+    if (data.name !== undefined) {
+      formData.append('name', data.name);
+    }
+    if (data.type !== undefined) {
+      formData.append('type', data.type);
+    }
+    if (data.value !== undefined) {
+      formData.append('value', data.value.toString());
+    }
     if (data.dropChance !== undefined) {
       formData.append('dropChance', data.dropChance.toString());
+    }
+    if (data.slotIndex !== undefined) {
+      formData.append('slotIndex', data.slotIndex.toString());
+    }
+    if (data.totalQuantity !== undefined) {
+      formData.append('totalQuantity', data.totalQuantity.toString());
     }
     if (data.isActive !== undefined) {
       formData.append('isActive', data.isActive.toString());

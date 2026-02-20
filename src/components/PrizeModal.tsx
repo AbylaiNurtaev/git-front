@@ -151,10 +151,10 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
       }
       const occupied = existingSlotIndices;
       if (occupied.includes(slotIndex)) {
-        errors.push(`Индекс слота ${slotIndex} уже занят другим призом. Выберите другой (0–24).`);
+        errors.push(`Индекс слота ${slotIndex} уже занят другим призом. Выберите другой (0–34).`);
       }
-      if (slotIndex < 0 || slotIndex > 24) {
-        errors.push('Индекс слота должен быть от 0 до 24.');
+      if (slotIndex < 0 || slotIndex > 34) {
+        errors.push('Индекс слота должен быть от 0 до 34.');
       }
     }
 
@@ -219,7 +219,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
         />
         {(type === 'points' || type === 'club_time') && (
           <FormField
-            label={type === 'points' ? 'Количество баллов' : 'Минуты'}
+            label={type === 'points' ? 'Количество баллов' : 'Тенге'}
             name="value"
             type="number"
             value={value}
@@ -245,14 +245,14 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
           <>
             <div className="form-field">
               <FormField
-                label="Индекс слота (0–24)"
+                label="Индекс слота (0–34)"
                 name="slotIndex"
                 type="number"
                 value={slotIndex}
                 onChange={(value) => setSlotIndex(typeof value === 'number' ? value : Number(value))}
-                placeholder="0-24"
+                placeholder="0-34"
                 min={0}
-                max={24}
+                max={34}
                 required
               />
               <p className="form-hint">Уникальный номер, не должен совпадать с другими призами. Занятые: {existingSlotIndices.length ? existingSlotIndices.sort((a, b) => a - b).join(', ') : 'нет'}.</p>
