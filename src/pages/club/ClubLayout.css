@@ -4,6 +4,19 @@ body.club-layout-active {
   height: 100vh;
 }
 
+/* «Личный кабинет» в шапке — просто надпись, без вида кнопки */
+.admin-dashboard .admin-topbar__location--plain {
+  background: transparent;
+  color: var(--admin-text-muted);
+  cursor: default;
+  padding: 0;
+  font-weight: 500;
+}
+.admin-dashboard .admin-topbar__location--plain:hover {
+  background: transparent;
+  color: var(--admin-text-muted);
+}
+
 /* Страница QR: контент на весь экран без отступов */
 .club-dashboard--qr .club-content--full {
   padding: 0;

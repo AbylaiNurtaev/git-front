@@ -73,7 +73,7 @@ export function getPrizeTier(prize: Prize): PrizeTier {
   return 'gray';
 }
 
-/** Отображаемое имя для ленты: ФИО/имя игрока, иначе замаскированный телефон, иначе "Гость" */
+/** Отображаемое имя для ленты: ФИО/имя игрока (приоритет), иначе замаскированный телефон, иначе "Гость" */
 function winDisplayName(w: WinItem, resolvePlayerId?: (id: string) => string | undefined): string {
   const fromObj =
     w.name ??
@@ -82,7 +82,12 @@ function winDisplayName(w: WinItem, resolvePlayerId?: (id: string) => string | u
       ? w.playerId.name ?? w.playerId.fio
       : undefined);
   if (fromObj) return fromObj;
-  const id = typeof w.playerId === 'string' ? w.playerId : undefined;
+  const id =
+    typeof w.playerId === 'string'
+      ? w.playerId
+      : typeof w.playerId === 'object' && w.playerId !== null
+        ? w.playerId.id ?? w.playerId._id
+        : undefined;
   if (id && resolvePlayerId) {
     const resolved = resolvePlayerId(id);
     if (resolved) return resolved;
@@ -219,15 +224,29 @@ export default function ClubQR() {
       const prizeName = prize.name || 'Приз';
       // playerName/name с бэка: при отсутствии имени — пустая строка; пустую считаем «нет имени»
       const nameOrEmpty = (payload.name ?? payload.playerName ?? '').trim() || undefined;
+      // Подставляем имя из списка игроков клуба, если бэкенд прислал только playerId
+      const pid = payload.playerId;
+      const idFromPayload =
+        typeof pid === 'string' ? pid : pid?.id ?? (pid as { _id?: string } | undefined)?._id;
+      let resolvedFromList: string | undefined;
+      if (idFromPayload) {
+        const list = playersRef.current;
+        const p = list.find(
+          (pl) => pl.id === idFromPayload || (pl as { _id?: string })._id === idFromPayload
+        );
+        resolvedFromList = (p?.name ?? (p as { fio?: string })?.fio)?.trim() || undefined;
+      }
       const singleDisplayName =
         nameOrEmpty ??
         payload.playerId?.name ??
         payload.playerId?.fio ??
+        resolvedFromList ??
         (payload.playerPhone ? maskPhone(payload.playerPhone) : randomMaskedPhone());
       const spinnerName =
         nameOrEmpty ??
         payload.playerId?.name ??
         payload.playerId?.fio ??
+        resolvedFromList ??
         (payload.playerPhone ? maskPhone(payload.playerPhone) : undefined);
       const pendingWin =
         Array.isArray(payload.recentWins) && payload.recentWins.length > 0
@@ -304,7 +323,9 @@ export default function ClubQR() {
         if (pendingWin.type === 'recentWins') {
           const resolveFio = (id: string) => {
             const list = playersRef.current;
-            const p = list.find((pl) => pl.id === id);
+            const p = list.find(
+              (pl) => pl.id === id || (pl as { _id?: string })._id === id
+            );
             return (p?.name ?? (p as { fio?: string })?.fio)?.trim() || undefined;
           };
           setWinsChat(

@@ -1248,10 +1248,10 @@
   cursor: not-allowed;
 }
 
-/* Чат побед — на одной высоте с QR (снизу) */
+/* Чат побед — внизу экрана, под рулеткой (не наезжает на ленту) */
 .club-qr-wins-chat {
   position: fixed;
-  bottom: 24px;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 90;

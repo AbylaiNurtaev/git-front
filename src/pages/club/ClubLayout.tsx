@@ -97,7 +97,7 @@ export default function ClubLayout() {
       <div className="admin-main">
         <header className="admin-topbar">
           <div className="admin-topbar__locations">
-            <span className="admin-topbar__location admin-topbar__location--active">
+            <span className="admin-topbar__location admin-topbar__location--plain">
               Личный кабинет
             </span>
           </div>
