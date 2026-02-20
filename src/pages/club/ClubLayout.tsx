@@ -23,7 +23,7 @@ const navItems = [
 const BODY_CLASS = 'club-layout-active';
 
 export default function ClubLayout() {
-  const { currentUser, logout } = useStore();
+  const { currentUser, logout, companyLogoUrl, fetchCompanyLogo } = useStore();
   const club = currentUser as Club | null;
   useClubTheme(club);
   const location = useLocation();
@@ -34,6 +34,12 @@ export default function ClubLayout() {
     document.body.classList.add(BODY_CLASS);
     return () => document.body.classList.remove(BODY_CLASS);
   }, []);
+
+  useEffect(() => {
+    if (currentUser?.role === 'club') {
+      fetchCompanyLogo();
+    }
+  }, [currentUser, fetchCompanyLogo]);
 
   if (!club || club.role !== 'club') {
     return null;
@@ -57,7 +63,7 @@ export default function ClubLayout() {
         <div className="admin-sidebar__top">
           <div className="admin-sidebar__user">
             <div className="admin-sidebar__avatar-wrap">
-              <img src={logoUrl} alt="" className="admin-sidebar__avatar" />
+              <img src={companyLogoUrl || logoUrl} alt="" className="admin-sidebar__avatar" />
             </div>
             {!sidebarCollapsed && (
               <>

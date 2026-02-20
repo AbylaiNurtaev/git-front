@@ -110,7 +110,7 @@ interface SpinPayload {
 }
 
 export default function ClubQR() {
-  const { currentUser, fetchClubData, players, fetchClubPlayers, logout } = useStore();
+  const { currentUser, fetchClubData, players, fetchClubPlayers, logout, companyLogoUrl } = useStore();
   const club = currentUser as Club | null;
   const { theme: storedQRTheme } = useQRPageTheme();
   const qrTheme = club?.qrPageTheme ?? storedQRTheme ?? DEFAULT_QR_PAGE_THEME;
@@ -510,7 +510,7 @@ export default function ClubQR() {
       )}
       {roulettePrizes.length > 0 ? (
         <>
-            <img src={logoUrl} alt="Infinity" className="club-qr-logo" />
+            <img src={companyLogoUrl || logoUrl} alt="Infinity" className="club-qr-logo" />
           <div className="spin-container club-qr-spin-container">
             <div className="spin-roulette-section club-qr-roulette-section">
               <div className="cs-roulette-container">
