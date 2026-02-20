@@ -94,6 +94,8 @@ interface Store {
     removeBackgroundImage?: boolean;
   }>) => Promise<boolean>;
   deletePrize: (id: string) => Promise<boolean>;
+  /** Задать порядок призов (слоты рулетки). order — массив id призов, позиция = номер слота. */
+  reorderPrizes: (order: string[]) => Promise<boolean>;
   fetchAnalytics: (startDate?: string, endDate?: string) => Promise<any>;
   fetchAnalyticsByCity: (startDate?: string, endDate?: string) => Promise<AnalyticsByCityResponse | null>;
   fetchAnalyticsClub: (clubId: string) => Promise<AnalyticsClubResponse | null>;
@@ -672,6 +674,27 @@ export const useStore = create<Store>()(
           return true;
         } catch (error: any) {
           set({ error: error.response?.data?.message || 'Ошибка удаления приза' });
+          return false;
+        }
+      },
+
+      reorderPrizes: async (order: string[]) => {
+        try {
+          const response = await apiService.reorderPrizes(order);
+          const prizes = Array.isArray(response) ? response.map(transformPrize) : [];
+          const activePrizes = Array.isArray(response) ? response.filter((p: any) => p.isActive !== false) : [];
+          const rouletteConfig = {
+            slots: activePrizes.map((prize: any, index: number) => ({
+              id: `slot-${index}`,
+              prizeId: prize._id || prize.id,
+              probability: (prize.dropChance || 0) / 100,
+            })),
+            totalProbability: activePrizes.reduce((sum: number, p: any) => sum + (p.dropChance || 0) / 100, 0),
+          };
+          set({ prizes, rouletteConfig });
+          return true;
+        } catch (error: any) {
+          set({ error: error.response?.data?.message || 'Ошибка изменения порядка призов' });
           return false;
         }
       },

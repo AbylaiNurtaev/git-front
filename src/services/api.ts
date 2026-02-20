@@ -405,6 +405,12 @@ class ApiService {
     return response.data;
   }
 
+  /** Задать порядок призов в рулетке (слоты). order — массив _id призов, позиция = номер слота. */
+  async reorderPrizes(order: string[]) {
+    const response = await this.api.put('/admin/prizes/reorder', { order });
+    return response.data;
+  }
+
   async getAnalytics(startDate?: string, endDate?: string) {
     const params = new URLSearchParams();
     if (startDate) params.append('startDate', startDate);

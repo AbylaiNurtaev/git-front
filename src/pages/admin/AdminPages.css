@@ -411,6 +411,56 @@
   color: var(--theme-primary);
 }
 
+.roulette-order-save-block {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.roulette-order-save-block .roulette-order-save-btn {
+  min-width: 200px;
+  padding: 14px 28px;
+  font-size: 15px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(240, 240, 250, 0.98) 100%
+  );
+  color: #1a1a2e;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.roulette-order-save-block .roulette-order-save-btn:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    #fff 0%,
+    rgba(230, 232, 255, 0.98) 100%
+  );
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  transform: translateY(-2px);
+}
+
+.roulette-order-save-block .roulette-order-save-btn .ready-button-icon {
+  background: rgba(26, 26, 46, 0.2);
+  color: #1a1a2e;
+}
+
+.roulette-order-save-block .ready-button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .roulette-ready-block {
   margin-top: 32px;
   padding: 28px 24px;
@@ -692,6 +742,45 @@
 .prize-roulette-row.in-roulette {
   border-color: rgba(var(--theme-primary-rgb), 0.5);
   background: rgba(var(--theme-primary-rgb), 0.08);
+}
+
+.prize-roulette-row.is-dragging {
+  opacity: 0.6;
+  cursor: grabbing;
+}
+
+/* Индикатор вставки между строками — тёмная полоска "можно вставить сюда" */
+.prize-roulette-insertion-line {
+  height: 4px;
+  margin: -2px 0;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 2px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.prize-roulette-list.has-dragging .prize-roulette-insertion-line {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.prize-roulette-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--theme-text);
+  opacity: 0.5;
+  cursor: grab;
+  padding: 4px;
+  margin: -4px 0 -4px -4px;
+  border-radius: 6px;
+}
+
+.prize-roulette-drag-handle:hover {
+  opacity: 0.9;
+}
+
+.prize-roulette-row.is-dragging .prize-roulette-drag-handle {
+  cursor: grabbing;
 }
 
 .prize-roulette-info {
