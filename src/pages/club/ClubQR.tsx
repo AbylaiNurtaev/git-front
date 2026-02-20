@@ -460,7 +460,6 @@ export default function ClubQR() {
     };
 
     const startTime = performance.now();
-    let rafId: number;
 
     const animate = (now: number) => {
       const elapsed = (now - startTime) / 1000;
@@ -480,10 +479,10 @@ export default function ClubQR() {
         return;
       }
 
-      rafId = requestAnimationFrame(animate);
+      requestAnimationFrame(animate);
     };
 
-    rafId = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
   };
 
   // Полноэкранный режим
