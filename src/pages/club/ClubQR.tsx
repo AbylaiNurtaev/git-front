@@ -364,56 +364,113 @@ export default function ClubQR() {
     }
   };
 
+  /**
+   * CSMoney/CS:GO рулетка — фазовая скорость с фиксированным пикселным расстоянием.
+   *
+   * ПРОБЛЕМА которую решаем: при 27 призах oneSetWidth ≈ 11 400px.
+   * Если умножать на "обороты" — travel выходит 100 000+px, и при таком
+   * расстоянии скорость в первые кадры = тысячи px/кадр — браузер не успевает
+   * рисовать промежуточные позиции, визуально кажется что лента стоит или дёргается.
+   *
+   * РЕШЕНИЕ: фиксируем travel = FIXED_TRAVEL_PX (независимо от кол-ва призов),
+   * выравниваем конечную позицию до ближайшего вхождения нужного приза,
+   * и масштабируем скорость в px/с от этого расстояния.
+   *
+   * Фазы скорости (доля от максимальной):
+   *   0–3с   : 1.00 → 0.60  (лента летит)
+   *   3–6с   : 0.60 → 0.30  (первое замедление)
+   *   6–10с  : 0.30 → 0.10  (среднее замедление)
+   *   10–12с : 0.10 → 0.05  (медленно, интрига)
+   *   12–15с : 0.05 → 0.00  (финал, еле ползёт)
+   */
   const startSpin = (prize: Prize, onComplete?: () => void) => {
     if (isSpinningRef.current || !rouletteRef.current) return;
     const prizes = roulettePrizesRef.current;
     if (prizes.length === 0) return;
 
-    // Сразу помечаем спин как активный, чтобы при двух быстрых socket-событиях
-    // второй не запускал анимацию параллельно (очередь обработает его после завершения первого)
     isSpinningRef.current = true;
     setIsSpinning(true);
     setSelectedPrize(null);
 
-    // Приз ВСЕГДА решает бэкенд. Мы только крутим ленту и останавливаем на НЁМ — ищем тот же приз в нашем списке по id или slotIndex.
-    // Важно: индекс в массиве (после сортировки по slotIndex), а НЕ номер слота! Призов может быть 5 со слотами 0,2,5,7,9 — индекс слота 5 = 2 в массиве.
     const targetIndex = prizes.findIndex(
       (p) => p.id === prize.id || (prize.slotIndex !== undefined && p.slotIndex === prize.slotIndex)
     );
     const finalIndex = targetIndex >= 0 ? targetIndex : 0;
 
-    // Размер одного элемента приза (карточка 400px + gap 24px в .cs-roulette-items)
     const prizeWidth = PRIZE_WIDTH;
     const containerWidth = rouletteRef.current.offsetWidth;
-    // Центр экрана: левый край слота под стрелкой (карточка 400px + gap 24px)
     const centerOffset = containerWidth / 2 - prizeWidth / 2;
-    // У .cs-roulette-items padding-left: 20px — первый приз начинается не с 0, а с 20px
     const contentStart = centerOffset - ROULETTE_ITEMS_PADDING_LEFT;
 
-    // Стартуем с текущей позиции (где остановился idle) — без прыжка
     const startPosition = idlePositionRef.current;
     const oneSetWidth = prizes.length * prizeWidth;
-    // Целевая позиция: левый край приза finalIndex = contentStart (под стрелкой)
-    const T = contentStart - finalIndex * prizeWidth;
-    const k = Math.floor((startPosition - T) / oneSetWidth) - 1;
-    const targetPosition = T + k * oneSetWidth;
 
-    // Быстро в начале и в середине; в конце — очень долгое и медленное замедление (рулетка медленно доползает до остановки)
-    const extraRotations = 6;
-    const endPosition = targetPosition - extraRotations * oneSetWidth;
-    const travel = endPosition - startPosition;
-    const duration = 16000 + prizes.length * 100;
-    const startTime = Date.now();
+    // Позиция приза в одном сете (относительно начала ленты)
+    const prizeOffsetInSet = contentStart - finalIndex * prizeWidth;
 
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Степень 6: почти весь путь за первые ~75% времени, последние ~25% — очень медленное ползание до нуля (долгая интрига)
-      const easeOut = progress >= 1 ? 1 : 1 - Math.pow(1 - progress, 6);
-      const currentPosition = startPosition + travel * easeOut;
+    // Фиксированное расстояние прокрутки — не зависит от кол-ва призов.
+    // 30 000px при ~400px/карточке = ~75 карточек пролетает за 15с.
+    // Достаточно чтобы начало было стремительным, финал — медленным.
+    const FIXED_TRAVEL_PX = 30_000;
+
+    // Идеальная конечная позиция = startPosition - FIXED_TRAVEL_PX
+    const idealEnd = startPosition - FIXED_TRAVEL_PX;
+
+    // Случайный офсет внутри карточки — останавливаемся не по центру, а в случайном месте.
+    // Отступ от края: минимум 15% карточки (60px) чтобы не останавливаться на границе.
+    const EDGE_MARGIN = Math.round(PRIZE_CARD_WIDTH * 0.15); // 60px от края
+    const randomOffset = EDGE_MARGIN + Math.floor(Math.random() * (PRIZE_CARD_WIDTH - EDGE_MARGIN * 2));
+    // prizeOffsetInSet указывает на левый край карточки под стрелкой (centerOffset).
+    // Смещаем стрелку внутрь карточки на randomOffset — теперь стрелка попадает
+    // не в центр, а в случайную точку между 15% и 85% ширины карточки.
+    const adjustedPrizeOffset = prizeOffsetInSet + (PRIZE_CARD_WIDTH / 2) - randomOffset;
+    const n = Math.round((adjustedPrizeOffset - idealEnd) / oneSetWidth);
+    const endPosition = adjustedPrizeOffset - n * oneSetWidth;
+    const travel = endPosition - startPosition; // всегда отрицательное
+
+    // ─── Фазы скорости (нормированные, сумма площадей = 1 после нормировки) ─
+    // Медленная концовка начинается раньше (с 7с) и длится до 22с — 15 секунд интриги
+    const DURATION_S = 28;
+    const phases = [
+      { tStart: 0,  tEnd: 3,  vStart: 1.00, vEnd: 0.65 }, // быстрый старт
+      { tStart: 3,  tEnd: 7,  vStart: 0.65, vEnd: 0.20 }, // активное замедление
+      { tStart: 7,  tEnd: 12, vStart: 0.20, vEnd: 0.05 }, // медленно, уже интрига
+      { tStart: 12, tEnd: 18, vStart: 0.05, vEnd: 0.01 }, // очень медленно
+      { tStart: 18, tEnd: 28, vStart: 0.01, vEnd: 0.00 }, // еле ползёт 10 секунд — максимальная интрига
+    ];
+
+    // Суммарная площадь под кривой скорости (пропорциональный путь)
+    const totalArea = phases.reduce((sum, p) =>
+      sum + ((p.vStart + p.vEnd) / 2) * (p.tEnd - p.tStart), 0
+    );
+
+    // Прогресс [0..1] по времени — интеграл трапеций, точный, без накопления ошибок
+    const getProgress = (tSec: number): number => {
+      if (tSec <= 0) return 0;
+      if (tSec >= DURATION_S) return 1;
+      let area = 0;
+      for (const p of phases) {
+        if (tSec <= p.tStart) break;
+        const dt = Math.min(tSec, p.tEnd) - p.tStart;
+        const ratio = dt / (p.tEnd - p.tStart);
+        const vAtT = p.vStart + (p.vEnd - p.vStart) * ratio;
+        area += ((p.vStart + vAtT) / 2) * dt;
+      }
+      return area / totalArea;
+    };
+
+    const startTime = performance.now();
+    let rafId: number;
+
+    const animate = (now: number) => {
+      const elapsed = (now - startTime) / 1000;
+      const progress = getProgress(elapsed);
+      const currentPosition = startPosition + travel * progress;
+
       setScrollPosition(currentPosition);
+      idlePositionRef.current = currentPosition;
 
-      if (progress >= 1) {
+      if (elapsed >= DURATION_S) {
         setScrollPosition(endPosition);
         idlePositionRef.current = endPosition;
         setSelectedPrize(prize);
@@ -422,10 +479,11 @@ export default function ClubQR() {
         onComplete?.();
         return;
       }
-      requestAnimationFrame(animate);
+
+      rafId = requestAnimationFrame(animate);
     };
 
-    requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
   };
 
   // Полноэкранный режим
@@ -541,7 +599,7 @@ export default function ClubQR() {
                     }}
                   >
                     {Array.from({ length: rouletteCopies }, () => roulettePrizes).flat().map((prize, index) => {
-                      const isSelected = !isSpinning && selectedPrize?.id === prize.id;
+                      const isSelected = selectedPrize?.id === prize.id;
                       const bgImageUrl = PRIZE_ITEM_BG_IMAGES[index % PRIZE_ITEM_BG_IMAGES.length];
                       return (
                         <div
@@ -594,7 +652,8 @@ export default function ClubQR() {
       )}
 
       {/* Попап выигрыша — показывается при selectedPrize (в т.ч. по тестовой кнопке на localhost) */}
-      {selectedPrize && !isSpinning && (
+      {/* Результат показывается ТОЧНО в момент полной остановки — без задержек и без преждевременного показа */}
+      {selectedPrize && (
         <div className="result-overlay" data-prize-tier={getPrizeTier(selectedPrize)} onClick={() => setSelectedPrize(null)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Escape' && setSelectedPrize(null)} aria-label="Закрыть">
           {selectedPrize.backgroundImage && (
             <div
