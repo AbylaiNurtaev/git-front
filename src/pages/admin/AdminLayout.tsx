@@ -186,7 +186,7 @@ export default function AdminLayout() {
       <div className="admin-main">
         <header className="admin-topbar">
           <div className="admin-topbar__locations">
-            <span className="admin-topbar__location admin-topbar__location--active">Все клубы</span>
+            <span className="admin-topbar__location admin-topbar__location--active">Админ панель</span>
           </div>
           <div className="admin-topbar__actions">
             <span className="admin-topbar__user-name">{currentUser.name || 'Администратор'}</span>
