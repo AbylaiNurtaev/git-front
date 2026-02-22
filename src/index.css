@@ -1,13 +1,13 @@
 /* Дефолтная палитра сайта (клубы могут переопределять через useClubTheme) */
 :root {
-  --theme-bg: #14141C;
+  --theme-bg: #14141c;
   --theme-text: #ffffff;
   --theme-text-rgb: 255, 255, 255;
-  --theme-primary: #EF3F54;
+  --theme-primary: #ef3f54;
   --theme-primary-dark: #d63648;
   --theme-primary-rgb: 239, 63, 84;
   --theme-primary-dark-rgb: 214, 54, 72;
-  --theme-accent: #EF3F54;
+  --theme-accent: #ef3f54;
   --theme-accent-rgb: 239, 63, 84;
 }
 

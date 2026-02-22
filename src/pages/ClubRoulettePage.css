@@ -5,8 +5,16 @@
   overflow: hidden;
   background: var(--theme-bg);
   background-image:
-    radial-gradient(circle at 20% 50%, rgba(var(--theme-primary-rgb), 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(var(--theme-primary-dark-rgb), 0.08) 0%, transparent 50%);
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(var(--theme-primary-rgb), 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(var(--theme-primary-dark-rgb), 0.08) 0%,
+      transparent 50%
+    );
   position: relative;
   display: flex;
   flex-direction: column;
@@ -39,14 +47,27 @@
   animation: idleFloat 4s ease-in-out infinite;
 }
 
-.roulette-cards.roulette-idle .roulette-card:nth-child(1) { animation-delay: 0s; }
-.roulette-cards.roulette-idle .roulette-card:nth-child(2) { animation-delay: 0.5s; }
-.roulette-cards.roulette-idle .roulette-card:nth-child(3) { animation-delay: 1s; }
-.roulette-cards.roulette-idle .roulette-card:nth-child(4) { animation-delay: 1.5s; }
+.roulette-cards.roulette-idle .roulette-card:nth-child(1) {
+  animation-delay: 0s;
+}
+.roulette-cards.roulette-idle .roulette-card:nth-child(2) {
+  animation-delay: 0.5s;
+}
+.roulette-cards.roulette-idle .roulette-card:nth-child(3) {
+  animation-delay: 1s;
+}
+.roulette-cards.roulette-idle .roulette-card:nth-child(4) {
+  animation-delay: 1.5s;
+}
 
 @keyframes idleFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-4px) scale(1.02); }
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.02);
+  }
 }
 
 /* При спине — без idle, только подсветка */
@@ -56,7 +77,11 @@
 
 .roulette-card {
   aspect-ratio: 0.75;
-  background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(10, 10, 15, 0.95) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(26, 26, 46, 0.95) 0%,
+    rgba(10, 10, 15, 0.95) 100%
+  );
   border: 2px solid rgba(var(--theme-primary-rgb), 0.35);
   border-radius: 12px;
   padding: 12px;
@@ -64,7 +89,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
   overflow: hidden;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
@@ -79,8 +107,15 @@
 }
 
 @keyframes spinPulse {
-  0%, 100% { box-shadow: 0 0 24px rgba(var(--theme-primary-rgb), 0.5); transform: scale(1.08); }
-  50% { box-shadow: 0 0 32px rgba(var(--theme-primary-rgb), 0.7); transform: scale(1.12); }
+  0%,
+  100% {
+    box-shadow: 0 0 24px rgba(var(--theme-primary-rgb), 0.5);
+    transform: scale(1.08);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(var(--theme-primary-rgb), 0.7);
+    transform: scale(1.12);
+  }
 }
 
 .roulette-card.selected {
@@ -112,7 +147,11 @@
 .roulette-card-placeholder {
   width: 100%;
   height: 80px;
-  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2) 0%, rgba(var(--theme-primary-dark-rgb), 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--theme-primary-rgb), 0.2) 0%,
+    rgba(var(--theme-primary-dark-rgb), 0.2) 100%
+  );
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -286,8 +325,12 @@
 }
 
 @keyframes overlayFade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .roulette-result-content {
@@ -302,8 +345,14 @@
 }
 
 @keyframes resultPop {
-  from { transform: scale(0.85); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .roulette-result-title {
@@ -348,7 +397,9 @@
   font-weight: 600;
   cursor: pointer;
   z-index: 1000;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 }
 
 .roulette-test-btn:hover:not(:disabled) {

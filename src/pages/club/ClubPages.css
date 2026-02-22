@@ -827,27 +827,47 @@
 .club-qr-page .cs-prize-item.selected[data-prize-tier="red"] {
   border-width: 3px;
   border-color: #ef4444;
-  box-shadow: 0 0 50px rgba(239, 68, 68, 0.7), 0 0 100px rgba(239, 68, 68, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(239, 68, 68, 0.2);
+  box-shadow:
+    0 0 50px rgba(239, 68, 68, 0.7),
+    0 0 100px rgba(239, 68, 68, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(239, 68, 68, 0.2);
 }
 .club-qr-page .cs-prize-item.selected[data-prize-tier="purple"] {
   border-width: 3px;
   border-color: #a855f7;
-  box-shadow: 0 0 50px rgba(168, 85, 247, 0.7), 0 0 100px rgba(168, 85, 247, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(168, 85, 247, 0.2);
+  box-shadow:
+    0 0 50px rgba(168, 85, 247, 0.7),
+    0 0 100px rgba(168, 85, 247, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(168, 85, 247, 0.2);
 }
 .club-qr-page .cs-prize-item.selected[data-prize-tier="green"] {
   border-width: 3px;
   border-color: #22c55e;
-  box-shadow: 0 0 50px rgba(34, 197, 94, 0.7), 0 0 100px rgba(34, 197, 94, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(34, 197, 94, 0.2);
+  box-shadow:
+    0 0 50px rgba(34, 197, 94, 0.7),
+    0 0 100px rgba(34, 197, 94, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(34, 197, 94, 0.2);
 }
 .club-qr-page .cs-prize-item.selected[data-prize-tier="blue"] {
   border-width: 3px;
   border-color: #3b82f6;
-  box-shadow: 0 0 50px rgba(59, 130, 246, 0.7), 0 0 100px rgba(59, 130, 246, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(59, 130, 246, 0.2);
+  box-shadow:
+    0 0 50px rgba(59, 130, 246, 0.7),
+    0 0 100px rgba(59, 130, 246, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(59, 130, 246, 0.2);
 }
 .club-qr-page .cs-prize-item.selected[data-prize-tier="gray"] {
   border-width: 3px;
   border-color: #6b7280;
-  box-shadow: 0 0 50px rgba(107, 114, 128, 0.7), 0 0 100px rgba(107, 114, 128, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(107, 114, 128, 0.2);
+  box-shadow:
+    0 0 50px rgba(107, 114, 128, 0.7),
+    0 0 100px rgba(107, 114, 128, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(107, 114, 128, 0.2);
 }
 
 .club-qr-page .cs-prize-name {
@@ -911,7 +931,9 @@
 }
 
 /* Свечение сзади попапа выигрыша — по цвету редкости приза (ярче) */
-.club-qr-page .result-overlay[data-prize-tier="red"] .result-overlay-glow::before {
+.club-qr-page
+  .result-overlay[data-prize-tier="red"]
+  .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
     rgba(239, 68, 68, 0.4) 0%,
@@ -920,7 +942,9 @@
     transparent 75%
   );
 }
-.club-qr-page .result-overlay[data-prize-tier="purple"] .result-overlay-glow::before {
+.club-qr-page
+  .result-overlay[data-prize-tier="purple"]
+  .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
     rgba(168, 85, 247, 0.4) 0%,
@@ -929,7 +953,9 @@
     transparent 75%
   );
 }
-.club-qr-page .result-overlay[data-prize-tier="green"] .result-overlay-glow::before {
+.club-qr-page
+  .result-overlay[data-prize-tier="green"]
+  .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
     rgba(34, 197, 94, 0.4) 0%,
@@ -938,7 +964,9 @@
     transparent 75%
   );
 }
-.club-qr-page .result-overlay[data-prize-tier="blue"] .result-overlay-glow::before {
+.club-qr-page
+  .result-overlay[data-prize-tier="blue"]
+  .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
     rgba(59, 130, 246, 0.4) 0%,
@@ -947,7 +975,9 @@
     transparent 75%
   );
 }
-.club-qr-page .result-overlay[data-prize-tier="gray"] .result-overlay-glow::before {
+.club-qr-page
+  .result-overlay[data-prize-tier="gray"]
+  .result-overlay-glow::before {
   background: radial-gradient(
     circle at 50% 50%,
     rgba(107, 114, 128, 0.4) 0%,
@@ -1103,7 +1133,9 @@
     var(--qr-fullscreen-btn-border, rgba(var(--theme-primary-rgb), 0.5));
   border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 .club-qr-logout-btn:hover {

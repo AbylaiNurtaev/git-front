@@ -1,15 +1,22 @@
-/* Админ-панель: тёмная тема в стиле макета */
+/* Админ-панель: чёрный фон, белый текст, кнопки #00F6FF с чёрным текстом */
 .admin-dashboard {
-  --admin-bg: #1a1a1a;
-  --admin-card: #151515;
-  --admin-sidebar: #252525;
-  --admin-primary: #6366f1;
-  --admin-primary-rgb: 99, 102, 241;
-  --admin-text: #e5e5e5;
-  --admin-text-muted: #a3a3a3;
-  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-bg: #000000;
+  --admin-card: #0a0a0a;
+  --admin-sidebar: #0d0d0d;
+  --admin-primary: #00F6FF;
+  --admin-primary-rgb: 0, 246, 255;
+  --admin-text: #ffffff;
+  --admin-text-muted: rgba(255, 255, 255, 0.7);
+  --admin-border: rgba(255, 255, 255, 0.1);
   --admin-success: #22c55e;
   --admin-danger: #ef4444;
+  /* чтобы страницы клуба и общие компоненты использовали ту же палитру */
+  --theme-primary: #00F6FF;
+  --theme-primary-rgb: 0, 246, 255;
+  --theme-primary-dark: #00dde6;
+  --theme-text: #ffffff;
+  --theme-text-rgb: 255, 255, 255;
+  --theme-bg: #000000;
 
   height: 100vh;
   padding: 0;
@@ -391,18 +398,18 @@
 .admin-dashboard .image-upload-button {
   padding: 10px 18px;
   border-radius: 10px;
-  border: 1px solid;
+  border: 1px solid var(--admin-primary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
-  border-color: var(--admin-primary);
-  color: var(--admin-primary);
-  background: rgba(var(--admin-primary-rgb), 0.1);
+  color: #000;
+  background: var(--admin-primary);
 }
 
 .admin-dashboard .image-upload-button:hover {
-  background: rgba(var(--admin-primary-rgb), 0.2);
+  background: #00dde6;
+  border-color: #00dde6;
 }
 
 .admin-dashboard .logo-modal-delete {
@@ -434,12 +441,12 @@
 
 .admin-dashboard .save-button {
   background: var(--admin-primary);
-  color: #fff;
+  color: #000;
   border: none;
 }
 
 .admin-dashboard .save-button:hover:not(:disabled) {
-  background: #4f46e5;
+  background: #00dde6;
 }
 
 /* ——— Адаптив ——— */

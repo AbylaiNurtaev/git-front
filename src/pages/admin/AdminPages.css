@@ -15,7 +15,7 @@
 }
 
 .tab-header h2 {
-  color: var(--theme-primary);
+  color: var(--theme-primary, #00f6ff);
   font-size: 28px;
   margin: 0;
   letter-spacing: 2px;
@@ -49,12 +49,8 @@
 
 .add-button {
   padding: 12px 24px;
-  background: linear-gradient(
-    135deg,
-    var(--theme-primary) 0%,
-    var(--theme-primary-dark) 100%
-  );
-  color: white;
+  background: #00f6ff;
+  color: #000;
   border: none;
   border-radius: 10px;
   font-size: 14px;
@@ -63,11 +59,12 @@
   transition: all 0.3s;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(var(--theme-primary-rgb), 0.3);
+  box-shadow: 0 4px 15px rgba(0, 246, 255, 0.3);
 }
 
 .add-button:hover {
-  box-shadow: 0 6px 25px rgba(var(--theme-primary-rgb), 0.5);
+  background: #00dde6;
+  box-shadow: 0 6px 25px rgba(0, 246, 255, 0.5);
   transform: translateY(-2px);
 }
 
@@ -231,11 +228,11 @@
 
 .edit-button,
 .delete-button {
-  padding: 10px 16px;
+  padding: 8px 12px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   transition: all 0.2s;
   flex: 1;
@@ -244,18 +241,15 @@
 }
 
 .edit-button {
-  background: linear-gradient(
-    135deg,
-    var(--theme-primary) 0%,
-    var(--theme-primary-dark) 100%
-  );
-  color: white;
-  box-shadow: 0 4px 15px rgba(var(--theme-primary-rgb), 0.3);
-  min-width: 140px;
+  background: #00f6ff;
+  color: #000;
+  box-shadow: 0 4px 15px rgba(0, 246, 255, 0.3);
+  max-width: 100px;
 }
 
 .edit-button:hover {
-  box-shadow: 0 6px 25px rgba(var(--theme-primary-rgb), 0.5);
+  background: #00dde6;
+  box-shadow: 0 6px 25px rgba(0, 246, 255, 0.5);
   transform: translateY(-2px);
 }
 
@@ -430,29 +424,21 @@
   padding: 14px 28px;
   font-size: 15px;
   border-radius: 12px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(240, 240, 250, 0.98) 100%
-  );
-  color: #1a1a2e;
+  background: #00f6ff;
+  color: #000;
   border: none;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 246, 255, 0.3);
 }
 
 .roulette-order-save-block .roulette-order-save-btn:hover:not(:disabled) {
-  background: linear-gradient(
-    135deg,
-    #fff 0%,
-    rgba(230, 232, 255, 0.98) 100%
-  );
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  background: #00dde6;
+  box-shadow: 0 6px 24px rgba(0, 246, 255, 0.4);
   transform: translateY(-2px);
 }
 
 .roulette-order-save-block .roulette-order-save-btn .ready-button-icon {
-  background: rgba(26, 26, 46, 0.2);
-  color: #1a1a2e;
+  background: rgba(0, 0, 0, 0.15);
+  color: #000;
 }
 
 .roulette-order-save-block .ready-button:disabled {
@@ -483,13 +469,8 @@
   justify-content: center;
   gap: 12px;
   padding: 16px 36px;
-  background: linear-gradient(
-    135deg,
-    var(--theme-primary) 0%,
-    var(--theme-primary-dark) 50%,
-    var(--theme-primary-dark) 100%
-  );
-  color: white;
+  background: #00f6ff;
+  color: #000;
   border: none;
   border-radius: 14px;
   font-size: 17px;
@@ -499,21 +480,16 @@
   text-transform: uppercase;
   letter-spacing: 1.5px;
   box-shadow:
-    0 6px 24px rgba(var(--theme-primary-rgb), 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 6px 24px rgba(0, 246, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .ready-button:hover {
   box-shadow:
-    0 10px 36px rgba(var(--theme-primary-rgb), 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 10px 36px rgba(0, 246, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transform: translateY(-3px);
-  background: linear-gradient(
-    135deg,
-    var(--theme-accent) 0%,
-    var(--theme-primary-dark) 50%,
-    var(--theme-primary-dark) 100%
-  );
+  background: #00dde6;
 }
 
 .ready-button:active {
@@ -858,7 +834,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: opacity 0.2s, background 0.2s, color 0.2s;
+  transition:
+    opacity 0.2s,
+    background 0.2s,
+    color 0.2s;
 }
 
 .roulette-prize-delete-icon:hover {
@@ -1465,11 +1444,13 @@
 }
 
 .admin-dashboard .add-button {
-  background: linear-gradient(135deg, var(--admin-primary) 0%, #4f46e5 100%);
+  background: var(--admin-primary);
+  color: #000;
   box-shadow: 0 4px 15px rgba(var(--admin-primary-rgb), 0.3);
 }
 
 .admin-dashboard .add-button:hover {
+  background: #00dde6;
   box-shadow: 0 6px 25px rgba(var(--admin-primary-rgb), 0.5);
 }
 
@@ -1504,6 +1485,40 @@
   border-color: rgba(var(--admin-primary-rgb), 0.4);
 }
 
+/* Рулетка: фон призов без яркого контраста — прозрачно или чуть светлее фона */
+.admin-dashboard .slot-card {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.admin-dashboard .slot-prize-image {
+  background: transparent;
+}
+
+.admin-dashboard .prize-roulette-row {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.admin-dashboard .prize-roulette-row.in-roulette {
+  background: rgba(var(--admin-primary-rgb), 0.06);
+  border-color: rgba(var(--admin-primary-rgb), 0.25);
+}
+
+.admin-dashboard .prize-roulette-thumb {
+  background: transparent;
+}
+
+.admin-dashboard .roulette-info {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.admin-dashboard .total-probability {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .admin-dashboard .club-info .club-name,
 .admin-dashboard .prize-info h3,
 .admin-dashboard .by-city-name,
@@ -1512,8 +1527,13 @@
 }
 
 .admin-dashboard .edit-button {
-  background: linear-gradient(135deg, var(--admin-primary) 0%, #4f46e5 100%);
+  background: var(--admin-primary);
+  color: #000;
   box-shadow: 0 4px 15px rgba(var(--admin-primary-rgb), 0.3);
+}
+
+.admin-dashboard .edit-button:hover {
+  background: #00dde6;
 }
 
 .admin-dashboard .users-table {
@@ -1569,4 +1589,61 @@
 
 .admin-dashboard .empty-state .hint {
   color: var(--admin-text, var(--theme-text));
+}
+
+/* Кнопки: фон #00F6FF, текст чёрный */
+.admin-dashboard .ready-button {
+  background: var(--admin-primary);
+  color: #000;
+}
+
+.admin-dashboard .ready-button:hover {
+  background: #00dde6;
+}
+
+.admin-dashboard .ready-button .ready-button-icon {
+  background: rgba(0, 0, 0, 0.15);
+  color: #000;
+}
+
+.admin-dashboard .issued-pagination-btn.active {
+  background: var(--admin-primary);
+  color: #000;
+  border-color: var(--admin-primary);
+}
+
+.admin-dashboard .pagination-num.active {
+  background: var(--admin-primary);
+  color: #000;
+  border-color: var(--admin-primary);
+}
+
+.admin-dashboard .confirm-button,
+.admin-dashboard .issue-button {
+  background: var(--admin-primary);
+  color: #000;
+  border: none;
+}
+
+.admin-dashboard .confirm-button:hover,
+.admin-dashboard .issue-button:hover {
+  background: #00dde6;
+}
+
+.admin-dashboard .club-settings-save {
+  background: var(--admin-primary);
+  color: #000;
+}
+
+.admin-dashboard .club-settings-save:hover:not(:disabled) {
+  background: #00dde6;
+}
+
+.admin-dashboard .open-roulette-button {
+  background: var(--admin-primary);
+  color: #000;
+}
+
+.admin-dashboard .open-roulette-button:hover {
+  background: #00dde6;
 }
