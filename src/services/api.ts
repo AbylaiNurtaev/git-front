@@ -331,6 +331,7 @@ class ApiService {
     name: string;
     type: string;
     value?: number;
+    productEntityId?: string;
     dropChance: number;
     slotIndex: number;
     totalQuantity: number;
@@ -343,6 +344,12 @@ class ApiService {
     if (data.value !== undefined) {
       formData.append('value', data.value.toString());
     }
+    if (data.productEntityId !== undefined && data.productEntityId !== '') {
+      const id = data.productEntityId.trim();
+      formData.append('productEntityId', id);
+      // Часть бэкендов (multer/express) читает только snake_case
+      formData.append('product_entity_id', id);
+    }
     formData.append('dropChance', data.dropChance.toString());
     formData.append('slotIndex', data.slotIndex.toString());
     formData.append('totalQuantity', data.totalQuantity.toString());
@@ -353,10 +360,10 @@ class ApiService {
       formData.append('backgroundImage', data.backgroundImage);
     }
 
+    // multipart/form-data без boundary: дальше в XHR axios сбросит Content-Type для FormData,
+    // браузер подставит корректный multipart с boundary. Так мы не попадаем в ветку JSON.stringify(FormData).
     const response = await this.api.post('/admin/prizes', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   }
@@ -370,6 +377,7 @@ class ApiService {
     name: string;
     type: string;
     value?: number;
+    productEntityId?: string;
     dropChance: number;
     slotIndex: number;
     totalQuantity: number;
@@ -387,6 +395,10 @@ class ApiService {
     }
     if (data.value !== undefined) {
       formData.append('value', data.value.toString());
+    }
+    if (data.productEntityId !== undefined) {
+      formData.append('productEntityId', data.productEntityId);
+      formData.append('product_entity_id', data.productEntityId);
     }
     if (data.dropChance !== undefined) {
       formData.append('dropChance', data.dropChance.toString());
@@ -411,9 +423,7 @@ class ApiService {
     }
 
     const response = await this.api.put(`/admin/prizes/${id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   }

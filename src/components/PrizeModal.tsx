@@ -3,6 +3,7 @@ import Modal from './Modal';
 import FormField from './FormField';
 import type { Prize } from '@/types';
 import { getApiBaseUrl } from '@/config/api';
+import { prizeModalTypeOptions, prizeTypeFromPrize } from '@/constants/prizeTypes';
 import './PrizeModal.css';
 
 /** Допустимые форматы изображений для приза и фона */
@@ -30,6 +31,8 @@ interface PrizeModalProps {
     name: string;
     type: string;
     value?: number;
+    /** При обновлении: пустая строка сбрасывает productEntityId на бэкенде */
+    productEntityId?: string;
     dropChance: number;
     slotIndex: number;
     totalQuantity: number;
@@ -45,8 +48,9 @@ interface PrizeModalProps {
 
 export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlotIndices = [] }: PrizeModalProps) {
   const [name, setName] = useState('');
-  const [type, setType] = useState('points');
+  const [type, setType] = useState<string>('points');
   const [value, setValue] = useState<number>(0);
+  const [productEntityId, setProductEntityId] = useState('');
   /** Строковое значение для ввода — чтобы можно было набирать "0", "0.", "1." и т.д. */
   const [dropChanceInput, setDropChanceInput] = useState<string>('0');
   const [slotIndex, setSlotIndex] = useState<number>(0);
@@ -64,8 +68,16 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
     setValidationErrors([]);
     if (prize) {
       setName(prize.name || '');
-      setType(prize.type || 'points');
-      setValue(prize.value || 0);
+      const nextType = prizeTypeFromPrize(prize.type);
+      setType(nextType);
+      setValue(
+        prize.value !== undefined && prize.value !== null
+          ? Number(prize.value)
+          : nextType === 'product'
+            ? 1
+            : 0
+      );
+      setProductEntityId(prize.productEntityId?.trim() ?? '');
       const pct = (prize.probability || 0) * 100;
       setDropChanceInput(pct === 0 ? '0' : String(pct));
       setSlotIndex(prize.slotIndex ?? 0);
@@ -80,6 +92,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
       setName('');
       setType('points');
       setValue(0);
+      setProductEntityId('');
       setDropChanceInput('0');
       setSlotIndex(0);
       setTotalQuantity(100);
@@ -161,6 +174,23 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
     if (Number.isNaN(dropChanceNum) || dropChanceNum <= 0) errors.push('Вероятность выпадения должна быть больше 0% (можно 0.01, 0.1 и т.д.).');
     if (dropChanceNum > 100) errors.push('Вероятность не должна превышать 100%.');
 
+    if (type === 'balance' || type === 'points' || type === 'club_time' || type === 'time') {
+      if (!Number.isFinite(value) || value < 0) {
+        const msg =
+          type === 'balance'
+            ? 'Сумма баланса не может быть отрицательной.'
+            : type === 'points'
+              ? 'Количество баллов не может быть отрицательным.'
+              : 'Значение не может быть отрицательным.';
+        errors.push(msg);
+      }
+    }
+    if (type === 'product') {
+      if (!productEntityId.trim()) {
+        errors.push('Для типа «Товар» укажите ID товара в SmartShell (productEntityId).');
+      }
+    }
+
     if (!prize) {
       if (!image && !imagePreview) {
         errors.push('Загрузите изображение приза — без фото создание невозможно.');
@@ -191,10 +221,29 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
     setIsLoading(true);
     try {
       const dropChanceToSave = parseFloat(dropChanceInput);
+
+      let valueOut: number | undefined;
+      if (type === 'balance' || type === 'points' || type === 'club_time' || type === 'time') {
+        valueOut = value;
+      } else if (type === 'product') {
+        const qty = Math.floor(Number(value));
+        valueOut = !Number.isFinite(qty) || qty < 1 ? 1 : qty;
+      } else {
+        valueOut = undefined;
+      }
+
+      let productEntityIdOut: string | undefined;
+      if (type === 'product') {
+        productEntityIdOut = productEntityId.trim();
+      } else if (prize) {
+        productEntityIdOut = '';
+      }
+
       await onSave({
         name: name.trim(),
         type,
-        value: type === 'points' || type === 'club_time' ? value : undefined,
+        value: valueOut,
+        productEntityId: productEntityIdOut,
         dropChance: Number.isFinite(dropChanceToSave) ? dropChanceToSave : 0,
         slotIndex,
         totalQuantity,
@@ -234,26 +283,60 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
           name="type"
           type="select"
           value={type}
-          onChange={(value) => setType(String(value))}
+          onChange={(v) => setType(String(v))}
           required
-          options={[
-            { value: 'points', label: 'Баллы' },
-            { value: 'physical', label: 'Физический приз' },
-            { value: 'club_time', label: 'Время в Infinity' },
-            { value: 'other', label: 'Другое' },
-          ]}
+          options={prizeModalTypeOptions(prize ?? null)}
         />
-        {(type === 'points' || type === 'club_time') && (
+        {type === 'other' && (
+          <p className="form-hint" style={{ marginTop: -8, marginBottom: 12 }}>
+            Только отображение в рулетке: без начислений, без SmartShell и без заявок на приз.
+          </p>
+        )}
+        {(type === 'balance' || type === 'points' || type === 'club_time' || type === 'time') && (
           <FormField
-            label={type === 'points' ? 'Количество баллов' : 'Тенге'}
+            label={
+              type === 'balance'
+                ? 'Сумма (депозит в SmartShell)'
+                : type === 'points'
+                  ? 'Количество баллов (бонусы)'
+                  : type === 'club_time'
+                    ? 'Тенге (время в Infinity)'
+                    : 'Значение (устаревший тип)'
+            }
             name="value"
             type="number"
             value={value}
-            onChange={(value) => setValue(typeof value === 'number' ? value : Number(value))}
+            onChange={(v) => setValue(typeof v === 'number' ? v : Number(v))}
             placeholder="0"
             min={0}
             required
           />
+        )}
+        {type === 'product' && (
+          <>
+            <FormField
+              label="ID товара в SmartShell"
+              name="productEntityId"
+              type="text"
+              value={productEntityId}
+              onChange={(v) => setProductEntityId(String(v))}
+              placeholder="Обязательно для выдачи товара при выигрыше"
+              required
+            />
+            <FormField
+              label="Количество штук"
+              name="value"
+              type="number"
+              value={value}
+              onChange={(v) => setValue(typeof v === 'number' ? v : Number(v))}
+              placeholder="1"
+              min={1}
+              required
+            />
+            <p className="form-hint" style={{ marginTop: -8 }}>
+              Если не задать или указать меньше 1, на бэкенде будет использовано 1.
+            </p>
+          </>
         )}
         <div className="form-field">
           <label htmlFor="dropChance" className="form-label">

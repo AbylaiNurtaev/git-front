@@ -4,7 +4,12 @@ import { useStore } from '@/store/useStore';
 import PrizeModal from '@/components/PrizeModal';
 import Skeleton from '@/components/Skeleton';
 import type { Prize, RouletteSlot } from '@/types';
+import { prizeTypeLabel } from '@/constants/prizeTypes';
 import './AdminPages.css';
+
+function isProductPrize(p: Prize) {
+  return p.type === 'product' || p.type === 'physical';
+}
 
 type RouletteCheckResult = { errors: string[]; warnings: string[] };
 
@@ -96,6 +101,14 @@ export default function AdminRoulette() {
       const duplicates = [...seen.entries()].filter(([, count]) => count > 1).map(([idx]) => idx);
       if (duplicates.length > 0) {
         errors.push(`Дублирующиеся индексы слотов: ${duplicates.join(', ')}. У каждого приза в рулетке должен быть уникальный индекс (0–34).`);
+      }
+      const productWithoutId = activePrizes.filter(
+        (p) => isProductPrize(p) && !String(p.productEntityId ?? '').trim()
+      );
+      if (productWithoutId.length > 0) {
+        errors.push(
+          `Для типа «Товар» нужен ID товара в SmartShell (productEntityId): ${productWithoutId.map((p) => p.name).join(', ')}.`
+        );
       }
     }
 
@@ -255,7 +268,7 @@ export default function AdminRoulette() {
                     <div>
                       <strong>{prize.name}</strong>
                       <span className="prize-roulette-meta">
-                        {(prize.probability * 100).toFixed(2)}% · {prize.type}
+                        {(prize.probability * 100).toFixed(2)}% · {prizeTypeLabel(prize.type)}
                         {prize.slotIndex != null && (
                           <span className="prize-slot-index"> · слот {prize.slotIndex}</span>
                         )}
@@ -372,7 +385,7 @@ export default function AdminRoulette() {
                         </div>
                       )}
                       <p><strong>Вероятность:</strong> {(slot.probability * 100).toFixed(2)}%</p>
-                      {prize?.type && <p><strong>Тип:</strong> {prize.type}</p>}
+                      {prize?.type && <p><strong>Тип:</strong> {prizeTypeLabel(prize.type)}</p>}
                     </div>
                     <div className="slot-actions">
                       <button 
@@ -422,6 +435,7 @@ export default function AdminRoulette() {
               name: data.name,
               type: data.type,
               value: data.value,
+              productEntityId: data.productEntityId,
               dropChance: data.dropChance,
               slotIndex: data.slotIndex,
               totalQuantity: data.totalQuantity,

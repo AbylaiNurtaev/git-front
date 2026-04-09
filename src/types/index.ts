@@ -96,11 +96,27 @@ export interface Admin extends User {
   role: 'admin';
 }
 
+/**
+ * Тип приза (бэкенд): balance / points / product / other.
+ * Устаревшие значения остаются в типе для совместимости со старыми записями.
+ */
+export type PrizeType =
+  | 'balance'
+  | 'points'
+  | 'product'
+  | 'other'
+  | 'physical'
+  | 'time'
+  | 'none'
+  | 'club_time';
+
 export interface Prize {
   id: string;
   name: string;
-  type: 'physical' | 'points' | 'time' | 'none' | 'club_time';
+  type: PrizeType;
   value?: number;
+  /** ID товара в SmartShell — обязателен для type === 'product' */
+  productEntityId?: string;
   description: string;
   image?: string;
   /** URL фона модалки выигрыша (задаётся админом) */

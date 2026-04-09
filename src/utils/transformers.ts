@@ -100,7 +100,13 @@ export function transformPrize(prize: any): Prize {
     id: prize._id || prize.id || prize.prizeId?._id || prize.prizeId?.id,
     name: prize.name || prize.prizeId?.name || 'Неизвестный приз',
     type: prize.type || prize.prizeId?.type || 'none',
-    value: prize.value || prize.prizeId?.value,
+    value: prize.value ?? prize.prizeId?.value,
+    productEntityId:
+      (typeof prize.productEntityId === 'string' && prize.productEntityId) ||
+      (typeof prize.product_entity_id === 'string' && prize.product_entity_id) ||
+      (typeof prize.prizeId?.productEntityId === 'string' && prize.prizeId.productEntityId) ||
+      (typeof prize.prizeId?.product_entity_id === 'string' && prize.prizeId.product_entity_id) ||
+      undefined,
     description: prize.description || prize.prizeId?.description || '',
     image: prize.image || prize.prizeId?.image,
     backgroundImage:

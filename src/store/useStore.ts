@@ -77,6 +77,7 @@ interface Store {
     name: string;
     type: string;
     value?: number;
+    productEntityId?: string;
     dropChance: number;
     slotIndex: number;
     totalQuantity: number;
@@ -87,6 +88,7 @@ interface Store {
     name: string;
     type: string;
     value?: number;
+    productEntityId?: string;
     dropChance: number;
     slotIndex: number;
     totalQuantity: number;
@@ -631,6 +633,7 @@ export const useStore = create<Store>()(
         name: string;
         type: string;
         value?: number;
+        productEntityId?: string;
         dropChance: number;
         slotIndex: number;
         totalQuantity: number;
@@ -664,6 +667,7 @@ export const useStore = create<Store>()(
         name: string;
         type: string;
         value?: number;
+        productEntityId?: string;
         dropChance: number;
         slotIndex: number;
         totalQuantity: number;

@@ -560,7 +560,7 @@ export default function ClubQR() {
                     id: 'test',
                     name: 'Тестовый приз',
                     description: 'Проверка попапа выигрыша',
-                    type: 'physical',
+                    type: 'other',
                     probability: 0,
                     status: 'confirmed',
                     wonAt: new Date().toISOString(),
