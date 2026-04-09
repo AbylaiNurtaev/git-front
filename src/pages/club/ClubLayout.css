@@ -1,7 +1,16 @@
-/* Один вертикальный скролл: блокируем скролл у body, скроллит только .admin-content */
+/* Один вертикальный скролл: блокируем скролл у html/body, скроллит только .admin-content */
+html.club-layout-active,
 body.club-layout-active {
   overflow: hidden;
   height: 100vh;
+  /* Полностью скрываем скроллбар у документа, чтобы не было второго ползунка */
+  -ms-overflow-style: none; /* IE и Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+html.club-layout-active::-webkit-scrollbar,
+body.club-layout-active::-webkit-scrollbar {
+  display: none;
 }
 
 /* «Личный кабинет» в шапке — просто надпись, без вида кнопки */
@@ -55,11 +64,16 @@ body.club-layout-active {
   color: var(--admin-primary);
 }
 
-.admin-dashboard .overview-issued-section,
-.admin-dashboard .overview-issued-section h3 {
+.admin-dashboard .overview-issued-section {
   background: var(--admin-card);
   border: 1px solid var(--admin-border);
   color: var(--admin-text);
+}
+
+.admin-dashboard .overview-issued-section h3 {
+  background: var(--admin-card);
+  color: var(--admin-text);
+  border: none;
 }
 
 .admin-dashboard .issued-claims-list li {

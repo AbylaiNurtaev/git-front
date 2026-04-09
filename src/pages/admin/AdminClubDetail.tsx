@@ -149,10 +149,6 @@ export default function AdminClubDetail() {
               <div className="stat-value">{clubAnalytics?.analytics?.playerCount ?? clubPlayers.length}</div>
             </div>
             <div className="stat-card">
-              <h4>Активных игроков</h4>
-              <div className="stat-value">{club.statistics?.activePlayers || 0}</div>
-            </div>
-            <div className="stat-card">
               <h4>Всего прокруток</h4>
               <div className="stat-value">{clubAnalytics?.analytics?.spinsCount ?? club.statistics?.totalSpins ?? 0}</div>
             </div>
@@ -180,10 +176,21 @@ export default function AdminClubDetail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {clubAnalytics.recentSpins.map((spin: { id?: string; _id?: string; playerPhone?: string; playerName?: string; playerId?: string; prizeName?: string; prizeId?: string; createdAt?: string }) => (
+                  {clubAnalytics.recentSpins.map((spin: {
+                    id?: string; _id?: string;
+                    playerPhone?: string; playerName?: string; playerId?: string;
+                    player?: { name?: string; phone?: string };
+                    prizeName?: string; prizeId?: string;
+                    prize?: { name?: string };
+                    createdAt?: string;
+                  }) => (
                     <tr key={spin.id || (spin as any)._id || Math.random()}>
-                      <td>{spin.playerName ?? spin.playerPhone ?? spin.playerId ?? '—'}</td>
-                      <td>{spin.prizeName ?? '—'}</td>
+                      <td>
+                        {spin.player?.name ?? spin.player?.phone ?? spin.playerName ?? spin.playerPhone ?? spin.playerId ?? '—'}
+                      </td>
+                      <td>
+                        {spin.prize?.name ?? spin.prizeName ?? '—'}
+                      </td>
                       <td>{spin.createdAt ? new Date(spin.createdAt).toLocaleString('ru-RU') : '—'}</td>
                     </tr>
                   ))}
@@ -192,38 +199,6 @@ export default function AdminClubDetail() {
             </div>
           </div>
         )}
-
-        <div className="club-detail-players">
-          <h3>Игроки клуба</h3>
-          {clubPlayers.length === 0 ? (
-            <div className="empty-state">
-              <p>Нет игроков в этом клубе</p>
-            </div>
-          ) : (
-            <div className="players-table-container">
-              <table className="users-table">
-                <thead>
-                  <tr>
-                    <th>Телефон</th>
-                    <th>Баланс</th>
-                    <th>Призов</th>
-                    <th>Дата регистрации</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {clubPlayers.map((player: Player) => (
-                    <tr key={player.id}>
-                      <td>{player.phone}</td>
-                      <td>{player.balance} баллов</td>
-                      <td>{player.prizeCount ?? player.prizes?.length ?? 0}</td>
-                      <td>{new Date(player.createdAt).toLocaleDateString('ru-RU')}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
       </div>
 
       <ClubModal

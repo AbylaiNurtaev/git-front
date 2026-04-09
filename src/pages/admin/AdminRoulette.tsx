@@ -17,6 +17,7 @@ export default function AdminRoulette() {
     updatePrize,
     deletePrize,
     reorderPrizes,
+    updatePrizeFund,
     isLoading,
   } = useStore();
   const [prizeModalOpen, setPrizeModalOpen] = useState(false);
@@ -428,6 +429,14 @@ export default function AdminRoulette() {
               backgroundImage: data.backgroundImage || undefined,
               removeBackgroundImage: data.removeBackgroundImage,
             });
+            if (ok && data.remainingQuantity !== undefined) {
+              await updatePrizeFund({
+                prizeId: selectedPrize.id,
+                totalQuantity: data.totalQuantity,
+                remainingQuantity: data.remainingQuantity,
+              });
+              await fetchPrizes();
+            }
             if (ok) {
               const updated = useStore.getState().prizes.find((p) => p.id === selectedPrize.id);
               if (updated) setSelectedPrize(updated);

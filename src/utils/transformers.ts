@@ -114,6 +114,18 @@ export function transformPrize(prize: any): Prize {
       undefined,
     probability: prize.dropChance != null ? prize.dropChance / 100 : prize.percentage != null ? prize.percentage / 100 : (prize.probability ?? 0),
     slotIndex: prize.slotIndex !== undefined ? prize.slotIndex : (prize.prizeId?.slotIndex),
+    totalQuantity:
+      typeof prize.totalQuantity === 'number'
+        ? prize.totalQuantity
+        : typeof prize.prizeId?.totalQuantity === 'number'
+          ? prize.prizeId.totalQuantity
+          : undefined,
+    remainingQuantity:
+      typeof prize.remainingQuantity === 'number'
+        ? prize.remainingQuantity
+        : typeof prize.prizeId?.remainingQuantity === 'number'
+          ? prize.prizeId.remainingQuantity
+          : undefined,
     isActive: prize.isActive !== false,
     status: prize.status || 'pending',
     wonAt: prize.createdAt || prize.wonAt || new Date().toISOString(),

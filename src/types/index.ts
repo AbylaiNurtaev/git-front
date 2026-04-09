@@ -107,6 +107,10 @@ export interface Prize {
   backgroundImage?: string;
   probability: number;
   slotIndex?: number;
+  /** Изначальное количество призов в фонде */
+  totalQuantity?: number;
+  /** Текущее оставшееся количество призов в фонде */
+  remainingQuantity?: number;
   /** Участвует ли приз в рулетке (админ может отключить) */
   isActive?: boolean;
   status: 'pending' | 'confirmed' | 'issued';
@@ -222,10 +226,15 @@ export interface AnalyticsByCityResponse {
 /** Один спин в отчёте по клубу */
 export interface AnalyticsClubRecentSpin {
   id: string;
+  playerName?: string;
   playerPhone?: string;
   playerId?: string;
+  /** Заполняется бэкендом при populate (player) */
+  player?: { name?: string; phone?: string };
   prizeName?: string;
   prizeId?: string;
+  /** Заполняется бэкендом при populate (prize) */
+  prize?: { name?: string };
   createdAt: string;
 }
 

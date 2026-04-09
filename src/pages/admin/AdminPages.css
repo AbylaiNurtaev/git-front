@@ -244,7 +244,8 @@
   background: #00f6ff;
   color: #000;
   box-shadow: 0 4px 15px rgba(0, 246, 255, 0.3);
-  max-width: 100px;
+  min-width: 135px;
+  max-width: 160px;
 }
 
 .edit-button:hover {
@@ -1214,6 +1215,12 @@
   font-size: 24px;
 }
 
+.club-detail-stats .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
 .club-detail-players,
 .club-detail-analytics {
   background: rgba(26, 26, 46, 0.8);
@@ -1257,6 +1264,10 @@
   }
 
   .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .club-detail-stats .stats-grid {
     grid-template-columns: 1fr;
   }
 

@@ -339,6 +339,7 @@
   color: white;
   border: none;
   box-shadow: 0 4px 15px rgba(var(--theme-primary-rgb), 0.3);
+  min-width: 135px;
 }
 
 .edit-button:hover {

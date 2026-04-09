@@ -32,7 +32,11 @@ export default function ClubLayout() {
 
   useEffect(() => {
     document.body.classList.add(BODY_CLASS);
-    return () => document.body.classList.remove(BODY_CLASS);
+    document.documentElement.classList.add(BODY_CLASS);
+    return () => {
+      document.body.classList.remove(BODY_CLASS);
+      document.documentElement.classList.remove(BODY_CLASS);
+    };
   }, []);
 
   useEffect(() => {

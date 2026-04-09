@@ -425,7 +425,16 @@ export default function ClubQR() {
     // не в центр, а в случайную точку между 15% и 85% ширины карточки.
     const adjustedPrizeOffset = prizeOffsetInSet + (PRIZE_CARD_WIDTH / 2) - randomOffset;
     const n = Math.round((adjustedPrizeOffset - idealEnd) / oneSetWidth);
-    const endPosition = adjustedPrizeOffset - n * oneSetWidth;
+    let endPosition = adjustedPrizeOffset - n * oneSetWidth;
+
+    // При малом кол-ве призов (особенно 1) oneSetWidth маленький, и endPosition может
+    // уйти левее отрисованной области (copies * oneSetWidth), из-за чего лента "пустеет".
+    // Сдвигаем эквивалентную позицию на целые oneSetWidth в безопасный диапазон.
+    const totalRenderedWidth = rouletteCopiesRef.current * oneSetWidth;
+    const minSafePosition = -(totalRenderedWidth - containerWidth - prizeWidth);
+    while (endPosition < minSafePosition) {
+      endPosition += oneSetWidth;
+    }
     const travel = endPosition - startPosition; // всегда отрицательное
 
     // ─── Фазы скорости (нормированные, сумма площадей = 1 после нормировки) ─

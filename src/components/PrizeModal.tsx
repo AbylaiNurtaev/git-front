@@ -33,6 +33,7 @@ interface PrizeModalProps {
     dropChance: number;
     slotIndex: number;
     totalQuantity: number;
+    remainingQuantity?: number;
     image?: File | null;
     backgroundImage?: File | null;
     removeBackgroundImage?: boolean;
@@ -50,6 +51,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
   const [dropChanceInput, setDropChanceInput] = useState<string>('0');
   const [slotIndex, setSlotIndex] = useState<number>(0);
   const [totalQuantity, setTotalQuantity] = useState<number>(100);
+  const [remainingQuantity, setRemainingQuantity] = useState<number>(100);
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
@@ -67,7 +69,8 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
       const pct = (prize.probability || 0) * 100;
       setDropChanceInput(pct === 0 ? '0' : String(pct));
       setSlotIndex(prize.slotIndex ?? 0);
-      setTotalQuantity(100);
+      setTotalQuantity(prize.totalQuantity ?? 100);
+      setRemainingQuantity(prize.remainingQuantity ?? prize.totalQuantity ?? 100);
       setImage(null);
       setImagePreview(prize.image || null);
       setBackgroundImage(null);
@@ -80,6 +83,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
       setDropChanceInput('0');
       setSlotIndex(0);
       setTotalQuantity(100);
+      setRemainingQuantity(100);
       setImage(null);
       setImagePreview(null);
       setBackgroundImage(null);
@@ -169,6 +173,14 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
         errors.push('Индекс слота должен быть от 0 до 34.');
       }
     }
+    if (prize) {
+      if (remainingQuantity < 0) {
+        errors.push('Остаток не может быть меньше 0.');
+      }
+      if (remainingQuantity > totalQuantity) {
+        errors.push('Остаток не может быть больше общего количества.');
+      }
+    }
 
     if (errors.length > 0) {
       setValidationErrors(errors);
@@ -186,6 +198,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
         dropChance: Number.isFinite(dropChanceToSave) ? dropChanceToSave : 0,
         slotIndex,
         totalQuantity,
+        remainingQuantity: prize ? remainingQuantity : undefined,
         image,
         backgroundImage: removeBackgroundImage ? null : backgroundImage,
         removeBackgroundImage: prize ? removeBackgroundImage : undefined,
@@ -284,6 +297,31 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlo
               min={1}
               required
             />
+          </>
+        )}
+        {prize && (
+          <>
+            <FormField
+              label="Общее количество"
+              name="totalQuantity"
+              type="number"
+              value={totalQuantity}
+              onChange={(value) => setTotalQuantity(typeof value === 'number' ? value : Number(value))}
+              placeholder="100"
+              min={1}
+              required
+            />
+          <FormField
+            label="Осталось"
+            name="remainingQuantity"
+            type="number"
+            value={remainingQuantity}
+            onChange={(value) => setRemainingQuantity(typeof value === 'number' ? value : Number(value))}
+            placeholder="0"
+            min={0}
+            max={totalQuantity}
+            required
+          />
           </>
         )}
         {validationErrors.length > 0 && (
