@@ -1,4 +1,4 @@
-import type { User, Player, Club, Admin, Prize, QRPageTheme, Transaction } from '@/types';
+import type { User, Player, Club, Admin, Prize, QRPageTheme, Transaction, SmartshellGood } from '@/types';
 import { DEFAULT_QR_PAGE_THEME } from '@/constants/qrTheme';
 
 // Transform backend response to frontend types
@@ -95,6 +95,31 @@ export function transformAdmin(admin: any): Admin {
   };
 }
 
+function normalizeSmartshellGood(raw: unknown): SmartshellGood | undefined {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  const g = raw as Record<string, unknown>;
+  const amount = g.amount;
+  const out: SmartshellGood = {
+    id: typeof g.id === 'number' ? g.id : undefined,
+    title: typeof g.title === 'string' ? g.title : undefined,
+    amount: typeof amount === 'number' && Number.isFinite(amount) ? amount : undefined,
+    state: g.state,
+  };
+  if (out.id == null && out.title == null && out.amount == null && out.state == null) return undefined;
+  return out;
+}
+
+/** Бэкенд может отдавать productEntityId числом (например 486809) — в UI и FormData нужна строка. */
+function normalizeProductEntityId(raw: unknown): string | undefined {
+  if (raw == null) return undefined;
+  if (typeof raw === 'number' && Number.isFinite(raw)) return String(raw);
+  if (typeof raw === 'string') {
+    const t = raw.trim();
+    return t.length > 0 ? t : undefined;
+  }
+  return undefined;
+}
+
 export function transformPrize(prize: any): Prize {
   return {
     id: prize._id || prize.id || prize.prizeId?._id || prize.prizeId?.id,
@@ -102,10 +127,10 @@ export function transformPrize(prize: any): Prize {
     type: prize.type || prize.prizeId?.type || 'none',
     value: prize.value ?? prize.prizeId?.value,
     productEntityId:
-      (typeof prize.productEntityId === 'string' && prize.productEntityId) ||
-      (typeof prize.product_entity_id === 'string' && prize.product_entity_id) ||
-      (typeof prize.prizeId?.productEntityId === 'string' && prize.prizeId.productEntityId) ||
-      (typeof prize.prizeId?.product_entity_id === 'string' && prize.prizeId.product_entity_id) ||
+      normalizeProductEntityId(prize.productEntityId) ||
+      normalizeProductEntityId(prize.product_entity_id) ||
+      normalizeProductEntityId(prize.prizeId?.productEntityId) ||
+      normalizeProductEntityId(prize.prizeId?.product_entity_id) ||
       undefined,
     description: prize.description || prize.prizeId?.description || '',
     image: prize.image || prize.prizeId?.image,
@@ -132,6 +157,7 @@ export function transformPrize(prize: any): Prize {
         : typeof prize.prizeId?.remainingQuantity === 'number'
           ? prize.prizeId.remainingQuantity
           : undefined,
+    smartshellGood: normalizeSmartshellGood(prize.smartshellGood ?? prize.prizeId?.smartshellGood),
     isActive: prize.isActive !== false,
     status: prize.status || 'pending',
     wonAt: prize.createdAt || prize.wonAt || new Date().toISOString(),

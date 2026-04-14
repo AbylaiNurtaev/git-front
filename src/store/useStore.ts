@@ -115,6 +115,30 @@ interface Store {
       unbanUser: (id: string) => Promise<boolean>;
 }
 
+/** Убирает ключи со значением undefined — чтобы spread не затирал предыдущее состояние. */
+function omitUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
+  const out: Partial<T> = {};
+  for (const key of Object.keys(obj) as (keyof T)[]) {
+    const v = obj[key];
+    if (v !== undefined) (out as Record<string, unknown>)[key as string] = v as unknown;
+  }
+  return out;
+}
+
+/** Достаёт объект приза из типичных обёрток ответа (prize / data) или самого документа. */
+function unwrapPrizeResponse(response: unknown): Record<string, unknown> | null {
+  if (response == null || typeof response !== 'object' || Array.isArray(response)) return null;
+  const r = response as Record<string, unknown>;
+  const nested = r.prize ?? r.data;
+  if (nested != null && typeof nested === 'object' && !Array.isArray(nested)) {
+    return nested as Record<string, unknown>;
+  }
+  if (r._id != null || r.id != null || typeof r.name === 'string') {
+    return r;
+  }
+  return null;
+}
+
 export const useStore = create<Store>()(
   persist(
     (set, get) => ({
@@ -642,7 +666,9 @@ export const useStore = create<Store>()(
       }) => {
         try {
           const response = await apiService.createPrize(data);
-          const prize = transformPrize(response);
+          const { image: _i, backgroundImage: _b, ...sent } = data;
+          const apiDoc = unwrapPrizeResponse(response) ?? {};
+          const prize = transformPrize({ ...sent, ...apiDoc });
           const prizes = [...get().prizes, prize];
           const activePrizes = prizes.filter((p: Prize) => p.isActive !== false)
             .sort((a, b) => (a.slotIndex ?? 999) - (b.slotIndex ?? 999));
@@ -679,7 +705,16 @@ export const useStore = create<Store>()(
         try {
           const response = await apiService.updatePrize(id, data);
           const prev = get().prizes.find((p) => p.id === id);
-          const updated = transformPrize(response ?? { _id: id, ...data });
+          const { image: _i, backgroundImage: _b, ...restData } = data;
+          const dataFields = omitUndefined(restData as Record<string, unknown>);
+          const apiDoc = unwrapPrizeResponse(response) ?? {};
+          const mergedInput = {
+            ...(prev ?? {}),
+            _id: id,
+            ...apiDoc,
+            ...dataFields,
+          };
+          const updated = transformPrize(mergedInput);
           const merged = prev ? { ...prev, ...updated } : updated;
           if (prev && merged.backgroundImage === undefined && prev.backgroundImage)
             merged.backgroundImage = prev.backgroundImage;

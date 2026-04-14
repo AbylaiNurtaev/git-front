@@ -345,7 +345,7 @@ class ApiService {
       formData.append('value', data.value.toString());
     }
     if (data.productEntityId !== undefined && data.productEntityId !== '') {
-      const id = data.productEntityId.trim();
+      const id = String(data.productEntityId).trim();
       formData.append('productEntityId', id);
       // Часть бэкендов (multer/express) читает только snake_case
       formData.append('product_entity_id', id);
@@ -373,6 +373,13 @@ class ApiService {
     return response.data;
   }
 
+  /** Получить товар SmartShell по id (GET /api/admin/smartshell/goods/:id). */
+  async getSmartshellGoodById(id: string | number) {
+    const safeId = encodeURIComponent(String(id).trim());
+    const response = await this.api.get(`/admin/smartshell/goods/${safeId}`);
+    return response.data;
+  }
+
   async updatePrize(id: string, data: Partial<{
     name: string;
     type: string;
@@ -397,8 +404,9 @@ class ApiService {
       formData.append('value', data.value.toString());
     }
     if (data.productEntityId !== undefined) {
-      formData.append('productEntityId', data.productEntityId);
-      formData.append('product_entity_id', data.productEntityId);
+      const id = String(data.productEntityId);
+      formData.append('productEntityId', id);
+      formData.append('product_entity_id', id);
     }
     if (data.dropChance !== undefined) {
       formData.append('dropChance', data.dropChance.toString());

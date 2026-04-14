@@ -466,6 +466,7 @@ export default function AdminRoulette() {
         }}
         prize={selectedPrize}
         existingSlotIndices={occupiedSlotIndices}
+        quantityMode="roulette"
       />
     </div>
   );

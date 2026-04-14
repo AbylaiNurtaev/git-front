@@ -110,6 +110,15 @@ export type PrizeType =
   | 'none'
   | 'club_time';
 
+/** Данные товара со SmartShell (приходит с бэка для type === 'product') */
+export interface SmartshellGood {
+  id?: number;
+  title?: string;
+  /** Остаток на складе — верхняя граница для «количества в рулетке» */
+  amount?: number;
+  state?: unknown;
+}
+
 export interface Prize {
   id: string;
   name: string;
@@ -127,6 +136,8 @@ export interface Prize {
   totalQuantity?: number;
   /** Текущее оставшееся количество призов в фонде */
   remainingQuantity?: number;
+  /** Снимок товара из SmartShell (остаток amount и т.д.) */
+  smartshellGood?: SmartshellGood;
   /** Участвует ли приз в рулетке (админ может отключить) */
   isActive?: boolean;
   status: 'pending' | 'confirmed' | 'issued';

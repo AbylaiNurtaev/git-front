@@ -7,9 +7,19 @@ interface ModalProps {
   title: string;
   children: React.ReactNode;
   size?: 'small' | 'medium' | 'large';
+  className?: string;
+  bodyClassName?: string;
 }
 
-export default function Modal({ isOpen, onClose, title, children, size = 'medium' }: ModalProps) {
+export default function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  size = 'medium',
+  className,
+  bodyClassName,
+}: ModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -25,12 +35,12 @@ export default function Modal({ isOpen, onClose, title, children, size = 'medium
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className={`modal-content modal-${size}`} onClick={(e) => e.stopPropagation()}>
+      <div className={`modal-content modal-${size} ${className ?? ''}`.trim()} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
-        <div className="modal-body">
+        <div className={`modal-body ${bodyClassName ?? ''}`.trim()}>
           {children}
         </div>
       </div>
