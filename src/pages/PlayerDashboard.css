@@ -72,6 +72,10 @@
   letter-spacing: 1px;
 }
 
+.dashboard-header .header-logo.brand-logo {
+  font-size: 32px;
+}
+
 @media (max-width: 768px) {
   .player-dashboard {
     padding: 10px;

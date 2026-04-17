@@ -4,7 +4,7 @@ import { useStore } from '@/store/useStore';
 import { QRCodeSVG } from 'qrcode.react';
 import { getQrBaseUrl } from '@/config/api';
 import type { Club, Player, PrizeClaimsPagination } from '@/types';
-import logoUrl from '@/assets/logo.png';
+import BrandLogo from '@/components/BrandLogo';
 import './ClubDashboard.css';
 
 const PRIZES_PAGE_LIMIT = 20;
@@ -85,8 +85,8 @@ export default function ClubDashboard() {
       <div className="dashboard-container">
         <header className="dashboard-header">
           <div className="header-left">
-            <img src={logoUrl} alt="Infinity" className="header-logo" />
-            <h1>Личный кабинет Infinity</h1>
+            <BrandLogo alt="Spin Club" className="header-logo" />
+            <h1>Личный кабинет Spin Club</h1>
           </div>
           <div className="header-actions">
             <span className="club-name">{club.clubName}</span>

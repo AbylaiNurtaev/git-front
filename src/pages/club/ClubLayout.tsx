@@ -3,20 +3,24 @@ import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
+  CircleDot,
   Settings,
   ChevronLeft,
   LogOut,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { useClubTheme } from '@/hooks/useClubTheme';
 import type { Club } from '@/types';
-import logoUrl from '@/assets/logo.png';
+import BrandLogo from '@/components/BrandLogo';
 import '../admin/AdminLayout.css';
 import './ClubLayout.css';
 
 const navItems = [
   { to: '/club', end: true, label: 'Обзор', icon: LayoutDashboard },
   { to: '/club/players', end: false, label: 'Игроки', icon: Users },
+  { to: '/club/qr', end: false, label: 'QR экран', icon: CircleDot },
   { to: '/club/settings', end: false, label: 'Настройки', icon: Settings },
 ] as const;
 
@@ -29,6 +33,10 @@ export default function ClubLayout() {
   const location = useLocation();
   const isQrPage = location.pathname === '/club/qr';
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const stored = localStorage.getItem('adminTheme');
+    return stored === 'dark' ? 'dark' : 'light';
+  });
 
   useEffect(() => {
     document.body.classList.add(BODY_CLASS);
@@ -45,15 +53,23 @@ export default function ClubLayout() {
     }
   }, [currentUser, fetchCompanyLogoPublic]);
 
+  useEffect(() => {
+    localStorage.setItem('adminTheme', theme);
+  }, [theme]);
+
   if (!club || club.role !== 'club') {
     return null;
   }
 
   const displayName = club.clubName || 'Клуб';
+  const currentPageTitle =
+    navItems.find(({ to, end }) =>
+      end ? location.pathname === to : location.pathname.startsWith(to)
+    )?.label ?? 'Клуб';
 
   if (isQrPage) {
     return (
-      <div className="admin-dashboard club-dashboard--qr">
+      <div className={`admin-dashboard club-dashboard club-dashboard--qr ${theme === 'dark' ? 'admin-dashboard--dark' : ''}`}>
         <div className="admin-content club-content--full">
           <Outlet />
         </div>
@@ -62,18 +78,20 @@ export default function ClubLayout() {
   }
 
   return (
-    <div className={`admin-dashboard ${!sidebarCollapsed ? 'admin-dashboard--sidebar-open' : ''}`}>
+    <div
+      className={`admin-dashboard club-dashboard ${theme === 'dark' ? 'admin-dashboard--dark' : ''} ${
+        !sidebarCollapsed ? 'admin-dashboard--sidebar-open' : ''
+      }`}
+    >
       <aside className={`admin-sidebar ${sidebarCollapsed ? 'admin-sidebar--collapsed' : ''}`}>
         <div className="admin-sidebar__top">
           <div className="admin-sidebar__user">
-            <div className="admin-sidebar__avatar-wrap">
-              <img src={companyLogoUrl || logoUrl} alt="" className="admin-sidebar__avatar" />
-            </div>
+            <BrandLogo src={companyLogoUrl} alt="Spin Club" className="admin-sidebar__brand-logo club-sidebar__brand-logo" />
             {!sidebarCollapsed && (
-              <>
+              <div className="club-sidebar__meta">
                 <span className="admin-sidebar__name">{displayName}</span>
                 <span className="admin-sidebar__role">Клуб</span>
-              </>
+              </div>
             )}
           </div>
           <button
@@ -102,14 +120,38 @@ export default function ClubLayout() {
             </NavLink>
           ))}
         </nav>
+
+        <div className="admin-sidebar__footer">
+          <div className="admin-theme-switch" role="group" aria-label="Переключатель темы">
+            <button
+              type="button"
+              className={`admin-theme-switch__btn ${theme === 'light' ? 'is-active' : ''}`}
+              onClick={() => setTheme('light')}
+              title="Светлая тема"
+              aria-label="Светлая тема"
+            >
+              <Sun size={16} />
+              {!sidebarCollapsed && <span>Light</span>}
+            </button>
+            <button
+              type="button"
+              className={`admin-theme-switch__btn ${theme === 'dark' ? 'is-active' : ''}`}
+              onClick={() => setTheme('dark')}
+              title="Тёмная тема"
+              aria-label="Тёмная тема"
+            >
+              <Moon size={16} />
+              {!sidebarCollapsed && <span>Dark</span>}
+            </button>
+          </div>
+        </div>
       </aside>
 
       <div className="admin-main">
         <header className="admin-topbar">
           <div className="admin-topbar__locations">
-            <span className="admin-topbar__location admin-topbar__location--plain">
-              Личный кабинет
-            </span>
+            <span className="club-topbar__eyebrow">Клубный кабинет</span>
+            <span className="admin-topbar__title">{currentPageTitle}</span>
           </div>
           <div className="admin-topbar__actions">
             <span className="admin-topbar__user-name">{displayName}</span>

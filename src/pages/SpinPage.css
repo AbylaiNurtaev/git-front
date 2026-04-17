@@ -168,6 +168,11 @@
   height: 44px;
 }
 
+.spin-header .header-logo.brand-logo {
+  height: auto;
+  font-size: 36px;
+}
+
 .spin-header h1 {
   color: var(--theme-primary);
   margin-bottom: 30px;

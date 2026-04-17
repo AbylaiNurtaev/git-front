@@ -28,6 +28,36 @@
   flex-wrap: wrap;
 }
 
+.dashboard-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1;
+}
+
+.dashboard-title-group__icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--theme-primary-rgb), 0.14);
+  color: var(--theme-primary, #00f6ff);
+  flex-shrink: 0;
+}
+
+.dashboard-title-group__icon svg,
+.empty-state__icon svg,
+.dashboard-search-input__icon,
+.dashboard-filter-label svg,
+.add-button svg,
+.edit-button svg,
+.delete-button svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .admin-search {
   padding: 10px 16px;
   background: rgba(26, 26, 46, 0.8);
@@ -60,6 +90,9 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   box-shadow: 0 4px 15px rgba(0, 246, 255, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .add-button:hover {
@@ -110,6 +143,10 @@
   padding: 60px;
   color: rgba(184, 184, 212, 0.5);
   font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .empty-state .hint {
@@ -117,6 +154,48 @@
   font-size: 13px;
   opacity: 0.7;
   margin-top: 5px;
+}
+
+.empty-state__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--theme-primary-rgb), 0.12);
+  color: var(--theme-primary, #00f6ff);
+}
+
+.dashboard-search-input {
+  position: relative;
+  min-width: 260px;
+  flex: 1;
+}
+
+.dashboard-search-input__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--admin-text-muted, rgba(184, 184, 212, 0.6));
+  pointer-events: none;
+}
+
+.dashboard-search-input .admin-search {
+  width: 100%;
+  padding-left: 40px;
+}
+
+.admin-dashboard .dashboard-search-input .admin-search {
+  padding-left: 40px;
+}
+
+.dashboard-filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
 }
 
 /* Clubs List */
@@ -873,9 +952,10 @@
 /* Фильтры для клубов */
 .admin-clubs-filters {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) 220px;
+  align-items: end;
+  gap: 14px;
   margin-bottom: 12px;
 }
 
@@ -885,7 +965,9 @@
 }
 
 .admin-clubs-city-filter {
+  width: 100%;
   max-width: 220px;
+  justify-self: end;
 }
 
 .admin-clubs-city-label {
@@ -894,6 +976,7 @@
   gap: 6px;
   font-size: 12px;
   color: var(--theme-text);
+  width: 100%;
 }
 
 .admin-clubs-city-select {
@@ -901,8 +984,13 @@
 }
 
 @media (max-width: 768px) {
+  .admin-clubs-filters {
+    grid-template-columns: 1fr;
+  }
+
   .admin-clubs-city-filter {
     max-width: 100%;
+    justify-self: stretch;
   }
 }
 
@@ -1397,10 +1485,10 @@
 .user-ban-label input,
 .user-ban-label textarea {
   padding: 10px 12px;
-  background: rgba(26, 26, 46, 0.8);
-  border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
-  border-radius: 10px;
-  color: var(--theme-text);
+  background: var(--modal-input-bg, rgba(26, 26, 46, 0.8));
+  border: 1px solid var(--modal-input-border, rgba(var(--theme-primary-rgb), 0.3));
+  border-radius: 12px;
+  color: var(--modal-text, var(--theme-text));
   font-size: 14px;
   resize: vertical;
 }
@@ -1408,7 +1496,8 @@
 .user-ban-label input:focus,
 .user-ban-label textarea:focus {
   outline: none;
-  border-color: rgba(var(--theme-primary-rgb), 0.6);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 4px rgba(var(--theme-primary-rgb), 0.1);
 }
 
 .user-ban-label textarea {
@@ -1461,7 +1550,7 @@
 }
 
 .admin-dashboard .add-button:hover {
-  background: #00dde6;
+  background: var(--admin-primary-dark);
   box-shadow: 0 6px 25px rgba(var(--admin-primary-rgb), 0.5);
 }
 
@@ -1544,7 +1633,7 @@
 }
 
 .admin-dashboard .edit-button:hover {
-  background: #00dde6;
+  background: var(--admin-primary-dark);
 }
 
 .admin-dashboard .users-table {
@@ -1609,7 +1698,7 @@
 }
 
 .admin-dashboard .ready-button:hover {
-  background: #00dde6;
+  background: var(--admin-primary-dark);
 }
 
 .admin-dashboard .ready-button .ready-button-icon {
@@ -1638,7 +1727,7 @@
 
 .admin-dashboard .confirm-button:hover,
 .admin-dashboard .issue-button:hover {
-  background: #00dde6;
+  background: var(--admin-primary-dark);
 }
 
 .admin-dashboard .club-settings-save {
@@ -1647,7 +1736,7 @@
 }
 
 .admin-dashboard .club-settings-save:hover:not(:disabled) {
-  background: #00dde6;
+  background: var(--admin-primary-dark);
 }
 
 .admin-dashboard .open-roulette-button {
@@ -1656,5 +1745,1410 @@
 }
 
 .admin-dashboard .open-roulette-button:hover {
-  background: #00dde6;
+  background: var(--admin-primary-dark);
+}
+
+.admin-overview-loader {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 72vh;
+  padding: 24px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.88));
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.admin-dashboard--dark .admin-overview-loader {
+  background: linear-gradient(145deg, rgba(20, 27, 39, 0.92), rgba(26, 36, 50, 0.88));
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+.admin-overview-loader__pulse {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  right: -90px;
+  top: -80px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(var(--admin-primary-rgb), 0.2), transparent 68%);
+  animation: adminPulse 2.8s ease-in-out infinite;
+}
+
+.admin-dashboard--dark .admin-overview-loader__pulse {
+  background: radial-gradient(circle, rgba(92, 167, 255, 0.26), transparent 72%);
+}
+
+.admin-overview-loader__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-overview-loader__chip,
+.admin-overview-loader__title,
+.admin-overview-loader__subtitle,
+.admin-overview-loader__card,
+.admin-overview-loader__panel {
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.14) 20%,
+    rgba(148, 163, 184, 0.28) 50%,
+    rgba(148, 163, 184, 0.14) 80%
+  );
+  background-size: 240% 100%;
+  animation: adminShimmer 1.6s linear infinite;
+}
+
+.admin-dashboard--dark .admin-overview-loader__chip,
+.admin-dashboard--dark .admin-overview-loader__title,
+.admin-dashboard--dark .admin-overview-loader__subtitle,
+.admin-dashboard--dark .admin-overview-loader__card,
+.admin-dashboard--dark .admin-overview-loader__panel {
+  background: linear-gradient(
+    90deg,
+    rgba(71, 85, 105, 0.36) 20%,
+    rgba(100, 116, 139, 0.54) 50%,
+    rgba(71, 85, 105, 0.36) 80%
+  );
+  background-size: 240% 100%;
+}
+
+.admin-overview-loader__chip {
+  width: 120px;
+  height: 24px;
+}
+
+.admin-overview-loader__title {
+  width: min(460px, 90%);
+  height: 40px;
+}
+
+.admin-overview-loader__subtitle {
+  width: min(620px, 95%);
+  height: 22px;
+}
+
+.admin-overview-loader__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-overview-loader__card {
+  height: 112px;
+}
+
+.admin-overview-loader__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 14px;
+}
+
+.admin-overview-loader__panel {
+  min-height: 320px;
+}
+
+@keyframes adminShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+@keyframes adminPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+
+  50% {
+    transform: scale(1.14);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-overview-loader__cards,
+  .admin-overview-loader__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-overview-loader__panel {
+    min-height: 210px;
+  }
+}
+
+/* ===== Admin Overview Refresh ===== */
+.admin-overview-page {
+  gap: 22px;
+}
+
+.admin-overview-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(360px, 0.8fr);
+  gap: 18px;
+}
+
+.admin-overview-hero__profile,
+.admin-overview-hero__stats,
+.overview-panel,
+.overview-summary-strip,
+.overview-city-card,
+.overview-empty-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.admin-overview-hero__profile {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 178px;
+  padding: 24px;
+  border-radius: 28px;
+}
+
+.admin-overview-hero__avatar {
+  width: 86px;
+  height: 86px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(47, 128, 255, 0.14), rgba(139, 92, 246, 0.14));
+  color: #2f80ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.admin-overview-hero__identity h1 {
+  margin: 4px 0 10px;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: #111827;
+}
+
+.admin-overview-hero__identity p {
+  margin: 0;
+  max-width: 640px;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.admin-overview-hero__eyebrow,
+.overview-panel__eyebrow {
+  display: inline-block;
+  color: #2f80ff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.admin-overview-hero__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 14px;
+  border-radius: 28px;
+}
+
+.overview-metric-card {
+  padding: 18px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(255, 255, 255, 0.75));
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.overview-metric-card--wide {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(47, 128, 255, 0.12), rgba(124, 92, 255, 0.08));
+}
+
+.overview-metric-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.overview-metric-card strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #111827;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.overview-metric-card p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.overview-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+  border-radius: 24px;
+}
+
+.overview-summary-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(248, 250, 252, 0.88);
+}
+
+.overview-summary-chip__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: rgba(47, 128, 255, 0.1);
+  color: #2f80ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.overview-summary-chip__label {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.overview-summary-chip__value {
+  margin-left: auto;
+  color: #111827;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.admin-overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 18px;
+}
+
+.overview-panel {
+  border-radius: 28px;
+  padding: 22px;
+}
+
+.overview-panel--chart,
+.overview-panel--clubs {
+  min-height: 420px;
+}
+
+.overview-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.overview-panel__header h2 {
+  margin: 6px 0 0;
+  color: #111827;
+  font-size: 24px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.overview-panel__icon {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.overview-period-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(47, 128, 255, 0.08);
+  color: #2f80ff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.overview-donut-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.overview-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.overview-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.overview-legend-item__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.overview-legend-item__label {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.overview-legend-item__value {
+  margin-left: auto;
+  color: #111827;
+  font-size: 16px;
+}
+
+.overview-table-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.overview-table-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 18px;
+  background: #f8fafc;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.overview-table-row:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.08);
+  background: #ffffff;
+}
+
+.overview-table-row:disabled {
+  cursor: default;
+}
+
+.overview-table-row__main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.overview-table-row__index {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: rgba(47, 128, 255, 0.1);
+  color: #2f80ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.overview-table-row strong {
+  display: block;
+  color: #111827;
+  font-size: 15px;
+}
+
+.overview-table-row p,
+.overview-table-row__meta span {
+  margin: 2px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.overview-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.overview-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.overview-filter-field span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.overview-filter-field input {
+  min-height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: #f8fafc;
+  padding: 0 14px;
+  color: #111827;
+}
+
+.overview-filter-button {
+  margin-top: 4px;
+  min-height: 46px;
+  border: none;
+  border-radius: 14px;
+  background: #2f80ff;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.overview-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.overview-mini-stat {
+  padding: 16px;
+  border-radius: 18px;
+  background: #f8fafc;
+}
+
+.overview-mini-stat span {
+  display: block;
+  margin-bottom: 8px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.overview-mini-stat strong {
+  color: #111827;
+  font-size: 30px;
+  letter-spacing: -0.04em;
+}
+
+.overview-city-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.overview-city-card {
+  padding: 20px;
+  border-radius: 24px;
+}
+
+.overview-city-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.overview-city-card__head h3 {
+  margin: 6px 0 0;
+  color: #111827;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.overview-city-card__spins {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(47, 128, 255, 0.08);
+  color: #2f80ff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.overview-city-card__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.overview-city-card__stats span {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.overview-city-card__stats strong {
+  color: #111827;
+}
+
+.overview-city-card__clubs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.overview-city-club {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 16px;
+  background: #f8fafc;
+  text-align: left;
+  cursor: pointer;
+}
+
+.overview-city-club strong {
+  display: block;
+  color: #111827;
+  font-size: 14px;
+}
+
+.overview-city-club p {
+  margin: 3px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.overview-city-club span {
+  color: #2f80ff;
+  font-weight: 800;
+}
+
+.overview-empty-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 24px;
+  border-radius: 24px;
+  color: #64748b;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.overview-empty-card--wide {
+  grid-column: 1 / -1;
+}
+
+.admin-user-detail-loader {
+  gap: 16px;
+}
+
+.admin-detail-loader__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--admin-surface) 92%, transparent);
+  border: 1px solid var(--admin-border);
+}
+
+.admin-detail-loader__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-detail-loader__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-detail-loader__card {
+  border-radius: 20px;
+  border: 1px solid var(--admin-border);
+}
+
+@media (max-width: 900px) {
+  .admin-detail-loader__top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-detail-loader__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-dashboard--dark .admin-overview-hero__profile,
+.admin-dashboard--dark .admin-overview-hero__stats,
+.admin-dashboard--dark .overview-panel,
+.admin-dashboard--dark .overview-summary-strip,
+.admin-dashboard--dark .overview-city-card,
+.admin-dashboard--dark .overview-empty-card {
+  background: rgba(20, 27, 39, 0.9);
+  border-color: rgba(148, 163, 184, 0.16);
+  box-shadow: 0 20px 42px rgba(2, 6, 23, 0.34);
+}
+
+.admin-dashboard--dark .admin-overview-hero__identity h1,
+.admin-dashboard--dark .overview-panel__header h2,
+.admin-dashboard--dark .overview-city-card__head h3,
+.admin-dashboard--dark .overview-table-row strong,
+.admin-dashboard--dark .overview-mini-stat strong,
+.admin-dashboard--dark .overview-city-card__stats strong,
+.admin-dashboard--dark .overview-city-club strong {
+  color: #e5ebf5;
+}
+
+.admin-dashboard--dark .admin-overview-hero__identity p,
+.admin-dashboard--dark .overview-summary-chip__label,
+.admin-dashboard--dark .overview-table-row p,
+.admin-dashboard--dark .overview-table-row__meta span,
+.admin-dashboard--dark .overview-filter-field span,
+.admin-dashboard--dark .overview-mini-stat span,
+.admin-dashboard--dark .overview-city-card__stats span,
+.admin-dashboard--dark .overview-city-club p,
+.admin-dashboard--dark .overview-empty-card {
+  color: #9ba8bc;
+}
+
+.admin-dashboard--dark .overview-metric-card,
+.admin-dashboard--dark .overview-summary-chip,
+.admin-dashboard--dark .overview-legend-item,
+.admin-dashboard--dark .overview-table-row,
+.admin-dashboard--dark .overview-filter-field input,
+.admin-dashboard--dark .overview-mini-stat,
+.admin-dashboard--dark .overview-city-card__stats span,
+.admin-dashboard--dark .overview-city-club {
+  background: #1a2432;
+  border-color: rgba(148, 163, 184, 0.15);
+}
+
+.admin-dashboard--dark .overview-metric-card strong,
+.admin-dashboard--dark .overview-summary-chip__value,
+.admin-dashboard--dark .overview-legend-item__value {
+  color: #e5ebf5;
+}
+
+.admin-dashboard--dark .overview-period-badge,
+.admin-dashboard--dark .overview-city-card__spins {
+  background: rgba(92, 167, 255, 0.16);
+  color: #5ca7ff;
+}
+
+.admin-dashboard--dark .overview-filter-button {
+  background: var(--admin-primary);
+}
+
+@media (max-width: 1280px) {
+  .admin-overview-hero,
+  .admin-overview-grid,
+  .overview-city-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .overview-summary-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-overview-hero__profile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-overview-hero__stats,
+  .overview-summary-strip,
+  .overview-filters,
+  .overview-mini-stats,
+  .overview-city-card__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .overview-panel,
+  .overview-city-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+}
+
+/* ===== Admin Subpages Refresh (Clubs/Users/Roulette) ===== */
+.admin-dashboard .admin-page:not(.admin-overview-page) {
+  gap: 18px;
+}
+
+.admin-dashboard .admin-page:not(.admin-overview-page) .tab-header {
+  margin-bottom: 0;
+  padding: 18px 20px;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--admin-surface) 92%, transparent);
+  border: 1px solid var(--admin-border);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+}
+
+.admin-dashboard .admin-page:not(.admin-overview-page) .tab-header h2 {
+  color: var(--admin-text);
+  font-size: 30px;
+  letter-spacing: -0.04em;
+}
+
+.admin-dashboard .admin-search-row,
+.admin-dashboard .admin-clubs-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--admin-surface) 90%, transparent);
+  border: 1px solid var(--admin-border);
+}
+
+.admin-dashboard .admin-clubs-filters {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) 220px;
+  align-items: end;
+  justify-content: start;
+  gap: 14px;
+}
+
+.admin-dashboard .admin-search,
+.admin-dashboard .admin-clubs-city-select {
+  min-height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-muted);
+  color: var(--admin-text);
+  padding: 0 14px;
+}
+
+.admin-dashboard .admin-search:focus,
+.admin-dashboard .admin-clubs-city-select:focus {
+  outline: none;
+  border-color: rgba(var(--admin-primary-rgb), 0.4);
+  box-shadow: 0 0 0 4px rgba(var(--admin-primary-rgb), 0.14);
+}
+
+.admin-dashboard .admin-clubs-city-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--admin-text-muted);
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  width: 100%;
+}
+
+.admin-dashboard .admin-clubs-city-filter {
+  width: 100%;
+  max-width: 220px;
+  justify-self: end;
+}
+
+.admin-dashboard .admin-clubs-search,
+.admin-dashboard .admin-clubs-city-select {
+  width: 100%;
+}
+
+.admin-dashboard .users-table-container {
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  background: color-mix(in srgb, var(--admin-surface) 92%, transparent);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
+}
+
+.admin-dashboard .users-table {
+  background: transparent;
+}
+
+.admin-dashboard .users-table thead {
+  background: rgba(var(--admin-primary-rgb), 0.09);
+  color: var(--admin-text);
+}
+
+.admin-dashboard .users-table th {
+  color: var(--admin-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-dashboard .users-table td {
+  color: var(--admin-text);
+  border-bottom: 1px solid var(--admin-border);
+  font-size: 14px;
+  background: transparent;
+}
+
+.admin-dashboard .users-table tbody tr:hover {
+  background: rgba(var(--admin-primary-rgb), 0.07);
+}
+
+.admin-dashboard .club-actions {
+  gap: 8px;
+}
+
+.admin-dashboard .edit-button,
+.admin-dashboard .delete-button {
+  min-height: 38px;
+  border-radius: 12px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.admin-dashboard .edit-button {
+  background: var(--admin-primary);
+  color: #fff;
+  border: none;
+  box-shadow: 0 10px 18px rgba(var(--admin-primary-rgb), 0.25);
+}
+
+.admin-dashboard .delete-button {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.24);
+}
+
+.admin-dashboard .delete-button:hover {
+  background: rgba(239, 68, 68, 0.16);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-prize-selection,
+.admin-dashboard .admin-roulette-page .roulette-config,
+.admin-dashboard .admin-roulette-page .roulette-ready-block,
+.admin-dashboard .admin-roulette-page .total-probability,
+.admin-dashboard .admin-roulette-page .roulette-info {
+  padding: 18px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--admin-surface) 92%, transparent);
+  border: 1px solid var(--admin-border);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-prize-selection h3,
+.admin-dashboard .admin-roulette-page .roulette-config h3 {
+  color: var(--admin-text);
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.admin-dashboard .admin-roulette-page .info-text,
+.admin-dashboard .admin-roulette-page .hint-text,
+.admin-dashboard .admin-roulette-page .roulette-ready-hint,
+.admin-dashboard .admin-roulette-page .prize-roulette-meta,
+.admin-dashboard .admin-roulette-page .prize-slot-index,
+.admin-dashboard .admin-roulette-page .roulette-toggle-label {
+  color: var(--admin-text-muted);
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-list {
+  gap: 10px;
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-row {
+  background: var(--admin-surface-muted);
+  border: 1px solid var(--admin-border);
+  border-radius: 16px;
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-row.in-roulette {
+  border-color: rgba(var(--admin-primary-rgb), 0.42);
+  background: rgba(var(--admin-primary-rgb), 0.1);
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-thumb {
+  background: color-mix(in srgb, var(--admin-surface) 84%, transparent);
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-info strong {
+  color: var(--admin-text);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-prize-delete-icon {
+  color: var(--admin-text-muted);
+  border-radius: 10px;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-prize-delete-icon:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.admin-dashboard .admin-roulette-page .slots-list {
+  gap: 14px;
+}
+
+.admin-dashboard .admin-roulette-page .slot-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--admin-surface-muted);
+  border: 1px solid var(--admin-border);
+}
+
+.admin-dashboard .admin-roulette-page .slot-card h4,
+.admin-dashboard .admin-roulette-page .slot-info p,
+.admin-dashboard .admin-roulette-page .total-probability p {
+  color: var(--admin-text);
+}
+
+.admin-dashboard .admin-roulette-page .slot-index-badge {
+  color: var(--admin-primary);
+  background: rgba(var(--admin-primary-rgb), 0.14);
+}
+
+.admin-dashboard .admin-roulette-page .total-probability .warning {
+  color: #ef4444;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-check-result {
+  background: var(--admin-surface-muted);
+  border: 1px solid var(--admin-border);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-check-result.has-errors {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.admin-dashboard .admin-page:not(.admin-overview-page) .empty-state {
+  border-radius: 22px;
+  border: 1px dashed var(--admin-border);
+  background: color-mix(in srgb, var(--admin-surface) 86%, transparent);
+  color: var(--admin-text-muted);
+  padding: 44px;
+}
+
+.admin-dashboard.admin-dashboard--dark .admin-page:not(.admin-overview-page) .tab-header,
+.admin-dashboard.admin-dashboard--dark .admin-search-row,
+.admin-dashboard.admin-dashboard--dark .admin-clubs-filters,
+.admin-dashboard.admin-dashboard--dark .users-table-container,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-prize-selection,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-config,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-ready-block,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .total-probability,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-info,
+.admin-dashboard.admin-dashboard--dark .admin-page:not(.admin-overview-page) .empty-state {
+  background: rgba(20, 27, 39, 0.9);
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+.admin-dashboard.admin-dashboard--dark .admin-search,
+.admin-dashboard.admin-dashboard--dark .admin-clubs-city-select,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .prize-roulette-row,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .slot-card,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-check-result {
+  background: #1a2432;
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+.admin-dashboard.admin-dashboard--dark .admin-page:not(.admin-overview-page) .tab-header h2,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-prize-selection h3,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-config h3,
+.admin-dashboard.admin-dashboard--dark .users-table td,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .prize-roulette-info strong,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .slot-card h4,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .slot-info p,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .total-probability p {
+  color: #e5ebf5;
+}
+
+.admin-dashboard.admin-dashboard--dark .users-table th,
+.admin-dashboard.admin-dashboard--dark .admin-clubs-city-label,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .info-text,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .hint-text,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-ready-hint,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .prize-roulette-meta,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .prize-slot-index,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-toggle-label,
+.admin-dashboard.admin-dashboard--dark .admin-page:not(.admin-overview-page) .empty-state {
+  color: #9ba8bc;
+}
+
+@media (max-width: 900px) {
+  .admin-dashboard .admin-page:not(.admin-overview-page) .tab-header {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .admin-dashboard .admin-page:not(.admin-overview-page) .tab-header h2 {
+    font-size: 24px;
+  }
+
+  .admin-dashboard .admin-search-row,
+  .admin-dashboard .admin-clubs-filters {
+    padding: 12px;
+  }
+
+  .admin-dashboard .admin-clubs-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard .admin-clubs-city-filter {
+    max-width: 100%;
+    justify-self: stretch;
+  }
+}
+
+/* ===== Roulette Redesign ===== */
+.admin-dashboard .admin-roulette-page {
+  --roulette-accent: #c88a3d;
+  --roulette-accent-rgb: 200, 138, 61;
+  --roulette-accent-strong: #a96d27;
+}
+
+.admin-dashboard .admin-roulette-page .tab-header {
+  margin-bottom: 4px;
+}
+
+.admin-dashboard .admin-roulette-page .add-button {
+  background: linear-gradient(135deg, #d8a45c, #b9782e);
+  color: #fffdf8;
+  box-shadow: 0 12px 26px rgba(169, 109, 39, 0.24);
+}
+
+.admin-dashboard .admin-roulette-page .add-button:hover {
+  background: linear-gradient(135deg, #cd9449, #a96d27);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
+  gap: 18px;
+  padding: 26px 28px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(var(--roulette-accent-rgb), 0.16), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--admin-surface) 92%, #fff7ed 8%), var(--admin-surface));
+  border: 1px solid rgba(var(--roulette-accent-rgb), 0.18);
+  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.08);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-hero__eyebrow {
+  color: var(--roulette-accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-hero__title {
+  margin: 0;
+  max-width: 760px;
+  color: var(--admin-text);
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1.08;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-info--hero {
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-info__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(var(--roulette-accent-rgb), 0.08);
+  border: 1px solid rgba(var(--roulette-accent-rgb), 0.12);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-info__item svg {
+  color: var(--roulette-accent);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-info__item .info-text {
+  margin: 0;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-hero__stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-hero__chip {
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(var(--roulette-accent-rgb), 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-hero__chip span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--admin-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-hero__chip strong {
+  color: var(--admin-text);
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-section-heading__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--roulette-accent-rgb), 0.12);
+  color: var(--roulette-accent);
+  flex-shrink: 0;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-prize-selection,
+.admin-dashboard .admin-roulette-page .roulette-config,
+.admin-dashboard .admin-roulette-page .roulette-ready-block,
+.admin-dashboard .admin-roulette-page .total-probability,
+.admin-dashboard .admin-roulette-page .roulette-info:not(.roulette-info--hero) {
+  background: color-mix(in srgb, var(--admin-surface) 94%, #f5efe4 6%);
+  border-color: rgba(var(--roulette-accent-rgb), 0.14);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-prize-selection h3,
+.admin-dashboard .admin-roulette-page .roulette-config h3 {
+  margin: 0;
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-list {
+  gap: 12px;
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-row {
+  background: color-mix(in srgb, var(--admin-surface-muted) 92%, #efe3d2 8%);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-row.in-roulette {
+  border-color: rgba(var(--roulette-accent-rgb), 0.36);
+  background:
+    linear-gradient(135deg, rgba(var(--roulette-accent-rgb), 0.12), rgba(var(--roulette-accent-rgb), 0.05)),
+    color-mix(in srgb, var(--admin-surface-muted) 92%, #efe3d2 8%);
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--admin-surface) 86%, #f3e7d6 14%);
+  border: 1px solid rgba(var(--roulette-accent-rgb), 0.12);
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-info strong {
+  font-size: 15px;
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-drag-handle {
+  color: var(--admin-text-muted);
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.admin-dashboard .admin-roulette-page .prize-roulette-drag-handle:hover {
+  color: var(--roulette-accent);
+  background: rgba(var(--roulette-accent-rgb), 0.1);
+}
+
+.admin-dashboard .admin-roulette-page .roulette-toggle input {
+  accent-color: var(--roulette-accent-strong);
+}
+
+.admin-dashboard .admin-roulette-page .edit-button.small,
+.admin-dashboard .admin-roulette-page .slot-actions .edit-button {
+  background: rgba(var(--roulette-accent-rgb), 0.12);
+  color: var(--roulette-accent-strong);
+  border: 1px solid rgba(var(--roulette-accent-rgb), 0.2);
+  box-shadow: none;
+}
+
+.admin-dashboard .admin-roulette-page .edit-button.small:hover,
+.admin-dashboard .admin-roulette-page .slot-actions .edit-button:hover {
+  background: rgba(var(--roulette-accent-rgb), 0.18);
+  border-color: rgba(var(--roulette-accent-rgb), 0.3);
+}
+
+.admin-dashboard .admin-roulette-page .slot-card {
+  padding: 20px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--admin-surface-muted) 92%, #efe3d2 8%);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.admin-dashboard .admin-roulette-page .slot-index-badge {
+  color: var(--roulette-accent-strong);
+  background: rgba(var(--roulette-accent-rgb), 0.14);
+}
+
+.admin-dashboard .admin-roulette-page .slot-info strong {
+  color: var(--roulette-accent-strong);
+}
+
+.admin-dashboard .admin-roulette-page .slot-prize-image {
+  height: 132px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(var(--roulette-accent-rgb), 0.12);
+}
+
+.admin-dashboard .admin-roulette-page .slot-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-dashboard .admin-roulette-page .roulette-check-result {
+  background: rgba(255, 251, 245, 0.7);
+  border: 1px solid rgba(var(--roulette-accent-rgb), 0.16);
+}
+
+.admin-dashboard .admin-roulette-page .ready-button {
+  background: linear-gradient(135deg, #d8a45c, #b9782e);
+  color: #fffdf8;
+}
+
+.admin-dashboard .admin-roulette-page .ready-button:hover {
+  background: linear-gradient(135deg, #cd9449, #a96d27);
+}
+
+.admin-dashboard .admin-roulette-page .ready-button .ready-button-icon {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fffdf8;
+}
+
+.admin-dashboard .admin-roulette-page .cancel-ready-button {
+  color: var(--admin-text);
+  border-color: rgba(148, 163, 184, 0.24);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.admin-dashboard .admin-roulette-page .cancel-ready-button:hover {
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page {
+  --roulette-accent: #e0a85f;
+  --roulette-accent-rgb: 224, 168, 95;
+  --roulette-accent-strong: #f0bd78;
+}
+
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-hero {
+  background:
+    radial-gradient(circle at top right, rgba(var(--roulette-accent-rgb), 0.16), transparent 32%),
+    linear-gradient(180deg, #131c29, #101722);
+  border-color: rgba(var(--roulette-accent-rgb), 0.14);
+}
+
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-hero__chip,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-info__item,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .cancel-ready-button,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .slot-prize-image {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(var(--roulette-accent-rgb), 0.14);
+}
+
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-prize-selection,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-config,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-ready-block,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .total-probability,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-info:not(.roulette-info--hero) {
+  background: rgba(20, 27, 39, 0.9);
+  border-color: rgba(var(--roulette-accent-rgb), 0.14);
+}
+
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .prize-roulette-row,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .slot-card,
+.admin-dashboard.admin-dashboard--dark .admin-roulette-page .roulette-check-result {
+  background: #1a2432;
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+@media (max-width: 900px) {
+  .admin-dashboard .admin-roulette-page .roulette-hero {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .admin-dashboard .admin-roulette-page .prize-roulette-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .admin-dashboard .admin-roulette-page .slot-actions {
+    flex-wrap: wrap;
+  }
 }

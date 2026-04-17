@@ -4,7 +4,7 @@ import ClubModal from '@/components/ClubModal';
 import PrizeModal from '@/components/PrizeModal';
 import UserModal from '@/components/UserModal';
 import type { Club, Player, Prize, RouletteSlot } from '@/types';
-import logoUrl from '@/assets/logo.png';
+import BrandLogo from '@/components/BrandLogo';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
       <div className="dashboard-container">
         <header className="dashboard-header">
           <div className="header-left">
-            <img src={logoUrl} alt="Infinity" className="header-logo" />
+            <BrandLogo alt="Spin Club" className="header-logo" />
             <h1>Панель администратора</h1>
           </div>
           <div className="header-actions">

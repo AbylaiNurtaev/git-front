@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Building2, MapPin, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import ClubModal from '@/components/ClubModal';
 import Skeleton from '@/components/Skeleton';
@@ -56,26 +57,40 @@ export default function AdminClubs() {
   }
 
   return (
-    <div className="admin-page">
+    <div className="admin-page admin-clubs-page">
       <div className="tab-header">
-        <h2>Управление клубами</h2>
+        <div className="dashboard-title-group">
+          <span className="dashboard-title-group__icon">
+            <Building2 size={18} />
+          </span>
+          <h2>Управление клубами</h2>
+        </div>
         <button className="add-button" onClick={() => {
           setSelectedClub(null);
           setClubModalOpen(true);
-        }}>+ Добавить клуб</button>
+        }}>
+          <Plus size={16} />
+          <span>Добавить клуб</span>
+        </button>
       </div>
       <div className="admin-search-row admin-clubs-filters">
-        <input
-          type="search"
-          className="admin-search admin-clubs-search"
-          placeholder="Поиск по названию..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        <div className="dashboard-search-input">
+          <Search size={16} className="dashboard-search-input__icon" />
+          <input
+            type="search"
+            className="admin-search admin-clubs-search"
+            placeholder="Поиск по названию..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         {cities.length > 0 && (
           <div className="admin-clubs-city-filter">
             <label className="admin-clubs-city-label">
-              Город
+              <span className="dashboard-filter-label">
+                <MapPin size={14} />
+                <span>Город</span>
+              </span>
               <select
                 className="admin-search admin-clubs-city-select"
                 value={selectedCity}
@@ -94,6 +109,7 @@ export default function AdminClubs() {
       </div>
       {clubs.length === 0 ? (
         <div className="empty-state">
+          <span className="empty-state__icon"><Building2 size={20} /></span>
           <p>Нет зарегистрированных клубов</p>
         </div>
       ) : (
@@ -137,7 +153,8 @@ export default function AdminClubs() {
                             setClubModalOpen(true);
                           }}
                         >
-                          Редактировать
+                          <Pencil size={14} />
+                          <span>Редактировать</span>
                         </button>
                         <button
                           className="delete-button"
@@ -148,7 +165,8 @@ export default function AdminClubs() {
                             }
                           }}
                         >
-                          Удалить
+                          <Trash2 size={14} />
+                          <span>Удалить</span>
                         </button>
                       </div>
                     </td>

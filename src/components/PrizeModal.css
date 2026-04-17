@@ -1,8 +1,7 @@
 .prize-modal-shell {
-  width: min(92vw, 1500px);
-  max-width: min(92vw, 1500px);
-  max-height: 92vh;
-  overflow: hidden;
+  width: min(84vw, 1500px);
+  max-width: min(84vw, 1500px);
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -21,7 +20,7 @@
 }
 
 .prize-modal-body {
-  overflow: hidden;
+  overflow: visible;
 }
 
 .prize-modal-form {
@@ -62,10 +61,10 @@
 
 .prize-media-card,
 .prize-smart-card {
-  background: rgba(10, 10, 15, 0.45);
-  border: 1px solid rgba(var(--theme-primary-rgb), 0.2);
-  border-radius: 14px;
-  padding: 10px;
+  background: var(--modal-soft, rgba(10, 10, 15, 0.45));
+  border: 1px solid var(--modal-border, rgba(var(--theme-primary-rgb), 0.2));
+  border-radius: 18px;
+  padding: 14px;
 }
 
 .prize-media-label {
@@ -73,7 +72,7 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: rgba(224, 224, 224, 0.9);
+  color: var(--modal-text, rgba(224, 224, 224, 0.9));
   font-weight: 700;
 }
 
@@ -81,10 +80,9 @@
   position: relative;
   border-radius: 12px;
   min-height: 132px;
-  max-height: 180px;
   overflow: hidden;
-  border: 1px solid rgba(var(--theme-primary-rgb), 0.28);
-  background: rgba(10, 10, 15, 0.75);
+  border: 1px solid var(--modal-border, rgba(var(--theme-primary-rgb), 0.28));
+  background: var(--modal-input-bg, var(--modal-soft, rgba(10, 10, 15, 0.75)));
 }
 
 .prize-media-preview img {
@@ -100,7 +98,7 @@
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: rgba(224, 224, 224, 0.65);
+  color: var(--modal-muted, rgba(224, 224, 224, 0.65));
 }
 
 .prize-media-edit {
@@ -113,7 +111,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 10, 15, 0.8);
+  background: var(--modal-bg, rgba(10, 10, 15, 0.8));
   border: 1px solid rgba(var(--theme-primary-rgb), 0.5);
   color: var(--theme-primary);
   font-size: 16px;
@@ -159,12 +157,12 @@
 .image-preview {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 100%;
   margin: 0 auto;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  border: 2px solid rgba(var(--theme-primary-rgb), 0.3);
-  background: rgba(10, 10, 15, 0.6);
+  border: 1px solid var(--modal-input-border, rgba(var(--theme-primary-rgb), 0.3));
+  background: var(--modal-input-bg, var(--modal-soft, rgba(10, 10, 15, 0.6)));
 }
 
 .image-preview img {
@@ -226,8 +224,8 @@
 
 .prize-modal-errors {
   padding: 12px 16px;
-  background: rgba(220, 53, 69, 0.12);
-  border: 1px solid rgba(220, 53, 69, 0.4);
+  background: rgba(220, 53, 69, 0.08);
+  border: 1px solid rgba(220, 53, 69, 0.28);
   border-radius: 10px;
   margin-bottom: 16px;
 }
@@ -245,18 +243,17 @@
 .form-hint {
   margin: 2px 0 0 0;
   font-size: 11px;
-  color: var(--theme-text);
+  color: var(--modal-muted, var(--theme-text));
 }
 
 @media (max-width: 768px) {
   .prize-modal-shell {
     width: 96vw;
     max-width: 96vw;
-    max-height: 95vh;
   }
 
   .prize-modal-body {
-    overflow-y: auto;
+    overflow: visible;
   }
 
   .prize-modal-form {

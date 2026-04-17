@@ -11,6 +11,44 @@
   letter-spacing: 2px;
 }
 
+.club-section-heading,
+.club-subsection-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1;
+}
+
+.club-section-heading h2,
+.club-subsection-heading h3 {
+  margin-bottom: 0;
+}
+
+.club-section-heading__icon,
+.club-subsection-heading__icon,
+.empty-state__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--theme-primary-rgb), 0.14);
+  color: var(--theme-primary);
+  flex-shrink: 0;
+}
+
+.club-section-heading__icon svg,
+.club-subsection-heading__icon svg,
+.empty-state__icon svg,
+.stat-card__icon svg,
+.club-search-input-wrap__icon,
+.player-modal-row dt svg,
+.player-modal-claims h4 svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 /* Overview */
 .overview-tab {
   display: flex;
@@ -40,6 +78,18 @@
     0 0 40px rgba(var(--theme-primary-rgb), 0.1);
 }
 
+.stat-card__icon {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 16px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--theme-primary-rgb), 0.16);
+  color: var(--theme-text);
+}
+
 .stat-card h3 {
   color: rgba(var(--theme-text-rgb), 0.85);
   font-size: 16px;
@@ -56,6 +106,39 @@
 }
 
 /* Скелетон обзора клуба */
+.club-overview-skeleton {
+  gap: 24px;
+}
+
+.club-overview-skeleton__hero {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.12), rgba(var(--theme-primary-dark-rgb), 0.06));
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.18);
+}
+
+.club-overview-skeleton__hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.club-overview-skeleton__hero-chip {
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.12);
+}
+
 .club-overview-skeleton .skeleton-title {
   margin-bottom: 4px;
 }
@@ -69,12 +152,51 @@
   justify-content: center;
 }
 
+.club-overview-skeleton__metric-kicker,
+.club-overview-skeleton__metric-note {
+  opacity: 0.8;
+}
+
 .stat-card-skeleton .skeleton-stat-label {
   margin: 0;
 }
 
 .stat-card-skeleton .skeleton-stat-value {
   margin: 0 auto;
+}
+
+.club-overview-skeleton__issued {
+  margin-top: 0;
+}
+
+.club-overview-skeleton__issued-head,
+.club-overview-skeleton__issued-search,
+.club-overview-skeleton__issued-row {
+  display: grid;
+  gap: 14px;
+  align-items: center;
+}
+
+.club-overview-skeleton__issued-head,
+.club-overview-skeleton__issued-search {
+  grid-template-columns: minmax(180px, 1fr) auto;
+}
+
+.club-overview-skeleton__issued-search {
+  margin: 18px 0;
+}
+
+.club-overview-skeleton__issued-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.club-overview-skeleton__issued-row {
+  grid-template-columns: 1.3fr 1fr 0.9fr 0.6fr;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(var(--theme-primary-rgb), 0.08);
 }
 
 .overview-issued-section {
@@ -137,11 +259,26 @@
   margin-bottom: 16px;
 }
 
-.issued-search-input {
+.club-search-input-wrap {
+  position: relative;
   flex: 1;
-  min-width: 200px;
+  min-width: 220px;
   max-width: 360px;
+}
+
+.club-search-input-wrap__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(var(--theme-text-rgb), 0.55);
+  pointer-events: none;
+}
+
+.issued-search-input {
+  width: 100%;
   padding: 10px 14px;
+  padding-left: 40px;
   background: rgba(var(--theme-primary-rgb), 0.1);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 10px;
@@ -187,6 +324,42 @@
   margin-top: 12px;
   font-size: 14px;
   color: rgba(184, 184, 212, 0.7);
+}
+
+.overview-issued-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  color: rgba(var(--theme-text-rgb), 0.88);
+}
+
+.overview-issued-loading__pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: var(--theme-primary);
+  box-shadow: 0 0 0 rgba(var(--theme-primary-rgb), 0.35);
+  animation: club-issued-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes club-issued-pulse {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(var(--theme-primary-rgb), 0.35);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(var(--theme-primary-rgb), 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(var(--theme-primary-rgb), 0);
+  }
 }
 
 .issued-pagination {
@@ -235,6 +408,28 @@
   color: #fff;
 }
 
+@media (max-width: 900px) {
+  .club-overview-skeleton__hero {
+    flex-direction: column;
+  }
+
+  .club-overview-skeleton__hero-chip {
+    min-width: 0;
+  }
+
+  .club-overview-skeleton__issued-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .club-overview-skeleton__issued-head,
+  .club-overview-skeleton__issued-search,
+  .club-overview-skeleton__issued-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Club QR top bar (logo + current spinner) */
 .club-qr-top-bar {
   display: flex;
@@ -258,6 +453,11 @@
   left: 50px;
   top: 50px;
   z-index: 10;
+}
+
+.club-qr-logo.brand-logo {
+  height: auto;
+  font-size: 64px;
 }
 
 .club-qr-current-spinner {
@@ -292,11 +492,14 @@
   flex-wrap: wrap;
 }
 
-.players-search {
-  flex: 1;
-  min-width: 220px;
+.players-search-input-wrap {
   max-width: 400px;
+}
+
+.players-search {
+  width: 100%;
   padding: 12px 16px;
+  padding-left: 40px;
   background: rgba(var(--theme-primary-rgb), 0.1);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.3);
   border-radius: 10px;
@@ -414,6 +617,10 @@
 
 .player-modal-row dt {
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.2;
   font-size: 13px;
   color: rgba(var(--theme-text-rgb), 0.7);
   text-transform: uppercase;
@@ -434,6 +641,10 @@
 
 .player-modal-claims h4 {
   margin: 0 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.2;
   font-size: 14px;
   color: var(--theme-text);
   text-transform: uppercase;
@@ -666,6 +877,52 @@
 .club-qr-page {
   position: relative;
   background: var(--qr-page-bg, var(--theme-bg));
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.club-qr-page::before,
+.club-qr-page::after {
+  content: "";
+  position: absolute;
+  inset: auto;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.club-qr-page::before {
+  top: -18vh;
+  left: -8vw;
+  width: 48vw;
+  height: 48vw;
+  min-width: 420px;
+  min-height: 420px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(0, 229, 255, 0.24) 0%, rgba(0, 229, 255, 0.09) 36%, transparent 72%);
+  filter: blur(18px);
+  opacity: 0.95;
+}
+
+.club-qr-page::after {
+  right: -12vw;
+  bottom: -20vh;
+  width: 56vw;
+  height: 56vw;
+  min-width: 480px;
+  min-height: 480px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.28) 0%, rgba(var(--theme-primary-rgb), 0.1) 34%, transparent 72%);
+  filter: blur(24px);
+  opacity: 0.9;
+}
+
+.club-qr-page-wrap {
+  background:
+    linear-gradient(180deg, rgba(4, 10, 20, 0.16) 0%, rgba(4, 10, 20, 0.06) 100%),
+    radial-gradient(circle at top center, rgba(255, 255, 255, 0.07), transparent 32%),
+    linear-gradient(135deg, color-mix(in srgb, var(--qr-page-bg, var(--theme-bg)) 86%, #08111e 14%) 0%, color-mix(in srgb, var(--qr-page-bg, var(--theme-bg)) 92%, #06101c 8%) 46%, color-mix(in srgb, var(--qr-page-bg, var(--theme-bg)) 84%, #030712 16%) 100%);
 }
 
 /* Фон внутри cs-roulette-container (изображение/видео) */
@@ -749,7 +1006,7 @@
   margin: 0;
   width: 100%;
   max-width: none;
-  background: var(--qr-spin-container-bg, var(--theme-bg));
+  background: transparent;
 }
 
 .club-qr-page .club-qr-roulette-section {
@@ -765,32 +1022,39 @@
   width: 100vw;
   max-width: none;
   height: 100%;
-  background: var(--qr-track-bg, rgba(var(--theme-primary-rgb), 0.05));
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
 }
 
 /* Карточки призов на странице QR — шире чем в высоту, без названия (400×240px) */
 .club-qr-page .cs-prize-item {
   width: 400px;
   height: 240px;
-  padding: 12px;
-  background: var(--qr-card-bg, rgba(var(--theme-primary-rgb), 0.08));
-  border-color: var(--qr-card-border, rgba(var(--theme-primary-rgb), 0.15));
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 .club-qr-page .cs-prize-inner {
   gap: 0;
   justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: transparent;
 }
 .club-qr-page .cs-prize-image {
   width: 100%;
   height: 100%;
   min-height: 0;
-  object-fit: contain;
+  object-fit: cover;
 }
 .club-qr-page .cs-prize-placeholder {
   width: 100%;
   height: 100%;
   min-height: 0;
   font-size: 64px;
+  background: transparent;
 }
 .club-qr-page .cs-prize-name {
   display: none;
@@ -1115,18 +1379,28 @@
   border-color: var(--theme-primary);
 }
 
-/* Кнопка выхода — маленькая иконка справа сверху */
-.club-qr-logout-btn {
+.club-qr-actions {
   position: absolute;
   top: 16px;
   right: 16px;
   z-index: 1001;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  max-width: min(640px, calc(100% - 32px));
+}
+
+/* Кнопка возврата в дашборд — справа сверху */
+.club-qr-logout-btn {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  width: 40px;
+  gap: 8px;
+  min-width: 40px;
   height: 40px;
-  padding: 0;
+  padding: 0 14px;
   background: var(--qr-fullscreen-btn-bg, rgba(var(--theme-primary-rgb), 0.25));
   color: var(--qr-fullscreen-btn-text, var(--theme-text));
   border: 1px solid
@@ -1143,34 +1417,46 @@
   border-color: var(--theme-primary);
 }
 
-/* Кнопка полноэкранного режима — слева от кнопки выхода */
+.club-qr-logout-btn span {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Кнопка полноэкранного режима — слева от кнопки возврата */
 .club-qr-fullscreen-btn {
-  position: absolute;
-  top: 16px;
-  right: 64px;
-  z-index: 1000;
   padding: 12px 24px;
-  background: var(--qr-fullscreen-btn-bg, rgba(var(--theme-primary-rgb), 0.25));
-  color: var(--qr-fullscreen-btn-text, var(--theme-text));
-  border: 1px solid
-    var(--qr-fullscreen-btn-border, rgba(var(--theme-primary-rgb), 0.5));
-  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #eff6ff;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 14px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition:
     background 0.2s,
-    border-color 0.2s;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    border-color 0.2s,
+    transform 0.2s;
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.28);
+  backdrop-filter: blur(12px);
 }
 
 .club-qr-fullscreen-btn:hover {
-  background: rgba(var(--theme-primary-rgb), 0.4);
-  border-color: var(--theme-primary);
+  background: rgba(30, 41, 59, 0.86);
+  border-color: rgba(96, 165, 250, 0.42);
+  transform: translateY(-1px);
 }
 
 .club-qr-test-win-btn {
-  right: 180px;
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.92), rgba(239, 68, 68, 0.92));
+  color: #fff7ed;
+  border: 1px solid rgba(254, 215, 170, 0.32);
+  box-shadow: 0 12px 28px rgba(124, 45, 18, 0.28);
+}
+
+.club-qr-test-win-btn:hover {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.96), rgba(220, 38, 38, 0.96));
+  border-color: rgba(255, 237, 213, 0.42);
 }
 
 /* QR в полноэкранном режиме — снизу справа */
@@ -1214,6 +1500,10 @@
   border: none;
   box-sizing: border-box;
   pointer-events: none;
+}
+
+.club-qr-page .cs-roulette-track::before {
+  content: none;
 }
 
 /* Верхняя стрелка — прямо над верхним краем карточек (cs-prize-item 240px по центру) */
@@ -1278,6 +1568,34 @@
 .club-qr-test-spin-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .club-qr-actions {
+    max-width: calc(100% - 32px);
+    gap: 10px;
+  }
+
+  .club-qr-fullscreen-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 720px) {
+  .club-qr-actions {
+    left: 16px;
+    right: 16px;
+    justify-content: flex-end;
+  }
+
+  .club-qr-logout-btn {
+    padding: 0 12px;
+  }
+
+  .club-qr-fullscreen-btn {
+    padding: 10px 14px;
+  }
 }
 
 /* Чат побед — внизу экрана, под рулеткой (не наезжает на ленту) */
@@ -1594,6 +1912,312 @@
   margin: 0 auto 20px;
   border: 3px solid rgba(var(--theme-primary-rgb), 0.5);
   box-shadow: 0 4px 15px rgba(var(--theme-primary-rgb), 0.3);
+}
+
+/* Modern club dashboard layer */
+.club-dashboard .club-page {
+  gap: 24px;
+}
+
+.club-dashboard .club-page h2 {
+  margin: 0;
+  color: var(--admin-text);
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.club-dashboard .overview-tab,
+.club-dashboard .players-tab,
+.club-dashboard .prizes-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.club-dashboard .stats-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.club-dashboard .stat-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 170px;
+  padding: 28px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(var(--admin-primary-rgb), 0.14), transparent 34%),
+    linear-gradient(180deg, color-mix(in srgb, var(--admin-card) 92%, white 8%), var(--admin-card));
+  border: 1px solid var(--admin-border);
+  box-shadow: var(--admin-shadow);
+  text-align: left;
+}
+
+.club-dashboard.admin-dashboard--dark .stat-card {
+  background:
+    radial-gradient(circle at top right, rgba(var(--admin-primary-rgb), 0.22), transparent 34%),
+    linear-gradient(180deg, #162030, #141b27);
+}
+
+.club-dashboard .stat-card h3 {
+  margin: 0 0 18px;
+  color: var(--admin-text-muted);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.club-dashboard .stat-value {
+  color: var(--admin-text);
+  font-size: clamp(38px, 4vw, 52px);
+  font-weight: 900;
+  line-height: 0.96;
+}
+
+.club-dashboard .overview-issued-section,
+.club-dashboard .players-table-wrap,
+.club-dashboard .empty-state,
+.club-dashboard .player-modal-claims,
+.club-dashboard .player-modal-info {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  box-shadow: var(--admin-shadow);
+}
+
+.club-dashboard .overview-issued-section {
+  margin-top: 0;
+  padding: 28px;
+  border-radius: 28px;
+}
+
+.club-dashboard .overview-issued-section h3 {
+  margin: 0 0 18px;
+  color: var(--admin-text);
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+.club-dashboard .club-subsection-heading {
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.club-dashboard .club-subsection-heading h3 {
+  margin: 0;
+}
+
+.club-dashboard .issued-search-wrap,
+.club-dashboard .players-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.club-dashboard .issued-search-input,
+.club-dashboard .players-search {
+  min-height: 50px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: var(--modal-input-bg);
+  border: 1px solid var(--modal-input-border);
+  color: var(--admin-text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.club-dashboard .club-search-input-wrap {
+  max-width: 420px;
+}
+
+.club-dashboard .club-search-input-wrap__icon {
+  left: 16px;
+}
+
+.club-dashboard .issued-search-input,
+.club-dashboard .players-search {
+  padding-left: 46px;
+}
+
+.club-dashboard .issued-search-input::placeholder,
+.club-dashboard .players-search::placeholder {
+  color: var(--modal-input-placeholder);
+}
+
+.club-dashboard .issued-search-input:focus,
+.club-dashboard .players-search:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 4px rgba(var(--admin-primary-rgb), 0.12);
+}
+
+.club-dashboard .issued-search-hint,
+.club-dashboard .players-search-hint,
+.club-dashboard .player-modal-claims-hint {
+  color: var(--admin-text-muted);
+}
+
+.club-dashboard .issued-claims-list {
+  gap: 10px;
+}
+
+.club-dashboard .issued-claims-list li {
+  padding: 16px 18px;
+  background: color-mix(in srgb, var(--admin-surface-muted) 92%, white 8%);
+  border: 1px solid var(--admin-border);
+  border-radius: 18px;
+  color: var(--admin-text);
+}
+
+.club-dashboard.admin-dashboard--dark .issued-claims-list li {
+  background: #182233;
+}
+
+.club-dashboard .issued-claims-list-with-name .issued-claims-header {
+  background: rgba(var(--admin-primary-rgb), 0.12);
+  color: var(--admin-text);
+}
+
+.club-dashboard .issued-prize-name,
+.club-dashboard .issued-prize-player,
+.club-dashboard .players-cell-fio,
+.club-dashboard .players-cell-phone,
+.club-dashboard .player-modal-row dd,
+.club-dashboard .player-modal-claim-name {
+  color: var(--admin-text);
+}
+
+.club-dashboard .issued-prize-date,
+.club-dashboard .player-modal-row dt,
+.club-dashboard .player-modal-claim-date {
+  color: var(--admin-text-muted);
+}
+
+.club-dashboard .issued-pagination-btn {
+  min-width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-card);
+  color: var(--admin-text);
+}
+
+.club-dashboard .issued-pagination-btn.active {
+  background: var(--admin-primary);
+  border-color: var(--admin-primary);
+}
+
+.club-dashboard .players-table-wrap {
+  border-radius: 28px;
+  overflow: hidden;
+}
+
+.club-dashboard .players-table {
+  font-size: 15px;
+}
+
+.club-dashboard .players-table thead {
+  background: color-mix(in srgb, var(--admin-surface-muted) 88%, white 12%);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.club-dashboard.admin-dashboard--dark .players-table thead {
+  background: #182233;
+}
+
+.club-dashboard .players-table th {
+  padding: 18px 20px;
+  color: var(--admin-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.club-dashboard .players-table td {
+  padding: 18px 20px;
+  color: var(--admin-text);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.club-dashboard .players-table tbody tr:hover {
+  background: rgba(var(--admin-primary-rgb), 0.06);
+}
+
+.club-dashboard .empty-state {
+  padding: 36px;
+  border-radius: 24px;
+}
+
+.club-dashboard .empty-state p,
+.club-dashboard .empty-state .hint {
+  color: var(--admin-text-muted);
+}
+
+.club-dashboard .player-modal {
+  gap: 20px;
+}
+
+.club-dashboard .player-modal-info {
+  padding: 22px;
+  border-radius: 20px;
+  gap: 14px;
+}
+
+.club-dashboard .player-modal-row {
+  grid-template-columns: 200px 1fr;
+}
+
+.club-dashboard .player-modal-claims {
+  padding: 22px;
+  border-radius: 20px;
+  border-top: 1px solid var(--admin-border);
+}
+
+.club-dashboard .player-modal-claims h4 {
+  margin: 0 0 14px;
+  color: var(--admin-text);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+.club-dashboard .player-modal-claims-list li {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--admin-surface-muted) 92%, white 8%);
+  border: 1px solid var(--admin-border);
+}
+
+.club-dashboard.admin-dashboard--dark .player-modal-claims-list li {
+  background: #182233;
+}
+
+.club-dashboard .club-qr-logo.brand-logo {
+  text-shadow: 0 12px 30px rgba(2, 6, 23, 0.22);
+}
+
+@media (max-width: 1180px) {
+  .club-dashboard .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .club-dashboard .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .club-dashboard .overview-issued-section,
+  .club-dashboard .players-table-wrap,
+  .club-dashboard .empty-state {
+    border-radius: 22px;
+  }
+
+  .club-dashboard .player-modal-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
 }
 
 /* Пагинация */

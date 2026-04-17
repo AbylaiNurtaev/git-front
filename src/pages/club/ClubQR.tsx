@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
-import { LogOut } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { apiService } from '@/services/api';
 import { getSocketUrl } from '@/config/api';
 import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
-import logoUrl from '@/assets/logo.png';
+import BrandLogo from '@/components/BrandLogo';
 import { useQRPageTheme } from '@/hooks/useQRPageTheme';
 import { qrThemeToCssVars } from '@/constants/qrTheme';
 import { DEFAULT_QR_PAGE_THEME } from '@/constants/qrTheme';
@@ -110,7 +111,8 @@ interface SpinPayload {
 }
 
 export default function ClubQR() {
-  const { currentUser, fetchClubData, players, fetchClubPlayers, logout, companyLogoUrl } = useStore();
+  const { currentUser, fetchClubData, players, fetchClubPlayers, companyLogoUrl } = useStore();
+  const navigate = useNavigate();
   const club = currentUser as Club | null;
   const { theme: storedQRTheme } = useQRPageTheme();
   const qrTheme = club?.qrPageTheme ?? storedQRTheme ?? DEFAULT_QR_PAGE_THEME;
@@ -530,15 +532,16 @@ export default function ClubQR() {
       style={qrThemeToCssVars(qrTheme) as React.CSSProperties}
     >
       {!isFullscreen && (
-        <>
+        <div className="club-qr-actions">
           <button
             type="button"
             className="club-qr-logout-btn"
-            onClick={logout}
-            title="Выйти"
-            aria-label="Выйти"
+            onClick={() => navigate('/club')}
+            title="Назад в дашборд"
+            aria-label="Назад в дашборд"
           >
-            <LogOut size={20} />
+            <ChevronLeft size={18} />
+            <span>Назад</span>
           </button>
           <button
             type="button"
@@ -572,11 +575,11 @@ export default function ClubQR() {
               Показать выигрыш
             </button>
           )}
-        </>
+        </div>
       )}
       {roulettePrizes.length > 0 ? (
         <>
-            <img src={companyLogoUrl || logoUrl} alt="Infinity" className="club-qr-logo" />
+            <BrandLogo src={companyLogoUrl} alt="Spin Club" className="club-qr-logo" />
           <div className="spin-container club-qr-spin-container">
             <div className="spin-roulette-section club-qr-roulette-section">
               <div className="cs-roulette-container">

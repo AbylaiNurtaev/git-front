@@ -253,6 +253,11 @@
   height: 56px;
 }
 
+.club-settings-qr-preview-logo.brand-logo {
+  height: auto;
+  font-size: 42px;
+}
+
 .club-settings-qr-preview-spinner {
   display: flex;
   align-items: center;
@@ -387,6 +392,12 @@
   margin: 0;
 }
 
+.club-settings-qr-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
 .club-settings-qr-fields {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -517,4 +528,277 @@
   inset: 0;
   background: var(--theme-bg);
   pointer-events: none;
+}
+
+/* Modern settings layer */
+.club-dashboard .club-settings-page {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-bottom: 40px;
+  min-height: max-content;
+}
+
+.club-dashboard .club-settings-qr-section {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.club-dashboard .club-settings-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 18px;
+  padding: 28px 30px;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at top right, rgba(var(--admin-primary-rgb), 0.16), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--admin-card) 90%, white 10%), var(--admin-card));
+  border: 1px solid var(--admin-border);
+  box-shadow: var(--admin-shadow);
+}
+
+.club-dashboard .club-settings-hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.club-dashboard .club-settings-hero__eyebrow {
+  color: var(--admin-primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.club-dashboard .club-settings-hero__chips {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.club-dashboard .club-settings-hero__chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(var(--admin-primary-rgb), 0.08);
+  border: 1px solid rgba(var(--admin-primary-rgb), 0.12);
+  color: var(--admin-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.club-dashboard .club-settings-hero__chip svg {
+  color: var(--admin-primary);
+  flex-shrink: 0;
+}
+
+.club-dashboard .club-settings-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(340px, 0.95fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.club-dashboard .club-settings-preview-panel,
+.club-dashboard .club-settings-controls-column {
+  min-width: 0;
+}
+
+.club-dashboard .club-settings-controls-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.club-dashboard .club-settings-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.club-dashboard .club-settings-panel-head__title {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.club-dashboard .club-settings-panel-head__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--admin-primary-rgb), 0.12);
+  color: var(--admin-primary);
+  flex-shrink: 0;
+}
+
+.club-dashboard .club-settings-panel-head h3 {
+  margin: 0 0 4px;
+  color: var(--admin-text);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.club-dashboard .club-settings-panel-head p {
+  margin: 0;
+  color: var(--admin-text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.club-dashboard .club-settings-title {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--admin-text);
+}
+
+.club-dashboard .club-settings-desc {
+  margin: 0;
+  max-width: 760px;
+  color: var(--admin-text-muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.club-dashboard .club-settings-qr-preview-wrap,
+.club-dashboard .club-settings-qr-editor,
+.club-dashboard .club-settings-qr-background-section {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  box-shadow: var(--admin-shadow);
+}
+
+.club-dashboard .club-settings-qr-preview-wrap {
+  width: 100%;
+  max-width: 100%;
+  height: min(72vh, 760px);
+  border-radius: 30px;
+  margin-bottom: 0;
+}
+
+.club-dashboard .club-settings-qr-editor {
+  padding: 24px 26px 26px;
+  border-radius: 26px;
+}
+
+.club-dashboard .club-settings-qr-palette-title {
+  color: var(--admin-text);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.club-dashboard .club-settings-qr-fields {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin-bottom: 0;
+}
+
+.club-dashboard .club-settings-qr-field {
+  padding: 18px;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--admin-surface-muted) 92%, white 8%), var(--admin-surface-muted));
+  border: 1px solid var(--admin-border);
+  box-shadow: none;
+}
+
+.club-dashboard .club-settings-qr-field span,
+.club-dashboard .club-settings-qr-background-requirements,
+.club-dashboard .club-settings-qr-background-opacity-label {
+  color: var(--admin-text-muted);
+}
+
+.club-dashboard .theme-color-input {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--modal-input-border);
+  border-radius: 14px;
+  background: var(--modal-input-bg);
+}
+
+.club-dashboard .theme-text-input {
+  min-height: 46px;
+  padding: 12px 14px;
+  background: var(--modal-input-bg);
+  border: 1px solid var(--modal-input-border);
+  border-radius: 14px;
+  color: var(--admin-text);
+}
+
+.club-dashboard .theme-text-input:focus {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 4px rgba(var(--admin-primary-rgb), 0.12);
+}
+
+.club-dashboard .club-settings-save,
+.club-dashboard .club-settings-reset {
+  min-height: 46px;
+  padding: 12px 18px;
+  border-radius: 16px;
+}
+
+.club-dashboard .club-settings-reset {
+  background: var(--admin-surface-muted);
+  color: var(--admin-text);
+  border-color: var(--admin-border);
+}
+
+.club-dashboard.admin-dashboard--dark .club-settings-reset {
+  background: #182233;
+}
+
+.club-dashboard .club-settings-qr-background-section {
+  padding: 24px 26px 26px;
+  border-radius: 26px;
+}
+
+.club-dashboard .club-settings-qr-background-controls {
+  margin-bottom: 0;
+}
+
+.club-dashboard .club-settings-qr-background-preview-wrap {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 18px;
+  border-radius: 22px;
+  border: 1px solid var(--admin-border);
+}
+
+@media (max-width: 900px) {
+  .club-dashboard .club-settings-hero,
+  .club-dashboard .club-settings-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .club-dashboard .club-settings-qr-preview-wrap {
+    height: min(62vh, 620px);
+  }
+}
+
+@media (max-width: 640px) {
+  .club-dashboard .club-settings-hero,
+  .club-dashboard .club-settings-qr-editor,
+  .club-dashboard .club-settings-qr-background-section {
+    padding: 20px;
+  }
+
+  .club-dashboard .club-settings-panel-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

@@ -3,8 +3,7 @@ import { useStore } from '@/store/useStore';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import Skeleton from '@/components/Skeleton';
-import logoUrl from '@/assets/logo.png';
-import backImage from '@/assets/back.webp';
+import BrandLogo from '@/components/BrandLogo';
 import './AuthPage.css';
 
 export default function AuthPage() {
@@ -80,70 +79,112 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="auth-page" style={{ backgroundImage: `url(${backImage})` }}>
-      <div className="auth-container">
-        <div className="auth-header">
-          <img src={companyLogoUrl || logoUrl} alt="Infinity" className="header-logo" />
-          <div>
-            <h1 className="auth-title">Infinity</h1>
-            <p className="auth-subtitle">Игровая платформа</p>
-          </div>
-        </div>
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="phone">Номер телефона</label>
-            {isLoading ? (
-              <Skeleton height="48px" />
-            ) : (
-              <InputMask
-                id="phone"
-                mask="+7 (999) 999-99-99"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+7 (___) ___-__-__"
-                className="input"
-                disabled={isLoading}
-              />
-            )}
+    <div className="auth-page">
+      <div className="auth-orb auth-orb-one" />
+      <div className="auth-orb auth-orb-two" />
+      <div className="auth-grid">
+        <section className="auth-hero">
+          <div className="auth-badge">spinclub.kz</div>
+          <div className="auth-header">
+            <BrandLogo src={companyLogoUrl} alt="Spin Club" className="header-logo" />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="code">Код подтверждения</label>
-            {isLoading ? (
-              <Skeleton height="48px" />
-            ) : (
-              <InputMask
-                id="code"
-                mask="9999"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="0000"
-                className="input"
-                disabled={isLoading}
-              />
-            )}
+          <div className="auth-hero-copy">
+            <p className="auth-kicker">Новая механика вовлечения</p>
+            <h2 className="auth-hero-title">
+              Превращаем вход в клуб в яркий цифровой опыт с бонусами, рулеткой и CRM-логикой.
+            </h2>
+            <p className="auth-hero-text">
+              Единый кабинет для администратора клуба, быстрый вход по номеру телефона и удобная
+              точка контакта с игроком прямо внутри бренда клуба.
+            </p>
           </div>
 
-          {error && <div className="error-message">{error}</div>}
+          <div className="auth-metrics">
+            <div className="metric-item">
+              <span className="metric-value">01</span>
+              <span className="metric-text">Авторизация по номеру и коду</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-value">02</span>
+              <span className="metric-text">Доступ к клубному кабинету и розыгрышам</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-value">03</span>
+              <span className="metric-text">Готово для интеграции в бренд клуба</span>
+            </div>
+          </div>
+        </section>
 
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={isLoading || !phone || !code}
-          >
-            {isLoading ? (
-              <div className="button-skeleton">
-                <Skeleton height="20px" width="100px" />
-              </div>
-            ) : isRegister ? (
-              'Зарегистрироваться'
-            ) : (
-              'Войти'
-            )}
-          </button>
+        <section className="auth-container">
+          <div className="auth-panel-top">
+            <span className="auth-panel-eyebrow">Club Access</span>
+            <h3 className="auth-panel-title">Вход в кабинет</h3>
+            <p className="auth-panel-description">
+              Введите номер телефона и код подтверждения, чтобы открыть доступ к платформе SpinClub.
+            </p>
+          </div>
 
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="phone">Номер телефона</label>
+              {isLoading ? (
+                <Skeleton height="56px" />
+              ) : (
+                <InputMask
+                  id="phone"
+                  mask="+7 (999) 999-99-99"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+7 (___) ___-__-__"
+                  className="input"
+                  disabled={isLoading}
+                />
+              )}
+            </div>
 
-        </form>
+            <div className="form-group">
+              <label htmlFor="code">Код подтверждения</label>
+              {isLoading ? (
+                <Skeleton height="56px" />
+              ) : (
+                <InputMask
+                  id="code"
+                  mask="9999"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="0000"
+                  className="input"
+                  disabled={isLoading}
+                />
+              )}
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
+
+            <button
+              type="submit"
+              className="submit-button"
+              disabled={isLoading || !phone || !code}
+            >
+              {isLoading ? (
+                <div className="button-skeleton">
+                  <Skeleton height="20px" width="100px" />
+                </div>
+              ) : isRegister ? (
+                'Зарегистрироваться'
+              ) : (
+                'Продолжить'
+              )}
+            </button>
+          </form>
+
+          <div className="auth-panel-footer">
+            <div className="footer-chip">PC Clubs</div>
+            <div className="footer-chip">Rewards</div>
+            <div className="footer-chip">Spin Mechanics</div>
+          </div>
+        </section>
       </div>
     </div>
   );

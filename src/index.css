@@ -16,8 +16,12 @@
   height: 40px;
   width: auto;
   display: block;
-  object-fit: contain;
   flex-shrink: 0;
+}
+
+.header-logo.brand-logo {
+  height: auto;
+  font-size: 34px;
 }
 
 /* Группа «логотип + заголовок» слева в dashboard-header */
@@ -87,28 +91,24 @@ code {
 
 /* Скроллбар в темном стиле */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--theme-bg);
+  background: rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    var(--theme-primary) 0%,
-    var(--theme-primary-dark) 100%
-  );
-  border-radius: 4px;
+  background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    var(--theme-accent) 0%,
-    var(--theme-primary) 100%
-  );
+  background: linear-gradient(180deg, #64748b 0%, #475569 100%);
+  background-clip: content-box;
 }
 
 /* Мобильная адаптация */

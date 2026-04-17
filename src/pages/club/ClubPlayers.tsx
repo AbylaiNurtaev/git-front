@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { Gift, Phone, Search, UserRound, Users } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import Skeleton from '@/components/Skeleton';
 import Modal from '@/components/Modal';
@@ -76,33 +77,38 @@ export default function ClubPlayers() {
   return (
     <div className="club-page">
       <div className="players-tab">
-        <h2>Игроки Infinity</h2>
         {!club ? (
           <div className="empty-state">
+            <span className="empty-state__icon"><Users size={20} /></span>
             <p>Клуб не найден</p>
           </div>
         ) : players.length === 0 ? (
           <div className="empty-state">
+            <span className="empty-state__icon"><Users size={20} /></span>
             <p>Нет зарегистрированных игроков</p>
             <p className="hint">Игроки появятся после привязки к клубу или прокрутки рулетки</p>
           </div>
         ) : (
           <>
             <div className="players-search-wrap">
-              <input
-                type="search"
-                placeholder="Поиск по ФИО, телефону..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="players-search"
-                aria-label="Поиск игроков"
-              />
+              <div className="club-search-input-wrap players-search-input-wrap">
+                <Search size={16} className="club-search-input-wrap__icon" />
+                <input
+                  type="search"
+                  placeholder="Поиск по ФИО, телефону..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="players-search"
+                  aria-label="Поиск игроков"
+                />
+              </div>
               <span className="players-search-hint">
                 {filteredPlayers.length} из {players.length}
               </span>
             </div>
             {filteredPlayers.length === 0 ? (
               <div className="empty-state empty-state-small">
+                <span className="empty-state__icon"><Search size={18} /></span>
                 <p>{search.trim() ? `Ничего не найдено по запросу «${search.trim()}»` : 'Нет игроков'}</p>
               </div>
             ) : (
@@ -155,25 +161,25 @@ export default function ClubPlayers() {
           <div className="player-modal">
             <dl className="player-modal-info">
               <div className="player-modal-row">
-                <dt>ФИО</dt>
+                <dt><UserRound size={14} /> ФИО</dt>
                 <dd>{selectedPlayer.name?.trim() || '—'}</dd>
               </div>
               <div className="player-modal-row">
-                <dt>Телефон</dt>
+                <dt><Phone size={14} /> Телефон</dt>
                 <dd>{selectedPlayer.phone ? `+${String(selectedPlayer.phone).replace(/^\+/, '')}` : '—'}</dd>
               </div>
               <div className="player-modal-row">
-                <dt>Баланс</dt>
+                <dt><Gift size={14} /> Баланс</dt>
                 <dd>{Number(selectedPlayer.balance) ?? 0} баллов</dd>
               </div>
               <div className="player-modal-row">
-                <dt>Выиграно призов в клубе</dt>
+                <dt><Gift size={14} /> Выиграно призов в клубе</dt>
                 <dd>{prizeCountByUserId[String(selectedPlayer.id)] ?? 0}</dd>
               </div>
             </dl>
             {selectedPlayerClaims.length > 0 && (
               <div className="player-modal-claims">
-                <h4>Выигранные призы</h4>
+                <h4><Gift size={14} /> Выигранные призы</h4>
                 <ul className="player-modal-claims-list">
                   {selectedPlayerClaims.map((claim) => (
                     <li key={claim._id || claim.id}>

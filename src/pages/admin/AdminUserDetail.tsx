@@ -68,7 +68,22 @@ export default function AdminUserDetail() {
   }, [user]);
 
   if (loading) {
-    return <Skeleton />;
+    return (
+      <div className="admin-page admin-user-detail-loader">
+        <div className="admin-detail-loader__top">
+          <Skeleton height="44px" width="220px" />
+          <div className="admin-detail-loader__actions">
+            <Skeleton height="40px" width="140px" />
+            <Skeleton height="40px" width="120px" />
+          </div>
+        </div>
+        <div className="admin-detail-loader__grid">
+          <Skeleton className="admin-detail-loader__card" height="220px" />
+          <Skeleton className="admin-detail-loader__card" height="220px" />
+        </div>
+        <Skeleton className="admin-detail-loader__card" height="280px" />
+      </div>
+    );
   }
 
   if (error || !user) {

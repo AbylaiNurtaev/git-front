@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import type { Player } from '@/types';
-import logoUrl from '@/assets/logo.png';
+import BrandLogo from '@/components/BrandLogo';
 import './PlayerDashboard.css';
 
 export default function PlayerDashboard() {
@@ -26,7 +26,7 @@ export default function PlayerDashboard() {
       <div className="dashboard-container">
         <header className="dashboard-header">
           <div className="header-left">
-            <img src={logoUrl} alt="Infinity" className="header-logo" />
+            <BrandLogo alt="Spin Club" className="header-logo" />
             <h1>Личный кабинет игрока</h1>
           </div>
           <div className="header-actions">

@@ -5,7 +5,7 @@ import { apiService } from '@/services/api';
 import { transformPrize } from '@/utils/transformers';
 import { useClubTheme } from '@/hooks/useClubTheme';
 import type { Club, Player, Prize } from '@/types';
-import logoUrl from '@/assets/logo.png';
+import BrandLogo from '@/components/BrandLogo';
 import './SpinPage.css';
 import './club/ClubPages.css';
 import './ClubRoulettePage.css';
@@ -537,7 +537,7 @@ export default function SpinPage() {
 
             <div className="spin-header">
               <div className="header-left">
-                <img src={logoUrl} alt="Infinity" className="header-logo" />
+                <BrandLogo alt="Spin Club" className="header-logo" />
                 <h1>Рулетка призов</h1>
               </div>
               <div className="balance-info">

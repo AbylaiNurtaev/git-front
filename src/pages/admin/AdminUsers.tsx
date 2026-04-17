@@ -34,7 +34,7 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="admin-page">
+    <div className="admin-page admin-users-page">
       <div className="tab-header">
         <h2>Управление игроками</h2>
       </div>

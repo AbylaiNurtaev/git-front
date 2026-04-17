@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment } from 'react';
-import { Trash2, GripVertical } from 'lucide-react';
+import { Dices, GripVertical, Layers3, Sparkles, Target, Trash2 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import PrizeModal from '@/components/PrizeModal';
 import Skeleton from '@/components/Skeleton';
@@ -201,9 +201,14 @@ export default function AdminRoulette() {
   }
 
   return (
-    <div className="admin-page">
+    <div className="admin-page admin-roulette-page">
       <div className="tab-header">
-        <h2>Настройка рулетки</h2>
+        <div className="dashboard-title-group">
+          <span className="dashboard-title-group__icon">
+            <Dices size={18} />
+          </span>
+          <h2>Настройка рулетки</h2>
+        </div>
         <button
           type="button"
           className="add-button"
@@ -214,19 +219,47 @@ export default function AdminRoulette() {
         >
           + Создать приз
         </button>
-        <div className="roulette-info">
-          <p className="info-text">
-            Выберите, какие призы участвуют в рулетке. Только призы с включённым «В рулетке» выпадают при прокрутке.
-          </p>
-          <p className="info-text">
-            <strong>Вероятности:</strong> считаются только по выбранным призам. Сумма может быть меньше 100% — тогда выбор пропорционален вероятностям.
-          </p>
+      </div>
+
+      <div className="roulette-hero">
+        <div className="roulette-hero__copy">
+          <span className="roulette-hero__eyebrow">Управление механикой</span>
+          <p className="roulette-hero__title">Соберите понятную, аккуратную и предсказуемую логику выпадения призов.</p>
+          <div className="roulette-info roulette-info--hero">
+            <div className="roulette-info__item">
+              <Sparkles size={16} />
+              <p className="info-text">В рулетку попадают только призы с включённым переключателем.</p>
+            </div>
+            <div className="roulette-info__item">
+              <Target size={16} />
+              <p className="info-text"><strong>Вероятности</strong> считаются только по активным призам и работают пропорционально.</p>
+            </div>
+          </div>
+        </div>
+        <div className="roulette-hero__stats">
+          <div className="roulette-hero__chip">
+            <span>Всего призов</span>
+            <strong>{prizes.length}</strong>
+          </div>
+          <div className="roulette-hero__chip">
+            <span>Активно в рулетке</span>
+            <strong>{activePrizes.length}</strong>
+          </div>
+          <div className="roulette-hero__chip">
+            <span>Текущих слотов</span>
+            <strong>{displaySlots.length}</strong>
+          </div>
         </div>
       </div>
 
       {/* Секция: выбор призов для рулетки */}
       <div className="roulette-prize-selection">
-        <h3>Все призы — участие в рулетке</h3>
+        <div className="roulette-section-heading">
+          <span className="roulette-section-heading__icon">
+            <Sparkles size={16} />
+          </span>
+          <h3>Все призы и участие в рулетке</h3>
+        </div>
         {prizes.length > 0 && (
           <p className="info-text roulette-drag-hint">Перетащите приз за иконку ⋮⋮, чтобы изменить порядок (слоты).</p>
         )}
@@ -363,7 +396,12 @@ export default function AdminRoulette() {
       </div>
 
       <div className="roulette-config">
-        <h3>Сейчас в рулетке ({displaySlots.length})</h3>
+        <div className="roulette-section-heading">
+          <span className="roulette-section-heading__icon">
+            <Layers3 size={16} />
+          </span>
+          <h3>Сейчас в рулетке ({displaySlots.length})</h3>
+        </div>
         {displaySlots.length === 0 ? (
           <div className="empty-state">
             <p>Нет призов в рулетке</p>

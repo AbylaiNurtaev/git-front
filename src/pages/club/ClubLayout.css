@@ -1,16 +1,8 @@
-/* Один вертикальный скролл: блокируем скролл у html/body, скроллит только .admin-content */
+/* Для dashboard-страниц клуба возвращаем обычный скролл документа */
 html.club-layout-active,
 body.club-layout-active {
-  overflow: hidden;
-  height: 100vh;
-  /* Полностью скрываем скроллбар у документа, чтобы не было второго ползунка */
-  -ms-overflow-style: none; /* IE и Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-html.club-layout-active::-webkit-scrollbar,
-body.club-layout-active::-webkit-scrollbar {
-  display: none;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* «Личный кабинет» в шапке — просто надпись, без вида кнопки */
@@ -85,14 +77,14 @@ body.club-layout-active::-webkit-scrollbar {
   color: var(--admin-text);
 }
 
-/* Один вертикальный скролл: только в .admin-content, без второго ползунка у body */
+/* Контент клуба растягивается естественно, а страницу скроллит документ */
 .admin-dashboard .admin-main {
   min-height: 0;
 }
 
 .admin-dashboard .admin-content {
   min-width: 0;
-  min-height: 0;
+  min-height: calc(100vh - 85px);
   overflow-x: hidden;
 }
 
@@ -130,5 +122,90 @@ body.club-layout-active::-webkit-scrollbar {
 
   .admin-dashboard .admin-content {
     padding: 12px;
+  }
+}
+
+.club-dashboard .admin-sidebar__user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.club-dashboard .club-sidebar__brand-logo {
+  font-size: 34px;
+  line-height: 1;
+  --brand-logo-gap: 0;
+}
+
+.club-dashboard .club-sidebar__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.club-dashboard .admin-sidebar__name {
+  color: var(--admin-text);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.club-dashboard .admin-sidebar__role {
+  color: var(--admin-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.club-dashboard .admin-topbar__locations {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.club-dashboard .club-topbar__eyebrow {
+  color: var(--admin-primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.club-dashboard .admin-content {
+  overflow-y: visible;
+  background:
+    radial-gradient(circle at top right, rgba(var(--admin-primary-rgb), 0.08), transparent 28%),
+    linear-gradient(180deg, color-mix(in srgb, var(--admin-bg) 92%, white 8%), var(--admin-bg));
+}
+
+.club-dashboard.admin-dashboard--dark .admin-content {
+  background:
+    radial-gradient(circle at top right, rgba(var(--admin-primary-rgb), 0.16), transparent 28%),
+    linear-gradient(180deg, #101724, #0d111a);
+}
+
+.club-dashboard .admin-content > * {
+  min-width: 0;
+}
+
+.club-dashboard .admin-sidebar__link {
+  border: 1px solid transparent;
+}
+
+.club-dashboard .admin-sidebar__link:hover {
+  border-color: rgba(var(--admin-primary-rgb), 0.14);
+}
+
+.club-dashboard .admin-sidebar__link--active {
+  background: linear-gradient(135deg, rgba(var(--admin-primary-rgb), 0.16), rgba(var(--admin-primary-rgb), 0.05));
+  border-color: rgba(var(--admin-primary-rgb), 0.18);
+}
+
+@media (max-width: 900px) {
+  .club-dashboard .admin-topbar__locations {
+    align-items: flex-start;
   }
 }
