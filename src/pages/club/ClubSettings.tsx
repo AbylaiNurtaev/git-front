@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Eye, ImagePlus, Palette, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { Eye, Palette } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import type { Club } from '@/types';
 import { useQRPageTheme } from '@/hooks/useQRPageTheme';
@@ -64,11 +64,6 @@ export default function ClubSettings() {
     }
   };
 
-  const handleBgOpacityChange = (value: number) => {
-    setBgOpacity(value);
-    setBgDirty(true);
-  };
-
   const handleSaveBg = async () => {
     if (!club) return;
     setBgSaving(true);
@@ -92,31 +87,98 @@ export default function ClubSettings() {
   return (
     <div className="club-settings-page">
       <section className="club-settings-qr-section">
-        <div className="club-settings-hero">
-          <div className="club-settings-hero__copy">
-            <span className="club-settings-hero__eyebrow">Студия оформления</span>
-            <h2 className="club-settings-title">Оформление страницы QR</h2>
-            <p className="club-settings-desc">
-              Настройте внешний вид страницы рулетки так, как её увидит игрок на большом экране: цвета интерфейса, фон, акценты и результат выигрыша.
-            </p>
-          </div>
-          <div className="club-settings-hero__chips">
-            <div className="club-settings-hero__chip">
-              <Palette size={16} />
-              <span>{Object.keys(QR_PAGE_THEME_LABELS).length} настраиваемых цветов</span>
-            </div>
-            <div className="club-settings-hero__chip">
-              <ImagePlus size={16} />
-              <span>Фон: PNG, GIF, MP4, WebM</span>
-            </div>
-            <div className="club-settings-hero__chip">
-              <Sparkles size={16} />
-              <span>Изменения сохраняются для /club/qr</span>
-            </div>
-          </div>
-        </div>
-
         <div className="club-settings-workspace">
+          <div className="club-settings-controls-column">
+            <div className="club-settings-qr-editor">
+              <div className="club-settings-panel-head">
+                <div className="club-settings-panel-head__title">
+                  <span className="club-settings-panel-head__icon">
+                    <Palette size={16} />
+                  </span>
+                  <div>
+                    <h3 className="club-settings-qr-palette-title">Палитра элементов</h3>
+                    <p>Выберите цвета для каждого элемента интерфейса QR-экрана</p>
+                  </div>
+                </div>
+                <div className="club-settings-qr-palette-actions">
+                  {qrDirty && (
+                    <button
+                      type="button"
+                      className="club-settings-save club-settings-qr-save"
+                      onClick={async () => {
+                        if (!club) return;
+                        setQrSaving(true);
+                        setError(null);
+                        const ok = await updateClubMe({ qrPageTheme: qrTheme });
+                        if (ok) {
+                          setQrDirty(false);
+                        }
+                        setQrSaving(false);
+                      }}
+                      disabled={qrSaving}
+                    >
+                      {qrSaving ? 'Сохранение…' : 'Сохранить'}
+                    </button>
+                  )}
+                  <button type="button" className="club-settings-reset" onClick={() => { resetQRToDefault(); setQrDirty(true); }}>
+                    Сбросить
+                  </button>
+                  {/*
+                  <input
+                    ref={bgInputRef}
+                    type="file"
+                    accept={QR_BACKGROUND_ACCEPT}
+                    onChange={handleBgFileChange}
+                    disabled={bgUploading}
+                    className="club-settings-qr-background-input"
+                    aria-label="Изменить фон"
+                  />
+                  <button
+                    type="button"
+                    className="club-settings-save"
+                    onClick={() => bgInputRef.current?.click()}
+                    disabled={bgUploading}
+                  >
+                    {bgUploading ? 'Загрузка…' : 'Изменить фон'}
+                  </button>
+                  {bgUrl ? (
+                    <button type="button" className="club-settings-reset" onClick={handleRemoveBg}>
+                      Удалить фон
+                    </button>
+                  ) : null}
+                  {bgDirty && (
+                    <button type="button" className="club-settings-save" onClick={handleSaveBg} disabled={bgSaving}>
+                      {bgSaving ? 'Сохранение…' : 'Сохранить фон'}
+                    </button>
+                  )}
+                  */}
+                </div>
+              </div>
+              <div className="club-settings-qr-fields">
+                {(Object.keys(QR_PAGE_THEME_LABELS) as (keyof typeof QR_PAGE_THEME_LABELS)[]).map((key) => (
+                  <label key={key} className="theme-field club-settings-qr-field">
+                    <span>{QR_PAGE_THEME_LABELS[key]}</span>
+                    <div className="theme-input-wrap">
+                      <input
+                        type="color"
+                        value={typeof qrTheme[key] === 'string' && /^#[0-9A-Fa-f]{6}$/.test(qrTheme[key] as string) ? (qrTheme[key] as string) : '#ffffff'}
+                        onChange={(e) => { updateQRColor(key, e.target.value); setQrDirty(true); }}
+                        className="theme-color-input"
+                      />
+                      <input
+                        type="text"
+                        value={qrTheme[key] as string}
+                        onChange={(e) => { updateQRColor(key, e.target.value); setQrDirty(true); }}
+                        className="theme-text-input"
+                        placeholder="#ffffff"
+                      />
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
           <div className="club-settings-preview-panel">
             <div className="club-settings-panel-head">
               <div className="club-settings-panel-head__title">
@@ -127,6 +189,44 @@ export default function ClubSettings() {
                   <h3>Живое превью</h3>
                   <p>Как будет выглядеть экран рулетки после сохранения</p>
                 </div>
+              </div>
+              <div className="club-settings-panel-head__actions">
+                <input
+                  ref={bgInputRef}
+                  type="file"
+                  accept={QR_BACKGROUND_ACCEPT}
+                  onChange={handleBgFileChange}
+                  disabled={bgUploading}
+                  className="club-settings-qr-background-input"
+                  aria-label="Изменить фон"
+                />
+                <button
+                  type="button"
+                  className="club-settings-reset club-settings-preview-action"
+                  onClick={() => bgInputRef.current?.click()}
+                  disabled={bgUploading}
+                >
+                  {bgUploading ? 'Загрузка…' : 'Изменить фон'}
+                </button>
+                {bgUrl ? (
+                  <button
+                    type="button"
+                    className="club-settings-reset club-settings-preview-action"
+                    onClick={handleRemoveBg}
+                  >
+                    Удалить фон
+                  </button>
+                ) : null}
+                {bgDirty ? (
+                  <button
+                    type="button"
+                    className="club-settings-save club-settings-preview-action"
+                    onClick={handleSaveBg}
+                    disabled={bgSaving}
+                  >
+                    {bgSaving ? 'Сохранение…' : 'Сохранить фон'}
+                  </button>
+                ) : null}
               </div>
             </div>
             <div
@@ -144,6 +244,30 @@ export default function ClubSettings() {
                   </div>
                 </div>
                 <div className="club-settings-qr-preview-page">
+                  {bgUrl ? (
+                    <>
+                      {/\.(mp4|webm)(\?.*)?$/i.test(bgUrl) ? (
+                        <video
+                          className="club-settings-qr-preview-bg-media"
+                          src={bgUrl}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                        />
+                      ) : (
+                        <img
+                          className="club-settings-qr-preview-bg-media"
+                          src={bgUrl}
+                          alt="Фон предпросмотра"
+                        />
+                      )}
+                      <div
+                        className="club-settings-qr-preview-bg-mask"
+                        style={{ opacity: Math.max(0, Math.min(1, 1 - bgOpacity)) }}
+                      />
+                    </>
+                  ) : null}
                   <button type="button" className="club-settings-qr-preview-fullscreen">
                     Полный экран
                   </button>
@@ -180,137 +304,6 @@ export default function ClubSettings() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="club-settings-controls-column">
-            <div className="club-settings-qr-editor">
-              <div className="club-settings-panel-head">
-                <div className="club-settings-panel-head__title">
-                  <span className="club-settings-panel-head__icon">
-                    <Palette size={16} />
-                  </span>
-                  <div>
-                    <h3 className="club-settings-qr-palette-title">Палитра элементов</h3>
-                    <p>Выберите цвета для каждого элемента интерфейса QR-экрана</p>
-                  </div>
-                </div>
-                <div className="club-settings-qr-palette-actions">
-                  {qrDirty && (
-                    <button
-                      type="button"
-                      className="club-settings-save club-settings-qr-save"
-                      onClick={async () => {
-                        if (!club) return;
-                        setQrSaving(true);
-                        setError(null);
-                        const ok = await updateClubMe({ qrPageTheme: qrTheme });
-                        if (ok) {
-                          setQrDirty(false);
-                        }
-                        setQrSaving(false);
-                      }}
-                      disabled={qrSaving}
-                    >
-                      {qrSaving ? 'Сохранение…' : 'Сохранить'}
-                    </button>
-                  )}
-                  <button type="button" className="club-settings-reset" onClick={() => { resetQRToDefault(); setQrDirty(true); }}>
-                    Сбросить
-                  </button>
-                </div>
-              </div>
-              <div className="club-settings-qr-fields">
-                {(Object.keys(QR_PAGE_THEME_LABELS) as (keyof typeof QR_PAGE_THEME_LABELS)[]).map((key) => (
-                  <label key={key} className="theme-field club-settings-qr-field">
-                    <span>{QR_PAGE_THEME_LABELS[key]}</span>
-                    <div className="theme-input-wrap">
-                      <input
-                        type="color"
-                        value={typeof qrTheme[key] === 'string' && /^#[0-9A-Fa-f]{6}$/.test(qrTheme[key] as string) ? (qrTheme[key] as string) : '#ffffff'}
-                        onChange={(e) => { updateQRColor(key, e.target.value); setQrDirty(true); }}
-                        className="theme-color-input"
-                      />
-                      <input
-                        type="text"
-                        value={qrTheme[key] as string}
-                        onChange={(e) => { updateQRColor(key, e.target.value); setQrDirty(true); }}
-                        className="theme-text-input"
-                        placeholder="#ffffff"
-                      />
-                    </div>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="club-settings-qr-background-section">
-              <div className="club-settings-panel-head">
-                <div className="club-settings-panel-head__title">
-                  <span className="club-settings-panel-head__icon">
-                    <SlidersHorizontal size={16} />
-                  </span>
-                  <div>
-                    <h3 className="club-settings-qr-palette-title">Фон и атмосфера</h3>
-                    <p>Загрузите изображение или видео и настройте его интенсивность</p>
-                  </div>
-                </div>
-              </div>
-              <p className="club-settings-qr-background-requirements">
-                Форматы: PNG, GIF, видео (MP4, WebM). Объём — не более {QR_BACKGROUND_MAX_SIZE_MB} МБ. Рекомендуемый размер — 1920×1080 px. Фон отображается внутри блока рулетки.
-              </p>
-              <div className="club-settings-qr-background-controls">
-                <input
-                  ref={bgInputRef}
-                  type="file"
-                  accept={QR_BACKGROUND_ACCEPT}
-                  onChange={handleBgFileChange}
-                  disabled={bgUploading}
-                  className="club-settings-qr-background-input"
-                  aria-label="Выбрать файл фона"
-                />
-                <button
-                  type="button"
-                  className="club-settings-save"
-                  onClick={() => bgInputRef.current?.click()}
-                  disabled={bgUploading}
-                >
-                  {bgUploading ? 'Загрузка…' : 'Выбрать файл'}
-                </button>
-                {bgUrl ? (
-                  <>
-                    <label className="club-settings-qr-background-opacity-label">
-                      <span>Непрозрачность фона: {Math.round(bgOpacity * 100)}%</span>
-                      <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        value={bgOpacity * 100}
-                        onChange={(e) => handleBgOpacityChange(Number(e.target.value) / 100)}
-                        className="club-settings-qr-background-opacity"
-                      />
-                    </label>
-                    <button type="button" className="club-settings-reset" onClick={handleRemoveBg}>
-                      Удалить фон
-                    </button>
-                  </>
-                ) : null}
-                {bgDirty && (
-                  <button type="button" className="club-settings-save" onClick={handleSaveBg} disabled={bgSaving}>
-                    {bgSaving ? 'Сохранение…' : 'Сохранить'}
-                  </button>
-                )}
-              </div>
-              {bgUrl && (
-                <div className="club-settings-qr-background-preview-wrap">
-                  {/\.(mp4|webm)$/i.test(bgUrl) ? (
-                    <video src={bgUrl} className="club-settings-qr-background-preview" muted loop playsInline autoPlay />
-                  ) : (
-                    <img src={bgUrl} alt="" className="club-settings-qr-background-preview" />
-                  )}
-                  <div className="club-settings-qr-background-preview-mask" style={{ opacity: 1 - bgOpacity }} />
-                </div>
-              )}
             </div>
           </div>
         </div>

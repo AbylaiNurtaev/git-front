@@ -104,6 +104,8 @@ export default function PrizeModal({
   const [smartshellGoodPreview, setSmartshellGoodPreview] = useState<SmartshellGood | null>(null);
   const [isSmartshellLoading, setIsSmartshellLoading] = useState(false);
   const [smartshellError, setSmartshellError] = useState<string | null>(null);
+  const effectiveBackgroundPreview =
+    backgroundImagePreview || (!removeBackgroundImage ? resolveImageUrl(prize?.backgroundImage) : null);
 
   useEffect(() => {
     if (type === 'product') setValue(1);
@@ -424,9 +426,15 @@ export default function PrizeModal({
             <p className="prize-media-label">Фон выигрыша</p>
             <input id="prize-background-image" type="file" accept={ACCEPT_IMAGE} onChange={handleBackgroundImageChange} style={{ display: 'none' }} />
             <div className="prize-media-preview">
-              {(backgroundImagePreview || (prize?.backgroundImage && !removeBackgroundImage))
-                ? <img src={backgroundImagePreview || resolveImageUrl(prize?.backgroundImage) || ''} alt="Фон" />
-                : <div className="prize-media-placeholder">Нет фона</div>}
+              {effectiveBackgroundPreview ? (
+                <img src={effectiveBackgroundPreview} alt="Фон" />
+              ) : (
+                <div className="prize-media-placeholder prize-media-placeholder--glow">
+                  <div className="prize-media-placeholder__glow" aria-hidden />
+                  <span className="prize-media-placeholder__title">Свечение по умолчанию</span>
+                  <span className="prize-media-placeholder__text">Будет использован стандартный фон выигрыша.</span>
+                </div>
+              )}
               <label htmlFor="prize-background-image" className="prize-media-edit" title="Изменить фон" aria-label="Изменить фон">
                 ✎
               </label>

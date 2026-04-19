@@ -460,6 +460,10 @@
   font-size: 64px;
 }
 
+.club-qr-logo.brand-logo .brand-logo__club {
+  color: #ffffff;
+}
+
 .club-qr-current-spinner {
   display: flex;
   align-items: center;
@@ -991,7 +995,7 @@
   .club-qr-page
   .spin-roulette-section
   .cs-roulette-container {
-  width: 100vw;
+  width: 100%;
   max-width: none;
 }
 
@@ -1010,16 +1014,16 @@
 }
 
 .club-qr-page .club-qr-roulette-section {
-  width: 100vw;
+  width: 100%;
   height: 70vh;
   min-height: 420px;
   margin: 0;
   flex-shrink: 0;
-  align-self: flex-start;
+  align-self: stretch;
 }
 
 .club-qr-page .club-qr-roulette-section .cs-roulette-container {
-  width: 100vw;
+  width: 100%;
   max-width: none;
   height: 100%;
   background: transparent;

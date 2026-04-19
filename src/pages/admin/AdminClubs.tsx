@@ -21,6 +21,7 @@ export default function AdminClubs() {
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const cities = useMemo(
     () =>
@@ -49,11 +50,70 @@ export default function AdminClubs() {
   }, [clubs, searchQuery, selectedCity]);
 
   useEffect(() => {
-    fetchClubs();
+    let isMounted = true;
+
+    const load = async () => {
+      try {
+        await fetchClubs();
+      } finally {
+        if (isMounted) {
+          setInitialLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
   }, [fetchClubs]);
 
-  if (isLoading && clubs.length === 0) {
-    return <Skeleton />;
+  if ((initialLoading || isLoading) && clubs.length === 0) {
+    return (
+      <div className="admin-page admin-clubs-page">
+        <div className="tab-header">
+          <Skeleton height="40px" width="320px" />
+          <Skeleton height="44px" width="170px" />
+        </div>
+
+        <div className="admin-search-row admin-clubs-filters">
+          <div className="dashboard-search-input">
+            <Skeleton height="48px" />
+          </div>
+          <div className="admin-clubs-city-filter">
+            <Skeleton height="48px" />
+          </div>
+        </div>
+
+        <div className="users-table-container users-table-container--loading">
+          <div className="users-table-skeleton">
+            <div className="users-table-skeleton__head users-table-skeleton__head--clubs">
+              <Skeleton height="14px" width="120px" />
+              <Skeleton height="14px" width="90px" />
+              <Skeleton height="14px" width="140px" />
+              <Skeleton height="14px" width="120px" />
+              <Skeleton height="14px" width="80px" />
+              <Skeleton height="14px" width="120px" />
+            </div>
+
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="users-table-skeleton__row users-table-skeleton__row--clubs">
+                <Skeleton height="18px" width="150px" />
+                <Skeleton height="18px" width="100px" />
+                <Skeleton height="18px" width="160px" />
+                <Skeleton height="18px" width="140px" />
+                <Skeleton height="18px" width="70px" />
+                <div className="users-table-skeleton__actions">
+                  <Skeleton height="36px" width="120px" />
+                  <Skeleton height="36px" width="96px" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

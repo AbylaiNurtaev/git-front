@@ -7,8 +7,7 @@ import {
   Settings,
   ChevronLeft,
   LogOut,
-  Moon,
-  Sun,
+  Palette,
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { useClubTheme } from '@/hooks/useClubTheme';
@@ -122,26 +121,29 @@ export default function ClubLayout() {
         </nav>
 
         <div className="admin-sidebar__footer">
-          <div className="admin-theme-switch" role="group" aria-label="Переключатель темы">
+          <div className="admin-theme-control" aria-label="Переключатель темы">
+            <div className="admin-theme-control__meta">
+              <span className="admin-theme-control__icon">
+                <Palette size={16} />
+              </span>
+              {!sidebarCollapsed && (
+                <span className="admin-theme-control__copy">
+                  <span className="admin-theme-control__label">Тема</span>
+                  <span className="admin-theme-control__value">
+                    {theme === 'dark' ? 'Темная' : 'Светлая'}
+                  </span>
+                </span>
+              )}
+            </div>
             <button
               type="button"
-              className={`admin-theme-switch__btn ${theme === 'light' ? 'is-active' : ''}`}
-              onClick={() => setTheme('light')}
-              title="Светлая тема"
-              aria-label="Светлая тема"
+              className={`admin-theme-toggle ${theme === 'dark' ? 'is-active' : ''}`}
+              onClick={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
+              title={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на темную тему'}
+              aria-label={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на темную тему'}
+              aria-pressed={theme === 'dark'}
             >
-              <Sun size={16} />
-              {!sidebarCollapsed && <span>Light</span>}
-            </button>
-            <button
-              type="button"
-              className={`admin-theme-switch__btn ${theme === 'dark' ? 'is-active' : ''}`}
-              onClick={() => setTheme('dark')}
-              title="Тёмная тема"
-              aria-label="Тёмная тема"
-            >
-              <Moon size={16} />
-              {!sidebarCollapsed && <span>Dark</span>}
+              <span className="admin-theme-toggle__thumb" />
             </button>
           </div>
         </div>

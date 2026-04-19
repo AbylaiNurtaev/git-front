@@ -7,8 +7,7 @@ import {
   Users,
   ChevronLeft,
   LogOut,
-  Moon,
-  Sun,
+  Palette,
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import BrandLogo from '@/components/BrandLogo';
@@ -42,6 +41,7 @@ export default function AdminLayout() {
     navItems.find(({ to, end }) =>
       end ? location.pathname === to : location.pathname.startsWith(to)
     )?.label ?? 'Админ панель';
+  const isOverviewPage = location.pathname === '/admin';
 
   return (
     <div className={`admin-dashboard ${theme === 'dark' ? 'admin-dashboard--dark' : ''}`}>
@@ -78,26 +78,31 @@ export default function AdminLayout() {
         </nav>
 
         <div className="admin-sidebar__footer">
-          <div className="admin-theme-switch" role="group" aria-label="Переключатель темы">
+          <div className="admin-theme-control" aria-label="Переключатель темы">
+            <div className="admin-theme-control__meta">
+              <span className="admin-theme-control__icon">
+                <Palette size={16} />
+              </span>
+              {!sidebarCollapsed && (
+                <div className="admin-theme-control__copy">
+                  <span className="admin-theme-control__label">Тема</span>
+                  <span className="admin-theme-control__value">
+                    {theme === 'dark' ? 'Темная' : 'Светлая'}
+                  </span>
+                </div>
+              )}
+            </div>
+
             <button
               type="button"
-              className={`admin-theme-switch__btn ${theme === 'light' ? 'is-active' : ''}`}
-              onClick={() => setTheme('light')}
-              title="Светлая тема"
-              aria-label="Светлая тема"
+              role="switch"
+              aria-checked={theme === 'dark'}
+              className={`admin-theme-toggle ${theme === 'dark' ? 'is-dark' : ''}`}
+              onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+              title={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
+              aria-label={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
             >
-              <Sun size={16} />
-              {!sidebarCollapsed && <span>Light</span>}
-            </button>
-            <button
-              type="button"
-              className={`admin-theme-switch__btn ${theme === 'dark' ? 'is-active' : ''}`}
-              onClick={() => setTheme('dark')}
-              title="Тёмная тема"
-              aria-label="Тёмная тема"
-            >
-              <Moon size={16} />
-              {!sidebarCollapsed && <span>Dark</span>}
+              <span className="admin-theme-toggle__thumb" />
             </button>
           </div>
         </div>
@@ -106,7 +111,17 @@ export default function AdminLayout() {
       <div className="admin-main">
         <header className="admin-topbar">
           <div className="admin-topbar__locations">
-            <span className="admin-topbar__title">{currentPageTitle}</span>
+            {isOverviewPage ? (
+              <div className="admin-topbar__hero-copy">
+                <span className="admin-topbar__eyebrow">Панель управления</span>
+                <h1 className="admin-topbar__hero-title">Дашборд администратора</h1>
+                <p className="admin-topbar__hero-text">
+                  Быстрый обзор активности платформы, клубов и игровых механик в одном экране
+                </p>
+              </div>
+            ) : (
+              <span className="admin-topbar__title">{currentPageTitle}</span>
+            )}
           </div>
           <div className="admin-topbar__actions">
             <span className="admin-topbar__user-name">{currentUser.name || 'Администратор'}</span>

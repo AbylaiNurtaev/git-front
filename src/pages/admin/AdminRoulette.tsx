@@ -1,17 +1,12 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect } from 'react';
 import { Dices, GripVertical, Layers3, Sparkles, Target, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useStore } from '@/store/useStore';
 import PrizeModal from '@/components/PrizeModal';
 import Skeleton from '@/components/Skeleton';
-import type { Prize, RouletteSlot } from '@/types';
+import type { Prize } from '@/types';
 import { prizeTypeLabel } from '@/constants/prizeTypes';
 import './AdminPages.css';
-
-function isProductPrize(p: Prize) {
-  return p.type === 'product' || p.type === 'physical';
-}
-
-type RouletteCheckResult = { errors: string[]; warnings: string[] };
 
 export default function AdminRoulette() {
   const {
@@ -27,9 +22,6 @@ export default function AdminRoulette() {
   } = useStore();
   const [prizeModalOpen, setPrizeModalOpen] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
-  const [rouletteCheck, setRouletteCheck] = useState<RouletteCheckResult | null>(null);
-  /** Черновик: какие призы в рулетке. null = без изменений, иначе только изменённые id -> isActive */
-  const [draftRoulette, setDraftRoulette] = useState<Record<string, boolean> | null>(null);
   /** Перетаскивание: индекс перетаскиваемого элемента и индекс, над которым наведён курсор */
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -41,96 +33,33 @@ export default function AdminRoulette() {
     fetchPrizes();
   }, [fetchPrizes]);
 
-  const isInRoulette = (prize: Prize) =>
-    draftRoulette && prize.id in draftRoulette ? draftRoulette[prize.id] : prize.isActive !== false;
+  const activePrizes = prizes.filter((p) => p.isActive !== false);
 
-  /** Базовый порядок с сервера (по slotIndex) */
-  const serverOrderedIds = [...prizes]
-    .sort((a, b) => {
-      const sa = a.slotIndex ?? 999;
-      const sb = b.slotIndex ?? 999;
-      if (sa !== sb) return sa - sb;
-      return String(a.id).localeCompare(String(b.id));
-    })
-    .map((p) => p.id);
-
-  /** Призы в порядке для отображения: черновик или с сервера */
-  const orderedPrizes: Prize[] = draftOrder
+  /** Активные призы в порядке для отображения: черновик или порядок с сервера */
+  const orderedActivePrizes: Prize[] = draftOrder
     ? draftOrder
-        .map((id) => prizes.find((p) => p.id === id))
+        .map((id) => activePrizes.find((p) => p.id === id))
         .filter((p): p is Prize => p != null)
-    : [...prizes].sort((a, b) => {
+    : [...activePrizes].sort((a, b) => {
         const sa = a.slotIndex ?? 999;
         const sb = b.slotIndex ?? 999;
         if (sa !== sb) return sa - sb;
         return String(a.id).localeCompare(String(b.id));
       });
 
-  const activePrizes = prizes.filter((p) => isInRoulette(p));
   const occupiedSlotIndices = prizes
     .filter((p) => p.id !== selectedPrize?.id)
     .map((p) => p.slotIndex)
     .filter((n): n is number => n != null);
 
-  const hasChanges = draftRoulette !== null && Object.keys(draftRoulette).length > 0;
-
   /** «Сейчас в рулетке» — только сохранённое состояние (меняется только после «Рулетка готова») */
   const displaySlots = rouletteConfig.slots;
   const displayTotalProb = rouletteConfig.totalProbability;
 
-  const handleToggleRoulette = (prize: Prize) => {
-    const next = !isInRoulette(prize);
-    setDraftRoulette((prev) => ({ ...prev, [prize.id]: next }));
-    setRouletteCheck(null);
-  };
-
-  const handleRouletteReady = async () => {
-    const errors: string[] = [];
-    const warnings: string[] = [];
-
-    if (activePrizes.length === 0) {
-      errors.push('В рулетке нет ни одного приза. Включите переключатель «В рулетке» у призов.');
-    } else {
-      const totalProb = activePrizes.reduce((sum, p) => sum + (p.probability || 0), 0);
-      if (totalProb > 1) {
-        warnings.push(`Сумма вероятностей ${(totalProb * 100).toFixed(1)}% больше 100%. Итоги считаются пропорционально, но лучше привести к 100%.`);
-      }
-      const slotIndices = activePrizes.map((p) => p.slotIndex).filter((n): n is number => n != null);
-      const seen = new Map<number, number>();
-      slotIndices.forEach((idx) => seen.set(idx, (seen.get(idx) ?? 0) + 1));
-      const duplicates = [...seen.entries()].filter(([, count]) => count > 1).map(([idx]) => idx);
-      if (duplicates.length > 0) {
-        errors.push(`Дублирующиеся индексы слотов: ${duplicates.join(', ')}. У каждого приза в рулетке должен быть уникальный индекс (0–34).`);
-      }
-      const productWithoutId = activePrizes.filter(
-        (p) => isProductPrize(p) && !String(p.productEntityId ?? '').trim()
-      );
-      if (productWithoutId.length > 0) {
-        errors.push(
-          `Для типа «Товар» нужен ID товара в SmartShell (productEntityId): ${productWithoutId.map((p) => p.name).join(', ')}.`
-        );
-      }
-    }
-
-    setRouletteCheck({ errors, warnings });
-    if (errors.length === 0 && warnings.length === 0 && draftRoulette) {
-      for (const [prizeId, isActive] of Object.entries(draftRoulette)) {
-        await updatePrize(prizeId, { isActive });
-      }
-      await fetchPrizes();
-      setDraftRoulette(null);
-    }
-  };
-
-  const handleCancelRoulette = () => {
-    setDraftRoulette(null);
-    setRouletteCheck(null);
-  };
-
   const handleDragStart = (index: number) => (e: React.DragEvent) => {
     setDragIndex(index);
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', orderedPrizes[index].id);
+    e.dataTransfer.setData('text/plain', orderedActivePrizes[index].id);
     e.dataTransfer.setDragImage(e.currentTarget, 0, 0);
   };
 
@@ -153,29 +82,25 @@ export default function AdminRoulette() {
       return;
     }
     setDragIndex(null);
-    const currentOrder = orderedPrizes.map((p) => p.id);
+    const currentOrder = orderedActivePrizes.map((p) => p.id);
     const newOrder = [...currentOrder];
     const [movedId] = newOrder.splice(from, 1);
     newOrder.splice(dropIndex, 0, movedId);
     setDraftOrder(newOrder);
+    void saveOrder(newOrder);
   };
 
-  const hasOrderChanges =
-    draftOrder !== null &&
-    (draftOrder.length !== serverOrderedIds.length ||
-      draftOrder.some((id, i) => serverOrderedIds[i] !== id));
-
-  const handleSaveOrder = async () => {
-    if (!draftOrder || draftOrder.length === 0) return;
-    const orderIds = orderedPrizes.map((p) => p.id);
+  const saveOrder = async (orderIds: string[]) => {
     if (orderIds.length === 0) return;
     setIsSavingOrder(true);
     const ok = await reorderPrizes(orderIds);
     setIsSavingOrder(false);
     if (ok) {
+      toast.success('Порядок успешно изменен');
       setDraftOrder(null);
     } else {
-      setRouletteCheck({ errors: ['Не удалось сохранить порядок призов'], warnings: [] });
+      toast.error('Не удалось изменить порядок');
+      setDraftOrder(null);
     }
   };
 
@@ -228,7 +153,7 @@ export default function AdminRoulette() {
           <div className="roulette-info roulette-info--hero">
             <div className="roulette-info__item">
               <Sparkles size={16} />
-              <p className="info-text">В рулетку попадают только призы с включённым переключателем.</p>
+              <p className="info-text">В рулетке участвуют только активные призы, которые уже настроены для механики.</p>
             </div>
             <div className="roulette-info__item">
               <Target size={16} />
@@ -252,210 +177,97 @@ export default function AdminRoulette() {
         </div>
       </div>
 
-      {/* Секция: выбор призов для рулетки */}
-      <div className="roulette-prize-selection">
+      <div className="roulette-config">
         <div className="roulette-section-heading">
           <span className="roulette-section-heading__icon">
-            <Sparkles size={16} />
+            <Layers3 size={16} />
           </span>
-          <h3>Все призы и участие в рулетке</h3>
+          <div className="roulette-section-heading__content">
+            <h3>Сейчас в рулетке ({orderedActivePrizes.length})</h3>
+            <div className="roulette-section-heading__meta">
+              <span className="roulette-section-heading__pill">
+                {(displayTotalProb * 100).toFixed(2)}%
+              </span>
+              {displayTotalProb > 1 && (
+                <span className="roulette-section-heading__warning">Сумма вероятностей выше 100%</span>
+              )}
+            </div>
+          </div>
         </div>
-        {prizes.length > 0 && (
-          <p className="info-text roulette-drag-hint">Перетащите приз за иконку ⋮⋮, чтобы изменить порядок (слоты).</p>
+        {orderedActivePrizes.length > 0 && (
+          <p className="info-text roulette-drag-hint">Перетаскивайте карточки, чтобы менять порядок выпадения и слотов.</p>
         )}
-        {prizes.length === 0 ? (
+        {orderedActivePrizes.length === 0 ? (
           <div className="empty-state">
-            <p>Нет призов. Создайте первый приз кнопкой «+ Создать приз» выше.</p>
+            <p>Сейчас в рулетке нет активных призов</p>
+            <p className="hint">Создайте и настройте активные призы, и они появятся здесь автоматически.</p>
           </div>
         ) : (
-          <div className={`prize-roulette-list ${dragIndex != null ? 'has-dragging' : ''}`}>
-            {orderedPrizes.map((prize: Prize, index: number) => {
-              const inRoulette = isInRoulette(prize);
-              const isDragging = dragIndex === index;
-              const showInsertBefore = dragOverIndex === index;
-              return (
-                <Fragment key={prize.id}>
-                  {showInsertBefore && (
-                    <div className="prize-roulette-insertion-line" aria-hidden />
-                  )}
+          <>
+            <div className={`slots-list ${dragIndex != null ? 'has-dragging' : ''}`}>
+              {orderedActivePrizes.map((prize: Prize, index: number) => {
+                const isDragging = dragIndex === index;
+                const isDropTarget = dragOverIndex === index && dragIndex !== index;
+                return (
                   <div
-                    className={`prize-roulette-row ${inRoulette ? 'in-roulette' : ''} ${isDragging ? 'is-dragging' : ''}`}
+                    key={prize.id}
+                    className={`slot-card slot-card--sortable ${isDragging ? 'is-dragging' : ''} ${isDropTarget ? 'is-drop-target' : ''}`}
                     draggable={!isSavingOrder}
+                    onClick={() => {
+                      setSelectedPrize(prize);
+                      setPrizeModalOpen(true);
+                    }}
                     onDragStart={handleDragStart(index)}
                     onDragOver={handleDragOver(index)}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop(index)}
                     onDragEnd={handleDragEnd}
                   >
-                  <span
-                    className="prize-roulette-drag-handle"
-                    title="Перетащите, чтобы изменить порядок (слот)"
-                    aria-label="Изменить порядок"
-                  >
-                    <GripVertical size={20} />
-                  </span>
-                  <div className="prize-roulette-info">
-                    {prize.image && (
-                      <img src={prize.image} alt="" className="prize-roulette-thumb" />
-                    )}
-                    <div>
-                      <strong>{prize.name}</strong>
-                      <span className="prize-roulette-meta">
-                        {(prize.probability * 100).toFixed(2)}% · {prizeTypeLabel(prize.type)}
-                        {prize.slotIndex != null && (
-                          <span className="prize-slot-index"> · слот {prize.slotIndex}</span>
-                        )}
+                    <button
+                      type="button"
+                      className="roulette-prize-delete-icon"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleDeletePrize(prize);
+                      }}
+                      title="Удалить приз"
+                      aria-label="Удалить приз"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+
+                    <div className="slot-card__top">
+                      <span
+                        className="prize-roulette-drag-handle slot-card__drag-handle"
+                        title="Перетащите, чтобы изменить порядок"
+                        aria-label="Изменить порядок"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <GripVertical size={20} />
                       </span>
+
+                      <div className="slot-card__header">
+                        <span className="slot-card__badge">Слот {index + 1}</span>
+                        <span className="slot-card__probability">{((prize.probability ?? 0) * 100).toFixed(2)}%</span>
+                      </div>
                     </div>
-                  </div>
-                  <label className="roulette-toggle">
-                    <input
-                      type="checkbox"
-                      checked={inRoulette}
-                      onChange={() => handleToggleRoulette(prize)}
-                    />
-                    <span className="roulette-toggle-label">В рулетке</span>
-                  </label>
-                  <button
-                    type="button"
-                    className="edit-button small"
-                    onClick={() => {
-                      setSelectedPrize(prize);
-                      setPrizeModalOpen(true);
-                    }}
-                  >
-                    Изменить
-                  </button>
-                  <button
-                    type="button"
-                    className="roulette-prize-delete-icon"
-                    onClick={() => handleDeletePrize(prize)}
-                    title="Удалить приз"
-                    aria-label="Удалить приз"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-                </Fragment>
-              );
-            })}
-          </div>
-        )}
 
-        {hasOrderChanges && (
-          <div className="roulette-order-save-block">
-            <button
-              type="button"
-              className="ready-button roulette-order-save-btn"
-              onClick={handleSaveOrder}
-              disabled={isSavingOrder}
-            >
-              <span className="ready-button-icon">✓</span>
-              <span className="ready-button-text">{isSavingOrder ? 'Сохранение…' : 'Сохранить порядок'}</span>
-            </button>
-          </div>
-        )}
-
-        {hasChanges && (
-          <div className="roulette-ready-block">
-            <div className="roulette-ready-actions">
-              <button type="button" className="ready-button" onClick={handleRouletteReady}>
-                <span className="ready-button-icon">✓</span>
-                <span className="ready-button-text">Рулетка готова</span>
-              </button>
-              <button type="button" className="cancel-ready-button" onClick={handleCancelRoulette}>
-                Отменить
-              </button>
-            </div>
-            <p className="roulette-ready-hint">Сохранить изменения или отменить</p>
-            {rouletteCheck && (
-              <div className={`roulette-check-result ${rouletteCheck.errors.length > 0 ? 'has-errors' : ''}`}>
-                {rouletteCheck.errors.length > 0 && (
-                  <div className="roulette-check-errors">
-                    <strong>Ошибки:</strong>
-                    {rouletteCheck.errors.map((msg, i) => (
-                      <p key={i}>⚠️ {msg}</p>
-                    ))}
-                  </div>
-                )}
-                {rouletteCheck.warnings.length > 0 && (
-                  <div className="roulette-check-warnings">
-                    <strong>Предупреждения:</strong>
-                    {rouletteCheck.warnings.map((msg, i) => (
-                      <p key={i}>⚠️ {msg}</p>
-                    ))}
-                  </div>
-                )}
-                {rouletteCheck.errors.length === 0 && rouletteCheck.warnings.length === 0 && activePrizes.length > 0 && (
-                  <p className="roulette-check-ok">Рулетка настроена корректно.</p>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="roulette-config">
-        <div className="roulette-section-heading">
-          <span className="roulette-section-heading__icon">
-            <Layers3 size={16} />
-          </span>
-          <h3>Сейчас в рулетке ({displaySlots.length})</h3>
-        </div>
-        {displaySlots.length === 0 ? (
-          <div className="empty-state">
-            <p>Нет призов в рулетке</p>
-            <p className="hint">Включите переключатель «В рулетке» у нужных призов выше</p>
-          </div>
-        ) : (
-          <>
-            <div className="slots-list">
-              {displaySlots.map((slot: RouletteSlot, index: number) => {
-                const prize = prizes.find((p: Prize) => p.id === slot.prizeId);
-                return (
-                  <div key={slot.id} className="slot-card">
-                    <div className="slot-info">
-                      <h4>Слот {index + 1}{prize?.slotIndex != null && <span className="slot-index-badge">{prize.slotIndex}</span>}</h4>
-                      <p><strong>Приз:</strong> {prize?.name || 'Неизвестно'}</p>
-                      {prize?.image && (
-                        <div className="slot-prize-image">
+                    <div className="slot-card__main">
+                      {prize.image && (
+                        <div className="slot-prize-image slot-card__media">
                           <img src={prize.image} alt={prize.name} />
                         </div>
                       )}
-                      <p><strong>Вероятность:</strong> {(slot.probability * 100).toFixed(2)}%</p>
-                      {prize?.type && <p><strong>Тип:</strong> {prizeTypeLabel(prize.type)}</p>}
-                    </div>
-                    <div className="slot-actions">
-                      <button 
-                        className="edit-button" 
-                        onClick={() => {
-                          setSelectedPrize(prize || null);
-                          setPrizeModalOpen(true);
-                        }}
-                      >
-                        Редактировать приз
-                      </button>
-                      {prize && (
-                        <button
-                          type="button"
-                          className="roulette-prize-delete-icon"
-                          onClick={() => handleDeletePrize(prize)}
-                          title="Удалить приз"
-                          aria-label="Удалить приз"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      )}
+                      <div className="slot-card__content">
+                        <div className="slot-info">
+                          <h4>{prize.name}</h4>
+                          <p><strong>Тип:</strong> {prizeTypeLabel(prize.type)}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
               })}
-            </div>
-            <div className="total-probability">
-              <p><strong>Сумма вероятностей (в рулетке):</strong> {(displayTotalProb * 100).toFixed(2)}%</p>
-              {displayTotalProb > 1 && (
-                <p className="warning">⚠️ Сумма вероятностей больше 100%</p>
-              )}
             </div>
           </>
         )}

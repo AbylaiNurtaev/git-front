@@ -78,6 +78,22 @@ body.club-layout-active {
 }
 
 /* Контент клуба растягивается естественно, а страницу скроллит документ */
+.club-dashboard .admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 40;
+}
+
+.club-dashboard .admin-main {
+  margin-left: 88px;
+}
+
+.club-dashboard.admin-dashboard--sidebar-open .admin-main {
+  margin-left: 258px;
+}
+
 .admin-dashboard .admin-main {
   min-height: 0;
 }
@@ -109,6 +125,10 @@ body.club-layout-active {
     min-width: 220px;
   }
 
+  .club-dashboard.admin-dashboard--sidebar-open .admin-main {
+    margin-left: 220px;
+  }
+
   .admin-dashboard .admin-content {
     padding: 16px;
   }
@@ -118,6 +138,10 @@ body.club-layout-active {
   .admin-dashboard .admin-sidebar:not(.admin-sidebar--collapsed) {
     width: 200px;
     min-width: 200px;
+  }
+
+  .club-dashboard.admin-dashboard--sidebar-open .admin-main {
+    margin-left: 200px;
   }
 
   .admin-dashboard .admin-content {
@@ -205,6 +229,18 @@ body.club-layout-active {
 }
 
 @media (max-width: 900px) {
+  .club-dashboard .admin-sidebar {
+    position: relative;
+    left: auto;
+    height: auto;
+    z-index: auto;
+  }
+
+  .club-dashboard .admin-main,
+  .club-dashboard.admin-dashboard--sidebar-open .admin-main {
+    margin-left: 0;
+  }
+
   .club-dashboard .admin-topbar__locations {
     align-items: flex-start;
   }

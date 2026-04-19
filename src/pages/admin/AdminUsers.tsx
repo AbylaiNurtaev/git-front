@@ -19,6 +19,7 @@ export default function AdminUsers() {
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Player | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const filteredPlayers = useMemo(() => {
     if (!searchQuery.trim()) return players;
@@ -26,11 +27,66 @@ export default function AdminUsers() {
   }, [players, searchQuery]);
 
   useEffect(() => {
-    fetchUsers('player');
+    let isMounted = true;
+
+    const load = async () => {
+      try {
+        await fetchUsers('player');
+      } finally {
+        if (isMounted) {
+          setInitialLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
   }, [fetchUsers]);
 
-  if (isLoading && players.length === 0) {
-    return <Skeleton />;
+  if ((initialLoading || isLoading) && players.length === 0) {
+    return (
+      <div className="admin-page admin-users-page">
+        <div className="tab-header">
+          <Skeleton height="40px" width="320px" />
+        </div>
+
+        <div className="admin-search-row admin-users-search-row">
+          <div className="admin-search-field">
+            <Skeleton height="16px" width="180px" />
+            <Skeleton height="48px" />
+            <Skeleton height="14px" width="260px" />
+          </div>
+        </div>
+
+        <div className="users-table-container users-table-container--loading">
+          <div className="users-table-skeleton">
+            <div className="users-table-skeleton__head">
+              <Skeleton height="14px" width="120px" />
+              <Skeleton height="14px" width="80px" />
+              <Skeleton height="14px" width="80px" />
+              <Skeleton height="14px" width="120px" />
+              <Skeleton height="14px" width="120px" />
+            </div>
+
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="users-table-skeleton__row">
+                <Skeleton height="18px" width="150px" />
+                <Skeleton height="18px" width="90px" />
+                <Skeleton height="18px" width="60px" />
+                <Skeleton height="18px" width="110px" />
+                <div className="users-table-skeleton__actions">
+                  <Skeleton height="36px" width="120px" />
+                  <Skeleton height="36px" width="96px" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -39,14 +95,21 @@ export default function AdminUsers() {
         <h2>Управление игроками</h2>
       </div>
       {players.length > 0 && (
-        <div className="admin-search-row">
-          <input
-            type="search"
-            className="admin-search"
-            placeholder="Поиск по телефону..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="admin-search-row admin-users-search-row">
+          <label className="admin-search-field">
+            <span className="admin-search-field__label">Поиск по телефону</span>
+            <input
+              type="search"
+              inputMode="tel"
+              className="admin-search"
+              placeholder="Например: +7 777 123 45 67 или 7771234567"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <span className="admin-search-field__hint">
+              Ищет по номеру в любом формате: с `+7`, пробелами, скобками или без них.
+            </span>
+          </label>
         </div>
       )}
       {players.length === 0 ? (

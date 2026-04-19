@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  BarChart3,
   Building2,
-  CircleDot,
   Gift,
   MapPinned,
   Sparkles,
-  Trophy,
   Users,
 } from 'lucide-react';
 import {
@@ -18,15 +15,10 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from 'recharts';
 import { useStore } from '@/store/useStore';
 import type { AnalyticsByCityResponse } from '@/types';
 import './AdminPages.css';
-
-const CHART_COLORS = ['#2f80ff', '#59a6ff', '#7c5cff', '#f59e0b', '#10b981'];
 
 function getDefaultDateRange() {
   const end = new Date();
@@ -60,11 +52,9 @@ function getPlayerCountFromClubStats(
 export default function AdminOverview() {
   const navigate = useNavigate();
   const {
-    currentUser,
     clubs,
     players,
     prizes,
-    rouletteConfig,
     fetchAdminData,
     fetchAnalytics,
     fetchAnalyticsByCity,
@@ -137,45 +127,17 @@ export default function AdminOverview() {
   const totalPlayers = analytics?.totalPlayers ?? players.length;
   const totalPrizes = analytics?.totalPrizes ?? prizes.length;
   const totalSpins = analytics?.totalSpins ?? 0;
-  const totalSlots = rouletteConfig.slots.length;
-
-  const systemComposition = [
-    { name: 'Клубы', value: totalClubs, color: CHART_COLORS[0] },
-    { name: 'Игроки', value: totalPlayers, color: CHART_COLORS[1] },
-    { name: 'Призы', value: totalPrizes, color: CHART_COLORS[2] },
-    { name: 'Слоты', value: totalSlots, color: CHART_COLORS[3] },
-  ].filter((item) => item.value > 0);
 
   const topClubStats = [...(analytics?.clubStats ?? [])]
     .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
     .slice(0, 6);
 
   const cityCards = (byCity?.byCity ?? []).slice(0, 6);
-
-  const summaryStrip = [
-    { icon: Building2, label: 'Клубов', value: totalClubs },
-    { icon: Users, label: 'Игроков', value: totalPlayers },
-    { icon: CircleDot, label: 'Прокруток', value: totalSpins },
-    { icon: Gift, label: 'Призов', value: totalPrizes },
-    { icon: Trophy, label: 'Слотов', value: totalSlots },
-  ];
+  const featuredCity = cityCards[0] ?? null;
 
   return (
     <div className="admin-page admin-overview-page">
-      <section className="admin-overview-hero">
-        <div className="admin-overview-hero__profile">
-          <div className="admin-overview-hero__avatar">
-            {String(currentUser?.name || 'A').charAt(0).toUpperCase()}
-          </div>
-          <div className="admin-overview-hero__identity">
-            <span className="admin-overview-hero__eyebrow">Панель управления</span>
-            <h1>Дашборд администратора</h1>
-            <p>
-              Быстрый обзор активности платформы, клубов и игровых механик в одном экране.
-            </p>
-          </div>
-        </div>
-
+      <section className="admin-overview-hero admin-overview-hero--compact">
         <div className="admin-overview-hero__stats">
           <article className="overview-metric-card overview-metric-card--wide">
             <div className="overview-metric-card__head">
@@ -201,22 +163,71 @@ export default function AdminOverview() {
             <strong>{totalPlayers}</strong>
             <p>Аккаунтов в системе</p>
           </article>
+          <article className="overview-metric-card">
+            <div className="overview-metric-card__head">
+              <span>Призов</span>
+              <Gift size={16} />
+            </div>
+            <strong>{totalPrizes}</strong>
+            <p>Доступно в игровых механиках</p>
+          </article>
         </div>
       </section>
 
-      <section className="overview-summary-strip">
-        {summaryStrip.map(({ icon: Icon, label, value }) => (
-          <div key={label} className="overview-summary-chip">
-            <span className="overview-summary-chip__icon">
-              <Icon size={16} />
-            </span>
-            <span className="overview-summary-chip__label">{label}</span>
-            <strong className="overview-summary-chip__value">{value}</strong>
-          </div>
-        ))}
-      </section>
+      <section className="overview-main-grid">
+        {featuredCity ? (
+          <article className="overview-city-card overview-city-card--featured">
+            <div className="overview-city-card__head">
+              <div>
+                <span className="overview-panel__eyebrow">Город</span>
+                <h3>{featuredCity.city || 'Без города'}</h3>
+              </div>
+              <span className="overview-city-card__spins">{featuredCity.totalSpins} спинов</span>
+            </div>
 
-      <section className="admin-overview-grid">
+            <div className="overview-city-card__stats">
+              <span>Клубов: <strong>{featuredCity.clubCount}</strong></span>
+              <span>
+                Игроков:{' '}
+                <strong>
+                  {featuredCity.totalPlayers ||
+                    (featuredCity.clubs ?? []).reduce(
+                      (sum, club) =>
+                        sum + (getClubPlayerCount(club) || getPlayerCountFromClubStats(club, analytics?.clubStats)),
+                      0
+                    )}
+                </strong>
+              </span>
+              <span>Списано: <strong>{featuredCity.totalSpent}</strong></span>
+            </div>
+
+            <div className="overview-city-card__clubs">
+              {(featuredCity.clubs || []).slice(0, 3).map((club) => {
+                const clubId = club.id || (club as { _id?: string })._id;
+                return (
+                  <button
+                    key={clubId || club.name}
+                    type="button"
+                    className="overview-city-club"
+                    onClick={() => clubId && navigate(`/admin/clubs/${clubId}`)}
+                    disabled={!clubId}
+                  >
+                    <div>
+                      <strong>{club.name || 'Клуб'}</strong>
+                      <p>{club.address || 'Адрес не указан'}</p>
+                    </div>
+                    <span>{club.spinsCount ?? 0}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </article>
+        ) : (
+          <div className="overview-empty-card">
+            Нет данных по городам или бэкенд ещё не отдал `/admin/analytics/by-city`.
+          </div>
+        )}
+
         <article className="overview-panel overview-panel--chart">
           <div className="overview-panel__header">
             <div>
@@ -261,60 +272,9 @@ export default function AdminOverview() {
             <div className="overview-empty-card">Нет данных по городам для графика.</div>
           )}
         </article>
+      </section>
 
-        <article className="overview-panel overview-panel--side">
-          <div className="overview-panel__header">
-            <div>
-              <span className="overview-panel__eyebrow">Структура</span>
-              <h2>Состав платформы</h2>
-            </div>
-            <BarChart3 size={18} className="overview-panel__icon" />
-          </div>
-
-          {systemComposition.length > 0 ? (
-            <div className="overview-donut-block">
-              <ResponsiveContainer width="100%" height={240}>
-                <PieChart>
-                  <Pie
-                    data={systemComposition}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={58}
-                    outerRadius={88}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {systemComposition.map((entry) => (
-                      <Cell key={entry.name} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      background: '#ffffff',
-                      border: '1px solid rgba(148, 163, 184, 0.2)',
-                      borderRadius: '14px',
-                      boxShadow: '0 20px 40px rgba(15, 23, 42, 0.12)',
-                      color: '#111827',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-
-              <div className="overview-legend-list">
-                {systemComposition.map((item) => (
-                  <div key={item.name} className="overview-legend-item">
-                    <span className="overview-legend-item__dot" style={{ backgroundColor: item.color }} />
-                    <span className="overview-legend-item__label">{item.name}</span>
-                    <strong className="overview-legend-item__value">{item.value}</strong>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="overview-empty-card">Нет данных для состава системы.</div>
-          )}
-        </article>
-
+      <section className="overview-secondary-grid">
         <article className="overview-panel overview-panel--clubs">
           <div className="overview-panel__header">
             <div>
@@ -385,63 +345,6 @@ export default function AdminOverview() {
             </div>
           </div>
         </article>
-      </section>
-
-      <section className="overview-city-grid">
-        {cityCards.length > 0 ? (
-          cityCards.map((item) => (
-            <article key={item.city || 'Без города'} className="overview-city-card">
-              <div className="overview-city-card__head">
-                <div>
-                  <span className="overview-panel__eyebrow">Город</span>
-                  <h3>{item.city || 'Без города'}</h3>
-                </div>
-                <span className="overview-city-card__spins">{item.totalSpins} спинов</span>
-              </div>
-
-              <div className="overview-city-card__stats">
-                <span>Клубов: <strong>{item.clubCount}</strong></span>
-                <span>
-                  Игроков:{' '}
-                  <strong>
-                    {item.totalPlayers ||
-                      (item.clubs ?? []).reduce(
-                        (sum, club) =>
-                          sum + (getClubPlayerCount(club) || getPlayerCountFromClubStats(club, analytics?.clubStats)),
-                        0
-                      )}
-                  </strong>
-                </span>
-                <span>Списано: <strong>{item.totalSpent}</strong></span>
-              </div>
-
-              <div className="overview-city-card__clubs">
-                {(item.clubs || []).slice(0, 3).map((club) => {
-                  const clubId = club.id || (club as { _id?: string })._id;
-                  return (
-                    <button
-                      key={clubId || club.name}
-                      type="button"
-                      className="overview-city-club"
-                      onClick={() => clubId && navigate(`/admin/clubs/${clubId}`)}
-                      disabled={!clubId}
-                    >
-                      <div>
-                        <strong>{club.name || 'Клуб'}</strong>
-                        <p>{club.address || 'Адрес не указан'}</p>
-                      </div>
-                      <span>{club.spinsCount ?? 0}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </article>
-          ))
-        ) : (
-          <div className="overview-empty-card overview-empty-card--wide">
-            Нет данных по городам или бэкенд ещё не отдал `/admin/analytics/by-city`.
-          </div>
-        )}
       </section>
     </div>
   );

@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { useStore } from './store/useStore';
 import AuthPage from './pages/AuthPage';
 import PlayerLayout from './pages/player/PlayerLayout';
@@ -40,77 +41,80 @@ function App() {
   const { isAuthenticated, currentUser } = useStore();
 
   return (
-    <Routes>
-      <Route
-        path="/auth"
-        element={isAuthenticated ? <RedirectAfterLogin /> : <AuthPage />}
-      />
-      <Route
-        path="/spin"
-        element={
-          <ProtectedRoute requiredRole="player">
-            <SpinPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/player"
-        element={
-          <ProtectedRoute requiredRole="player">
-            <PlayerLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<PlayerHome />} />
-        <Route path="prizes" element={<PlayerPrizes />} />
-        <Route path="scan" element={<PlayerScan />} />
-      </Route>
-      <Route
-        path="/club"
-        element={
-          <ProtectedRoute requiredRole="club">
-            <ClubLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<ClubOverview />} />
-        <Route path="players" element={<ClubPlayers />} />
-        <Route path="qr" element={<ClubQR />} />
-        <Route path="settings" element={<ClubSettings />} />
-      </Route>
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute requiredRole="admin">
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<AdminOverview />} />
-        <Route path="clubs" element={<AdminClubs />} />
-        <Route path="clubs/:id" element={<AdminClubDetail />} />
-        <Route path="users" element={<AdminUsers />} />
-        <Route path="users/:id" element={<AdminUserDetail />} />
-        <Route path="roulette" element={<AdminRoulette />} />
-        <Route path="analytics" element={<Navigate to="/admin" replace />} />
-      </Route>
-      <Route
-        path="/"
-        element={
-          isAuthenticated ? (
-            currentUser?.role === 'admin' ? (
-              <Navigate to="/admin" replace />
-            ) : currentUser?.role === 'club' ? (
-              <Navigate to="/club" replace />
+    <>
+      <Routes>
+        <Route
+          path="/auth"
+          element={isAuthenticated ? <RedirectAfterLogin /> : <AuthPage />}
+        />
+        <Route
+          path="/spin"
+          element={
+            <ProtectedRoute requiredRole="player">
+              <SpinPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/player"
+          element={
+            <ProtectedRoute requiredRole="player">
+              <PlayerLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<PlayerHome />} />
+          <Route path="prizes" element={<PlayerPrizes />} />
+          <Route path="scan" element={<PlayerScan />} />
+        </Route>
+        <Route
+          path="/club"
+          element={
+            <ProtectedRoute requiredRole="club">
+              <ClubLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<ClubOverview />} />
+          <Route path="players" element={<ClubPlayers />} />
+          <Route path="qr" element={<ClubQR />} />
+          <Route path="settings" element={<ClubSettings />} />
+        </Route>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminOverview />} />
+          <Route path="clubs" element={<AdminClubs />} />
+          <Route path="clubs/:id" element={<AdminClubDetail />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="users/:id" element={<AdminUserDetail />} />
+          <Route path="roulette" element={<AdminRoulette />} />
+          <Route path="analytics" element={<Navigate to="/admin" replace />} />
+        </Route>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              currentUser?.role === 'admin' ? (
+                <Navigate to="/admin" replace />
+              ) : currentUser?.role === 'club' ? (
+                <Navigate to="/club" replace />
+              ) : (
+                <Navigate to="/player" replace />
+              )
             ) : (
-              <Navigate to="/player" replace />
+              <Navigate to="/auth" replace />
             )
-          ) : (
-            <Navigate to="/auth" replace />
-          )
-        }
-      />
-    </Routes>
+          }
+        />
+      </Routes>
+      <Toaster richColors position="top-right" closeButton />
+    </>
   );
 }
 

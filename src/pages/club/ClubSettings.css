@@ -219,6 +219,30 @@
   background: var(--qr-page-bg);
   height: 100%;
   min-height: 100%;
+  overflow: hidden;
+}
+
+.club-settings-qr-preview-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.club-settings-qr-preview-bg-media,
+.club-settings-qr-preview-bg-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.club-settings-qr-preview-bg-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.club-settings-qr-preview-bg-mask {
+  background: var(--qr-page-bg);
+  pointer-events: none;
 }
 
 .club-settings-qr-preview-fullscreen {
@@ -601,21 +625,23 @@
 }
 
 .club-dashboard .club-settings-workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(340px, 0.95fr);
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .club-dashboard .club-settings-preview-panel,
 .club-dashboard .club-settings-controls-column {
   min-width: 0;
+  width: 100%;
 }
 
 .club-dashboard .club-settings-controls-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 
 .club-dashboard .club-settings-panel-head {
@@ -630,6 +656,14 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
+}
+
+.club-dashboard .club-settings-panel-head__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .club-dashboard .club-settings-panel-head__icon {
@@ -703,14 +737,17 @@
 }
 
 .club-dashboard .club-settings-qr-fields {
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 8px;
   margin-bottom: 0;
 }
 
 .club-dashboard .club-settings-qr-field {
-  padding: 18px;
-  border-radius: 22px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--admin-surface-muted) 92%, white 8%), var(--admin-surface-muted));
   border: 1px solid var(--admin-border);
@@ -723,21 +760,39 @@
   color: var(--admin-text-muted);
 }
 
+.club-dashboard .club-settings-qr-field span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  flex: 0 0 116px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.2;
+}
+
+.club-dashboard .club-settings-qr-field .theme-input-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 6px;
+}
+
 .club-dashboard .theme-color-input {
-  width: 44px;
-  height: 44px;
+  width: 32px;
+  height: 32px;
   border: 1px solid var(--modal-input-border);
-  border-radius: 14px;
+  border-radius: 8px;
   background: var(--modal-input-bg);
 }
 
 .club-dashboard .theme-text-input {
-  min-height: 46px;
-  padding: 12px 14px;
+  min-height: 32px;
+  padding: 6px 8px;
   background: var(--modal-input-bg);
   border: 1px solid var(--modal-input-border);
-  border-radius: 14px;
+  border-radius: 8px;
   color: var(--admin-text);
+  font-size: 12px;
 }
 
 .club-dashboard .theme-text-input:focus {
@@ -750,6 +805,10 @@
   min-height: 46px;
   padding: 12px 18px;
   border-radius: 16px;
+}
+
+.club-dashboard .club-settings-preview-action {
+  min-width: 0;
 }
 
 .club-dashboard .club-settings-reset {
@@ -782,7 +841,8 @@
 @media (max-width: 900px) {
   .club-dashboard .club-settings-hero,
   .club-dashboard .club-settings-workspace {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
   }
 
   .club-dashboard .club-settings-qr-preview-wrap {
@@ -800,5 +860,13 @@
   .club-dashboard .club-settings-panel-head {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .club-dashboard .club-settings-panel-head__actions {
+    justify-content: stretch;
+  }
+
+  .club-dashboard .club-settings-preview-action {
+    width: 100%;
   }
 }

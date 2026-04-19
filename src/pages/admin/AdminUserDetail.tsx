@@ -25,6 +25,7 @@ export default function AdminUserDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { updateUser, deleteUser, banUser, unbanUser } = useStore();
+  const [balanceExpanded, setBalanceExpanded] = useState(false);
   const [user, setUser] = useState<AdminUserDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -100,6 +101,9 @@ export default function AdminUserDetail() {
   const isBanned = user.isBanned === true;
   const canBan = !isBanned && !banLoading && !unbanLoading;
   const canUnban = isBanned && !banLoading && !unbanLoading;
+  const balanceHistory = [...(user.balanceHistory ?? [])]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const visibleBalanceHistory = balanceExpanded ? balanceHistory : balanceHistory.slice(0, 5);
 
   const handleBan = async () => {
     if (user.isBanned) {
@@ -146,15 +150,45 @@ export default function AdminUserDetail() {
   };
 
   return (
-    <div className="admin-page">
-      <div className="club-detail-header">
-        <Link to="/admin/users" className="back-button">← Вернуться к списку</Link>
-        <div className="header-actions">
-          <button className="edit-button" onClick={() => setUserModalOpen(true)}>
+    <div className="admin-page admin-user-detail-page">
+      <div className="user-detail-toolbar">
+        <Link to="/admin/users" className="back-button user-detail-back-link">← К списку игроков</Link>
+      </div>
+
+      <div className="club-detail-header user-detail-topbar">
+        <div className="user-detail-topbar__main">
+          <div className="user-detail-topbar__copy">
+            <span className="user-detail-topbar__eyebrow">Профиль игрока</span>
+            <h1 className="user-detail-topbar__title">{user.name || user.phone}</h1>
+            <p className="user-detail-topbar__subtitle">
+              Детальная информация по аккаунту, клубу, блокировке и истории активности.
+            </p>
+            <div className="user-detail-topbar__meta">
+              <span className="user-detail-inline-chip">Телефон: {user.phone}</span>
+              <span className="user-detail-inline-chip">Баланс: {user.balance} баллов</span>
+              <span className="user-detail-inline-chip">Регистрация: {formatDate(user.createdAt)}</span>
+              <span className={`user-detail-inline-chip ${user.isActive ? 'is-active' : 'is-inactive'}`}>
+                {user.isActive ? 'Активен' : 'Неактивен'}
+              </span>
+              <span className={`user-detail-inline-chip ${isBanned ? 'is-banned' : 'is-ok'}`}>
+                {isBanned ? 'Забанен' : 'Без ограничений'}
+              </span>
+              {user.club && (
+                <span className="user-detail-inline-chip">Клуб: {user.club.name}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="header-actions user-detail-topbar__actions">
+          <button
+            className="edit-button user-detail-action-button user-detail-action-button--primary"
+            onClick={() => setUserModalOpen(true)}
+          >
             Редактировать
           </button>
           <button
-            className="delete-button"
+            className="delete-button user-detail-action-button user-detail-action-button--danger"
             onClick={async () => {
               if (window.confirm('Удалить игрока?')) {
                 await deleteUser(user._id);
@@ -167,52 +201,23 @@ export default function AdminUserDetail() {
         </div>
       </div>
 
-      <div className="club-detail-content">
-        <div className="club-detail-info">
-          <h2>Профиль</h2>
-          <div className="info-grid">
-            <div className="info-item">
-              <strong>Телефон:</strong>
-              <span>{user.phone}</span>
-            </div>
-            <div className="info-item">
-              <strong>Баланс:</strong>
-              <span>{user.balance} баллов</span>
-            </div>
-            <div className="info-item">
-              <strong>Дата регистрации:</strong>
-              <span>{formatDate(user.createdAt)}</span>
-            </div>
-            {user.name != null && user.name !== '' && (
-              <div className="info-item">
-                <strong>Имя:</strong>
-                <span>{user.name}</span>
-              </div>
-            )}
-            {user.isActive !== undefined && (
-              <div className="info-item">
-                <strong>Активен:</strong>
-                <span>{user.isActive ? 'Да' : 'Нет'}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
+      <div className="club-detail-content user-detail-layout">
         {user.club && (
-          <div className="club-detail-info">
+          <div className="club-detail-info user-detail-club-card">
+            <span className="user-detail-section-label">Клуб</span>
             <h2>Текущий клуб</h2>
             <div className="info-grid">
               <div className="info-item">
-                <strong>Название:</strong>
+                <strong>Название</strong>
                 <span>{user.club.name}</span>
               </div>
               <div className="info-item">
-                <strong>ID клуба:</strong>
+                <strong>ID клуба</strong>
                 <span>{user.club.clubId}</span>
               </div>
               {user.club.address && (
-                <div className="info-item">
-                  <strong>Адрес:</strong>
+                <div className="info-item info-item--full">
+                  <strong>Адрес</strong>
                   <span>{user.club.address}</span>
                 </div>
               )}
@@ -220,7 +225,8 @@ export default function AdminUserDetail() {
           </div>
         )}
 
-        <div className="club-detail-info">
+        <div className="club-detail-info user-detail-ban-card">
+          <span className="user-detail-section-label">Безопасность</span>
           <h2>Блокировка игрока</h2>
           <p className={`user-ban-status ${isBanned ? 'user-ban-status-banned' : 'user-ban-status-ok'}`}>
             {isBanned ? (
@@ -294,7 +300,8 @@ export default function AdminUserDetail() {
         </div>
 
         {user.visitHistory && user.visitHistory.length > 0 && (
-          <div className="club-detail-info">
+          <div className="club-detail-info user-detail-visits-card">
+            <span className="user-detail-section-label">Активность</span>
             <h2>История посещений по клубам</h2>
             <p className="user-detail-hint">Клубы отсортированы по убыванию числа визитов. Один визит = одна крутка.</p>
             <div className="visit-history-list">
@@ -319,16 +326,32 @@ export default function AdminUserDetail() {
         )}
 
         {(!user.visitHistory || user.visitHistory.length === 0) && (
-          <div className="club-detail-info">
+          <div className="club-detail-info user-detail-visits-card">
+            <span className="user-detail-section-label">Активность</span>
             <h2>История посещений</h2>
             <p className="user-detail-empty">Нет данных о посещениях.</p>
           </div>
         )}
 
-        <div className="club-detail-info">
-          <h2>История баланса</h2>
-          {user.balanceHistory && user.balanceHistory.length > 0 ? (
-            <div className="users-table-container">
+        <div className="club-detail-info user-detail-balance-card">
+          <div className="user-detail-card-header">
+            <div>
+              <span className="user-detail-section-label">Финансы</span>
+              <h2>История баланса</h2>
+            </div>
+            {balanceHistory.length > 0 && (
+              <button
+                type="button"
+                className="user-detail-card-toggle"
+                onClick={() => setBalanceExpanded((value) => !value)}
+              >
+                {balanceExpanded ? 'Свернуть' : 'Развернуть'}
+              </button>
+            )}
+          </div>
+          {balanceHistory.length > 0 ? (
+            <div className={`user-detail-balance-history ${balanceExpanded ? 'is-expanded' : ''}`}>
+              <div className="users-table-container">
               <table className="users-table">
                 <thead>
                   <tr>
@@ -339,9 +362,7 @@ export default function AdminUserDetail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[...user.balanceHistory]
-                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                    .map((item) => (
+                  {visibleBalanceHistory.map((item) => (
                       <tr key={item._id}>
                         <td>{formatDate(item.createdAt)}</td>
                         <td>{TRANSACTION_TYPE_LABELS[item.type] ?? item.type}</td>
@@ -353,6 +374,10 @@ export default function AdminUserDetail() {
                     ))}
                 </tbody>
               </table>
+              </div>
+              {!balanceExpanded && balanceHistory.length > visibleBalanceHistory.length && (
+                <div className="user-detail-balance-history__fade" aria-hidden />
+              )}
             </div>
           ) : (
             <p className="user-detail-empty">Нет операций по балансу.</p>

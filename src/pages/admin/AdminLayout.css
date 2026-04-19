@@ -13,7 +13,7 @@
   --admin-border: rgba(15, 23, 42, 0.08);
   --admin-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
   --admin-danger: #ef4444;
-  --brand-club-color: #c6d1e0;
+  --brand-club-color: #111827;
   --modal-overlay-bg: rgba(15, 23, 42, 0.42);
   --modal-bg: rgba(255, 255, 255, 0.98);
   --modal-soft: #f8fafc;
@@ -81,7 +81,10 @@
 .admin-sidebar {
   width: 258px;
   min-width: 258px;
-  position: relative;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
   background: var(--admin-sidebar);
   backdrop-filter: blur(16px);
   border-right: 1px solid var(--admin-border);
@@ -193,44 +196,94 @@
   position: absolute;
   left: 12px;
   right: 12px;
-  bottom: 50px;
-  padding: 0;
+  bottom: 16px;
+  padding: 12px 0 0;
   border-top: none;
   z-index: 2;
 }
 
-.admin-theme-switch {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+.admin-theme-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 62px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 1px solid var(--admin-border);
+  background: color-mix(in srgb, var(--admin-surface) 92%, transparent);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
-.admin-theme-switch__btn {
-  width: 100%;
-  min-height: 40px;
-  border: 1px solid var(--admin-border);
-  border-radius: 14px;
-  background: var(--admin-surface);
-  color: var(--admin-text-muted);
+.admin-theme-control__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.admin-theme-control__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: rgba(var(--admin-primary-rgb), 0.12);
+  color: var(--admin-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0;
 }
 
-.admin-theme-switch__btn:hover {
+.admin-theme-control__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-theme-control__label {
   color: var(--admin-text);
-  border-color: rgba(var(--admin-primary-rgb), 0.28);
+  font-size: 14px;
+  font-weight: 700;
 }
 
-.admin-theme-switch__btn.is-active {
-  background: rgba(var(--admin-primary-rgb), 0.15);
-  color: var(--admin-primary);
-  border-color: rgba(var(--admin-primary-rgb), 0.32);
+.admin-theme-control__value {
+  color: var(--admin-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admin-theme-toggle {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.34);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.admin-theme-toggle.is-dark {
+  background: rgba(var(--admin-primary-rgb), 0.55);
+}
+
+.admin-theme-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
+  transition: transform 0.2s ease;
+}
+
+.admin-theme-toggle.is-dark .admin-theme-toggle__thumb {
+  transform: translateX(22px);
 }
 
 .admin-main {
@@ -253,6 +306,35 @@
 
 .admin-topbar__locations {
   min-width: 0;
+}
+
+.admin-topbar__hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-topbar__eyebrow {
+  color: var(--admin-primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.admin-topbar__hero-title {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.08;
+  font-weight: 800;
+  color: var(--admin-text);
+}
+
+.admin-topbar__hero-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--admin-text-muted);
 }
 
 .admin-topbar__title {
@@ -461,12 +543,23 @@
     display: none;
   }
 
-  .admin-sidebar .admin-theme-switch__btn span {
-    display: none;
-  }
-
   .admin-sidebar__link {
     justify-content: center;
+  }
+
+  .admin-sidebar__footer {
+    left: 8px;
+    right: 8px;
+    bottom: 12px;
+  }
+
+  .admin-theme-control {
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .admin-theme-control__copy {
+    display: none;
   }
 }
 
@@ -476,6 +569,10 @@
   }
 
   .admin-sidebar {
+    position: relative;
+    top: auto;
+    height: auto;
+    align-self: stretch;
     width: 100%;
     min-width: 100%;
     border-right: none;
